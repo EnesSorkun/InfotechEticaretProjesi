@@ -1,0 +1,15 @@
+{
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 1453,
+            "driver": "PostgreSQL",
+            "name": "EticaretProjesi",
+            "database": "Eticaret_db",
+            "password": "243796yunsor",
+            "username": "Eticaret"
+        }
+    ]
+}

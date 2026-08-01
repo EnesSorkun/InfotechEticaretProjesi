@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: eticaret_db_container
+    environment:
+      POSTGRES_DB: Eticaret_db
+      POSTGRES_USER: Eticaret
+      POSTGRES_PASSWORD: 243796yunsor
+    ports:
+      - "1453:5432"
+    volumes:
+      - eticaret_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  eticaret_postgres_data:
