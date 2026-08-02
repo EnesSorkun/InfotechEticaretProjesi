@@ -51,10 +51,15 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                appUser.CreateDate = DateTime.UtcNow;
+                appUser.UserGuid = Guid.NewGuid();
+
                 _context.Add(appUser);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(appUser);
         }
 
@@ -84,27 +89,46 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(appUser);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AppUserExists(appUser.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(appUser);
             }
-            return View(appUser);
+
+            // Overposting'i(Kullanıcının değiştirmemesi gereken yeri değiştirmesi durumu) önlemek için mevcut kullanıcıyı veritabanından alıyoruz.
+            // Böylece sadece izin verilen alanlar güncellenecek.
+            var existingUser = await _context.AppUsers.FindAsync(id);
+
+            if (existingUser is null)
+            {
+                return NotFound();
+            }
+
+            // Sadece düzenlenebilir alanları güncelliyoruz.
+            // CreateDate ve UserGuid gibi sistem alanları korunuyor.
+            existingUser.Name = appUser.Name;
+            existingUser.Surname = appUser.Surname;
+            existingUser.Email = appUser.Email;
+            existingUser.Phone = appUser.Phone;
+            existingUser.UserName = appUser.UserName;
+            existingUser.Password = appUser.Password;
+            existingUser.IsActive = appUser.IsActive;
+            existingUser.IsAdmin = appUser.IsAdmin;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AppUserExists(id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/AppUsers/Delete/5

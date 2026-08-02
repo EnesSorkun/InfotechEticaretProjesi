@@ -1,82 +1,214 @@
 @model Eticaret.Core.Entities.AppUser
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Kullanıcı Sil";
     Layout = "_LayoutAdmin";
+
+    var fullName = $"{Model.Name} {Model.Surname}";
+    var firstLetter = string.IsNullOrWhiteSpace(Model.Name)
+        ? "?"
+        : Model.Name.Substring(0, 1).ToUpper();
 }
 
-<h1>Delete</h1>
+<div class="container-fluid px-4 py-4">
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>AppUser</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Surname)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Surname)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsAdmin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsAdmin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreateDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreateDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserGuid)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserGuid)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1 text-danger">
+                Kullanıcı Sil
+            </h2>
+
+            <p class="text-muted mb-0">
+                Bu kullanıcıyı sistemden kalıcı olarak sileceksiniz.
+            </p>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-2"></i>
+            Kullanıcılara Dön
+        </a>
+
+    </div>
+
+    <div class="alert alert-danger shadow-sm border-0">
+
+        <div class="d-flex">
+
+            <div class="me-3 fs-2">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div>
+                <h5 class="fw-bold mb-2">
+                    Bu işlem geri alınamaz!
+                </h5>
+
+                <p class="mb-0">
+                    Kullanıcı sistemden tamamen silinecektir.
+                    Devam etmek istediğinizden emin misiniz?
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-4">
+
+            <div class="row">
+
+                <div class="col-lg-3 text-center border-end">
+
+                    <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                         style="width:90px;height:90px;font-size:2rem;">
+
+                        @firstLetter
+
+                    </div>
+
+                    <h4 class="fw-bold mb-1">
+                        @fullName
+                    </h4>
+
+                    <p class="text-muted">
+                        @(string.IsNullOrWhiteSpace(Model.UserName)
+                            ? "Kullanıcı adı yok"
+                            : $"@{Model.UserName}")
+                    </p>
+
+                    @if (Model.IsAdmin)
+                    {
+                        <span class="badge bg-primary">
+                            Admin
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">
+                            Kullanıcı
+                        </span>
+                    }
+
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success">
+                            Aktif
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">
+                            Pasif
+                        </span>
+                    }
+
+                </div>
+
+                <div class="col-lg-9">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="text-muted small">
+                                Ad
+                            </label>
+
+                            <div class="fw-semibold">
+                                @Model.Name
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted small">
+                                Soyad
+                            </label>
+
+                            <div class="fw-semibold">
+                                @Model.Surname
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted small">
+                                E-posta
+                            </label>
+
+                            <div class="fw-semibold">
+                                @Model.Email
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted small">
+                                Telefon
+                            </label>
+
+                            <div class="fw-semibold">
+                                @(string.IsNullOrWhiteSpace(Model.Phone)
+                                    ? "-"
+                                    : Model.Phone)
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted small">
+                                Kayıt Tarihi
+                            </label>
+
+                            <div class="fw-semibold">
+                                @Model.CreateDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted small">
+                                Kullanıcı Kimliği
+                            </label>
+
+                            <div class="fw-semibold text-break">
+                                @(Model.UserGuid?.ToString() ?? "-")
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr class="my-4" />
+
+            <form asp-action="Delete">
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+
+                        <i class="fa-solid fa-xmark me-2"></i>
+
+                        Vazgeç
+
+                    </a>
+
+                    <button type="submit" class="btn btn-danger">
+
+                        <i class="fa-solid fa-trash me-2"></i>
+
+                        Kullanıcıyı Sil
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
 </div>

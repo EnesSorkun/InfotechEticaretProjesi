@@ -78,14 +78,14 @@ namespace Eticaret.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreateDate = new DateTime(2026, 7, 29, 15, 25, 40, 421, DateTimeKind.Utc).AddTicks(2720),
+                            CreateDate = new DateTime(2026, 8, 2, 11, 36, 14, 929, DateTimeKind.Utc).AddTicks(6970),
                             Email = "admin@eticaret.io",
                             IsActive = true,
                             IsAdmin = true,
                             Name = "Test",
                             Password = "123456",
                             Surname = "User",
-                            UserGuid = new Guid("100a6768-7fbc-4258-8561-db460d34664a"),
+                            UserGuid = new Guid("8a595a8d-e009-4221-af39-f1878be532aa"),
                             UserName = "Admin"
                         });
                 });
@@ -108,8 +108,8 @@ namespace Eticaret.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Logo")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -167,7 +167,7 @@ namespace Eticaret.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreateDate = new DateTime(2026, 7, 29, 15, 25, 40, 421, DateTimeKind.Utc).AddTicks(9950),
+                            CreateDate = new DateTime(2026, 8, 2, 11, 36, 14, 930, DateTimeKind.Utc).AddTicks(4590),
                             IsActive = true,
                             IsTopMenu = true,
                             Name = "Elektronik",
@@ -177,7 +177,7 @@ namespace Eticaret.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreateDate = new DateTime(2026, 7, 29, 15, 25, 40, 422, DateTimeKind.Utc).AddTicks(50),
+                            CreateDate = new DateTime(2026, 8, 2, 11, 36, 14, 930, DateTimeKind.Utc).AddTicks(4710),
                             IsActive = true,
                             IsTopMenu = true,
                             Name = "Bilgisayar",

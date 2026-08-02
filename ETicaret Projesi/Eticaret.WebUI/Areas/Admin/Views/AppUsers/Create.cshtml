@@ -1,76 +1,176 @@
-@model Eticaret.Core.Entities.AppUser
+@model AppUser
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Yeni Kullanıcı";
     Layout = "_LayoutAdmin";
 }
 
-<h1>Create</h1>
+<div class="container-fluid px-4 py-4">
 
-<h4>AppUser</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Surname" class="control-label"></label>
-                <input asp-for="Surname" class="form-control" />
-                <span asp-validation-for="Surname" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsAdmin" /> @Html.DisplayNameFor(model => model.IsAdmin)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserGuid" class="control-label"></label>
-                <input asp-for="UserGuid" class="form-control" />
-                <span asp-validation-for="UserGuid" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                Yeni Kullanıcı
+            </h2>
+
+            <p class="text-muted mb-0">
+                Sisteme yeni kullanıcı ekleyebilirsiniz.
+            </p>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-2"></i>
+            Kullanıcılara Dön
+        </a>
+
     </div>
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">
+                Kullanıcı Bilgileri
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Create">
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Name" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Name" class="form-control form-control-lg" />
+
+                        <span asp-validation-for="Name" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Surname" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Surname" class="form-control form-control-lg" />
+
+                        <span asp-validation-for="Surname" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Email" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Email" class="form-control form-control-lg" />
+
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Phone" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Phone" class="form-control form-control-lg" />
+
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="UserName" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="UserName" class="form-control form-control-lg" />
+
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Password" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Password" type="password" class="form-control form-control-lg" />
+
+                        <span asp-validation-for="Password" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+                <hr />
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <div class="form-check form-switch">
+
+                            <input asp-for="IsActive" class="form-check-input" />
+
+                            <label asp-for="IsActive" class="form-check-label fw-semibold">
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-check form-switch">
+
+                            <input asp-for="IsAdmin" class="form-check-input" />
+
+                            <label asp-for="IsAdmin" class="form-check-label fw-semibold">
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-4">
+
+                    <button type="submit" class="btn btn-success px-4">
+
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+
+                        Kaydet
+
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary ms-2">
+
+                        İptal
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

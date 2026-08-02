@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,13 +9,29 @@ namespace Eticaret.Core.Entities
     public class Category : IEntity
     {
         public int Id { get; set; }
+
+        [DisplayName("Ad")]
         public string Name { get; set; }
+
+        [DisplayName("Açıklama")]
         public string? Description { get; set; }
+
+        [DisplayName("Resim")]
         public string? Image { get; set; }
+
+        [DisplayName("Pasif/Aktif")]
         public bool IsActive { get; set; }
+
+        [DisplayName("Üst Menüde Göster")]
         public bool IsTopMenu { get; set; }
+
+        [DisplayName("Üst Kategori")]
         public int ParentId { get; set; }
+
+        [DisplayName("Sıra No")]
         public int OrderNo { get; set; }
+
+        [DisplayName("Kayıt Tarihi")]
         public DateTime CreateDate { get; set; }
         public ICollection<Product>? Products { get; set; }
     }

@@ -1,4 +1,4 @@
-@model IEnumerable<Eticaret.Core.Entities.AppUser>
+@model IEnumerable<AppUser>
 
 @{
     ViewData["Title"] = "Kullanıcılar";
@@ -89,26 +89,26 @@
             {
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th class="ps-4">
                                     Kullanıcı
                                 </th>
 
                                 <th>
-                                    E-posta
+                                    @Html.DisplayNameFor(model => model.Email)
                                 </th>
 
                                 <th>
-                                    Durum
+                                    @Html.DisplayNameFor(model => model.IsActive)
                                 </th>
 
                                 <th>
-                                    Yetki
+                                    @Html.DisplayNameFor(model => model.IsAdmin)
                                 </th>
 
                                 <th>
-                                    Kayıt Tarihi
+                                    @Html.DisplayNameFor(model => model.CreateDate)
                                 </th>
 
                                 <th class="text-end pe-4">
@@ -184,11 +184,11 @@
 
                                     <td>
                                         <div class="fw-medium">
-                                            @item.CreateDate.ToString("dd.MM.yyyy")
+                                            @item.CreateDate.ToLocalTime().ToString("dd.MM.yyyy")
                                         </div>
 
                                         <div class="text-muted small">
-                                            @item.CreateDate.ToString("HH:mm")
+                                            @item.CreateDate.ToLocalTime().ToString("HH:mm")
                                         </div>
                                     </td>
 

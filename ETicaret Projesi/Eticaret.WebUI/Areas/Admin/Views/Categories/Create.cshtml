@@ -1,0 +1,218 @@
+@model Eticaret.Core.Entities.Category
+
+@{
+    ViewData["Title"] = "Yeni Kategori";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid px-4 py-4">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Yeni Kategori
+            </h1>
+
+            <p class="text-muted mb-0">
+                Sisteme yeni bir kategori ekleyebilirsiniz.
+            </p>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-2"></i>
+            Kategorilere Dön
+        </a>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white border-0 py-3">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 46px; height: 46px;">
+                    <i class="fa-solid fa-folder-plus"></i>
+                </div>
+
+                <div>
+                    <h2 class="h5 fw-bold mb-1">
+                        Kategori Bilgileri
+                    </h2>
+
+                    <p class="text-muted small mb-0">
+                        Kategoriye ait temel bilgileri doldurunuz.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                </div>
+
+                <div class="row g-4">
+
+                    <div class="col-md-8">
+
+                        <label asp-for="Name" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Name" class="form-control form-control-lg"
+                               placeholder="Kategori adını giriniz" />
+
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="OrderNo" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="OrderNo" type="number" min="0" class="form-control form-control-lg"
+                               placeholder="Sıra numarası" />
+
+                        <span asp-validation-for="OrderNo" class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Description" class="form-label fw-semibold">
+                        </label>
+
+                        <textarea asp-for="Description" class="form-control" rows="5"
+                                  placeholder="Kategori açıklamasını giriniz"></textarea>
+
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label class="form-label fw-semibold">
+                            Kategori Görseli
+                        </label>
+
+                        <div class="input-group input-group-lg">
+
+                            <span class="input-group-text">
+                                <i class="fa-solid fa-image"></i>
+                            </span>
+
+                            <input type="file" name="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+
+                        </div>
+
+                        <span asp-validation-for="Image" class="text-danger small"></span>
+
+                        <div class="form-text">
+                            JPG, JPEG, PNG veya WEBP formatında görsel yükleyebilirsiniz.
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="ParentId" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="ParentId" type="number" min="0" class="form-control form-control-lg"
+                               placeholder="Ana kategori için 0 yazınız" />
+
+                        <span asp-validation-for="ParentId" class="text-danger small"></span>
+
+                        <div class="form-text">
+                            Ana kategori oluşturuyorsanız 0 değerini kullanabilirsiniz.
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <div class="border rounded-3 p-3 h-100">
+
+                            <div class="form-check form-switch mb-0">
+
+                                <input asp-for="IsActive" class="form-check-input" role="switch" />
+
+                                <label asp-for="IsActive" class="form-check-label fw-semibold">
+                                </label>
+
+                            </div>
+
+                            <p class="text-muted small mb-0 mt-2">
+                                Pasif kategoriler kullanıcı tarafında gösterilmez.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="border rounded-3 p-3 h-100">
+
+                            <div class="form-check form-switch mb-0">
+
+                                <input asp-for="IsTopMenu" class="form-check-input" role="switch" />
+
+                                <label asp-for="IsTopMenu" class="form-check-label fw-semibold">
+                                </label>
+
+                            </div>
+
+                            <p class="text-muted small mb-0 mt-2">
+                                Aktif olduğunda kategori üst menüde gösterilir.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        İptal
+                    </a>
+
+                    <button type="submit" class="btn btn-success px-4">
+
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Kategoriyi Kaydet
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
