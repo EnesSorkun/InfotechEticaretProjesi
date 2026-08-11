@@ -1,7 +1,7 @@
-@model Eticaret.Core.Entities.Category
+@model Eticaret.Core.Entities.News
 
 @{
-    ViewData["Title"] = "Kategori Sil";
+    ViewData["Title"] = "Duyuru Sil";
     Layout = "_LayoutAdmin";
 }
 
@@ -12,23 +12,23 @@
 
         <div>
             <h1 class="h3 fw-bold mb-1">
-                Kategori Sil
+                Duyuru Sil
             </h1>
 
             <p class="text-muted mb-0">
-                Seçilen kategoriyi sistemden silebilirsiniz.
+                Seçilen kampanya veya duyuruyu sistemden silebilirsiniz.
             </p>
         </div>
 
         <a asp-action="Index" class="btn btn-outline-secondary">
             <i class="fa-solid fa-arrow-left me-2"></i>
-            Kategorilere Dön
+            Duyurulara Dön
         </a>
 
     </div>
 
 
-    <!-- Uyarı -->
+    <!-- Silme Uyarısı -->
     <div class="alert alert-danger border-0 shadow-sm mb-4">
 
         <div class="d-flex align-items-start gap-3">
@@ -39,11 +39,11 @@
 
             <div>
                 <h2 class="h5 fw-bold mb-1">
-                    Bu kategoriyi silmek istediğinize emin misiniz?
+                    Bu duyuruyu silmek istediğinize emin misiniz?
                 </h2>
 
                 <p class="mb-0">
-                    Bu işlem kategoriyi sistemden kalıcı olarak kaldıracaktır.
+                    Bu işlem duyuruyu sistemden kalıcı olarak kaldıracaktır.
                     Silme işlemi geri alınamaz.
                 </p>
             </div>
@@ -53,7 +53,7 @@
     </div>
 
 
-    <!-- Kategori Kartı -->
+    <!-- Duyuru Bilgileri -->
     <div class="card border-0 shadow-sm">
 
         <div class="card-header bg-white border-0 py-3">
@@ -62,17 +62,21 @@
 
                 <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
                      style="width: 46px; height: 46px;">
+
                     <i class="fa-solid fa-trash"></i>
+
                 </div>
 
                 <div>
+
                     <h2 class="h5 fw-bold mb-1">
                         @Model.Name
                     </h2>
 
                     <p class="text-muted small mb-0">
-                        Kategori ID: @Model.Id
+                        Duyuru ID: @Model.Id
                     </p>
+
                 </div>
 
             </div>
@@ -89,8 +93,8 @@
 
                     <div class="row g-4">
 
-                        <!-- Kategori Adı -->
-                        <div class="col-md-6">
+                        <!-- Başlık -->
+                        <div class="col-12">
 
                             <div class="border rounded-3 p-3 h-100">
 
@@ -100,24 +104,6 @@
 
                                 <div class="fw-semibold fs-5">
                                     @Model.Name
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Sıra No -->
-                        <div class="col-md-6">
-
-                            <div class="border rounded-3 p-3 h-100">
-
-                                <div class="text-muted small mb-1">
-                                    @Html.DisplayNameFor(model => model.OrderNo)
-                                </div>
-
-                                <div class="fw-semibold fs-5">
-                                    @Model.OrderNo
                                 </div>
 
                             </div>
@@ -152,26 +138,31 @@
                         </div>
 
 
-                        <!-- Üst Kategori -->
+                        <!-- Durum -->
                         <div class="col-md-6">
 
                             <div class="border rounded-3 p-3 h-100">
 
                                 <div class="text-muted small mb-2">
-                                    @Html.DisplayNameFor(model => model.ParentId)
+                                    @Html.DisplayNameFor(model => model.IsActive)
                                 </div>
 
-                                @if (Model.ParentId == 0)
+                                @if (Model.IsActive)
                                 {
-                                    <span class="badge bg-dark-subtle text-dark px-3 py-2">
-                                        <i class="fa-solid fa-layer-group me-1"></i>
-                                        Ana Kategori
+                                    <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+
+                                        <i class="fa-solid fa-circle-check me-1"></i>
+                                        Aktif
+
                                     </span>
                                 }
                                 else
                                 {
-                                    <span class="fw-semibold">
-                                        Kategori ID: @Model.ParentId
+                                    <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
+
+                                        <i class="fa-solid fa-circle-xmark me-1"></i>
+                                        Pasif
+
                                     </span>
                                 }
 
@@ -190,68 +181,12 @@
                                 </div>
 
                                 <div class="fw-semibold">
+
                                     <i class="fa-regular fa-calendar me-1 text-muted"></i>
 
                                     @(Model.CreateDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm"))
+
                                 </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Aktif/Pasif -->
-                        <div class="col-md-6">
-
-                            <div class="border rounded-3 p-3 h-100">
-
-                                <div class="text-muted small mb-2">
-                                    @Html.DisplayNameFor(model => model.IsActive)
-                                </div>
-
-                                @if (Model.IsActive)
-                                {
-                                    <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
-                                        <i class="fa-solid fa-circle-check me-1"></i>
-                                        Aktif
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
-                                        <i class="fa-solid fa-circle-xmark me-1"></i>
-                                        Pasif
-                                    </span>
-                                }
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Üst Menü -->
-                        <div class="col-md-6">
-
-                            <div class="border rounded-3 p-3 h-100">
-
-                                <div class="text-muted small mb-2">
-                                    @Html.DisplayNameFor(model => model.IsTopMenu)
-                                </div>
-
-                                @if (Model.IsTopMenu)
-                                {
-                                    <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
-                                        <i class="fa-solid fa-bars me-1"></i>
-                                        Üst Menüde Gösteriliyor
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">
-                                        <i class="fa-solid fa-eye-slash me-1"></i>
-                                        Üst Menüde Gösterilmiyor
-                                    </span>
-                                }
 
                             </div>
 
@@ -262,7 +197,7 @@
                 </div>
 
 
-                <!-- Sağ Taraf - Kategori Görseli -->
+                <!-- Sağ Taraf - Görsel -->
                 <div class="col-lg-4">
 
                     <div class="border rounded-3 p-4 h-100">
@@ -276,7 +211,9 @@
                             <div class="text-center">
 
                                 <img src="@Model.Image" alt="@Model.Name" class="img-fluid rounded border bg-white p-2"
-                                     style="width: 100%; max-height: 260px; object-fit: contain;" />
+                                     style="width: 100%;
+                                max-height: 280px;
+                                object-fit: contain;" />
 
                                 <div class="text-muted small text-break mt-3">
                                     @Model.Image
@@ -291,7 +228,7 @@
                                 <i class="fa-solid fa-image fa-3x text-muted mb-3"></i>
 
                                 <p class="text-muted mb-0">
-                                    Kategori görseli bulunmuyor.
+                                    Duyuru görseli bulunmuyor.
                                 </p>
 
                             </div>
@@ -326,7 +263,7 @@
                     <button type="submit" class="btn btn-danger px-4">
 
                         <i class="fa-solid fa-trash me-2"></i>
-                        Kategoriyi Sil
+                        Duyuruyu Sil
 
                     </button>
 

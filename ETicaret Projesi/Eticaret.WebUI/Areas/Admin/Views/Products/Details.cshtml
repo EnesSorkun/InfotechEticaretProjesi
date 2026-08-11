@@ -1,68 +1,49 @@
-@model Eticaret.Core.Entities.Category
+@model Eticaret.Core.Entities.Product
 
 @{
-    ViewData["Title"] = "Kategori Sil";
+    ViewData["Title"] = "Ürün Detayları";
     Layout = "_LayoutAdmin";
 }
 
 <div class="container-fluid px-4 py-4">
 
-    <!-- Sayfa Başlığı -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
 
         <div>
             <h1 class="h3 fw-bold mb-1">
-                Kategori Sil
+                Ürün Detayları
             </h1>
 
             <p class="text-muted mb-0">
-                Seçilen kategoriyi sistemden silebilirsiniz.
+                Ürüne ait tüm bilgileri görüntüleyebilirsiniz.
             </p>
         </div>
 
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-arrow-left me-2"></i>
-            Kategorilere Dön
-        </a>
+        <div class="d-flex gap-2">
 
-    </div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left me-2"></i>
+                Ürünlere Dön
+            </a>
 
-
-    <!-- Uyarı -->
-    <div class="alert alert-danger border-0 shadow-sm mb-4">
-
-        <div class="d-flex align-items-start gap-3">
-
-            <div class="fs-4">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-
-            <div>
-                <h2 class="h5 fw-bold mb-1">
-                    Bu kategoriyi silmek istediğinize emin misiniz?
-                </h2>
-
-                <p class="mb-0">
-                    Bu işlem kategoriyi sistemden kalıcı olarak kaldıracaktır.
-                    Silme işlemi geri alınamaz.
-                </p>
-            </div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="fa-solid fa-pen-to-square me-2"></i>
+                Düzenle
+            </a>
 
         </div>
 
     </div>
 
-
-    <!-- Kategori Kartı -->
     <div class="card border-0 shadow-sm">
 
         <div class="card-header bg-white border-0 py-3">
 
             <div class="d-flex align-items-center gap-3">
 
-                <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
+                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
                      style="width: 46px; height: 46px;">
-                    <i class="fa-solid fa-trash"></i>
+                    <i class="fa-solid fa-box"></i>
                 </div>
 
                 <div>
@@ -71,7 +52,9 @@
                     </h2>
 
                     <p class="text-muted small mb-0">
-                        Kategori ID: @Model.Id
+                        @(string.IsNullOrWhiteSpace(Model.ProductCode)
+                            ? $"Ürün ID: {Model.Id}"
+                            : $"Ürün Kodu: {Model.ProductCode}")
                     </p>
                 </div>
 
@@ -79,18 +62,15 @@
 
         </div>
 
-
         <div class="card-body p-4">
 
             <div class="row g-4">
 
-                <!-- Sol Taraf -->
                 <div class="col-lg-8">
 
                     <div class="row g-4">
 
-                        <!-- Kategori Adı -->
-                        <div class="col-md-6">
+                        <div class="col-12">
 
                             <div class="border rounded-3 p-3 h-100">
 
@@ -106,26 +86,6 @@
 
                         </div>
 
-
-                        <!-- Sıra No -->
-                        <div class="col-md-6">
-
-                            <div class="border rounded-3 p-3 h-100">
-
-                                <div class="text-muted small mb-1">
-                                    @Html.DisplayNameFor(model => model.OrderNo)
-                                </div>
-
-                                <div class="fw-semibold fs-5">
-                                    @Model.OrderNo
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Açıklama -->
                         <div class="col-12">
 
                             <div class="border rounded-3 p-3 h-100">
@@ -151,27 +111,46 @@
 
                         </div>
 
-
-                        <!-- Üst Kategori -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
 
                             <div class="border rounded-3 p-3 h-100">
 
-                                <div class="text-muted small mb-2">
-                                    @Html.DisplayNameFor(model => model.ParentId)
+                                <div class="text-muted small mb-1">
+                                    @Html.DisplayNameFor(model => model.Price)
                                 </div>
 
-                                @if (Model.ParentId == 0)
+                                <div class="fw-bold fs-5">
+                                    @Model.Price.ToString("N2") ₺
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="border rounded-3 p-3 h-100">
+
+                                <div class="text-muted small mb-1">
+                                    @Html.DisplayNameFor(model => model.Stock)
+                                </div>
+
+                                @if (Model.Stock <= 0)
                                 {
-                                    <span class="badge bg-dark-subtle text-dark px-3 py-2">
-                                        <i class="fa-solid fa-layer-group me-1"></i>
-                                        Ana Kategori
+                                    <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                        Stok Yok
+                                    </span>
+                                }
+                                else if (Model.Stock <= 5)
+                                {
+                                    <span class="badge bg-warning-subtle text-warning px-3 py-2">
+                                        @Model.Stock adet
                                     </span>
                                 }
                                 else
                                 {
-                                    <span class="fw-semibold">
-                                        Kategori ID: @Model.ParentId
+                                    <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        @Model.Stock adet
                                     </span>
                                 }
 
@@ -179,29 +158,55 @@
 
                         </div>
 
+                        <div class="col-md-4">
 
-                        <!-- Kayıt Tarihi -->
+                            <div class="border rounded-3 p-3 h-100">
+
+                                <div class="text-muted small mb-1">
+                                    @Html.DisplayNameFor(model => model.OrderNo)
+                                </div>
+
+                                <div class="fw-semibold">
+                                    @Model.OrderNo
+                                </div>
+
+                            </div>
+
+                        </div>
+
                         <div class="col-md-6">
 
                             <div class="border rounded-3 p-3 h-100">
 
                                 <div class="text-muted small mb-1">
-                                    @Html.DisplayNameFor(model => model.CreateDate)
+                                    @Html.DisplayNameFor(model => model.Category)
                                 </div>
 
                                 <div class="fw-semibold">
-                                    <i class="fa-regular fa-calendar me-1 text-muted"></i>
-
-                                    @(Model.CreateDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm"))
+                                    @(Model.Category?.Name ?? "Kategori bulunmuyor")
                                 </div>
 
                             </div>
 
                         </div>
 
-
-                        <!-- Aktif/Pasif -->
                         <div class="col-md-6">
+
+                            <div class="border rounded-3 p-3 h-100">
+
+                                <div class="text-muted small mb-1">
+                                    @Html.DisplayNameFor(model => model.Brand)
+                                </div>
+
+                                <div class="fw-semibold">
+                                    @(Model.Brand?.Name ?? "Marka bulunmuyor")
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
 
                             <div class="border rounded-3 p-3 h-100">
 
@@ -228,30 +233,44 @@
 
                         </div>
 
-
-                        <!-- Üst Menü -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
 
                             <div class="border rounded-3 p-3 h-100">
 
                                 <div class="text-muted small mb-2">
-                                    @Html.DisplayNameFor(model => model.IsTopMenu)
+                                    @Html.DisplayNameFor(model => model.IsHome)
                                 </div>
 
-                                @if (Model.IsTopMenu)
+                                @if (Model.IsHome)
                                 {
                                     <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
-                                        <i class="fa-solid fa-bars me-1"></i>
-                                        Üst Menüde Gösteriliyor
+                                        <i class="fa-solid fa-house me-1"></i>
+                                        Ana Sayfada
                                     </span>
                                 }
                                 else
                                 {
                                     <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">
                                         <i class="fa-solid fa-eye-slash me-1"></i>
-                                        Üst Menüde Gösterilmiyor
+                                        Gizli
                                     </span>
                                 }
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <div class="border rounded-3 p-3 h-100">
+
+                                <div class="text-muted small mb-1">
+                                    @Html.DisplayNameFor(model => model.CreateDate)
+                                </div>
+
+                                <div class="fw-semibold">
+                                    @(Model.CreateDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm"))
+                                </div>
 
                             </div>
 
@@ -261,8 +280,6 @@
 
                 </div>
 
-
-                <!-- Sağ Taraf - Kategori Görseli -->
                 <div class="col-lg-4">
 
                     <div class="border rounded-3 p-4 h-100">
@@ -276,7 +293,7 @@
                             <div class="text-center">
 
                                 <img src="@Model.Image" alt="@Model.Name" class="img-fluid rounded border bg-white p-2"
-                                     style="width: 100%; max-height: 260px; object-fit: contain;" />
+                                     style="width: 100%; max-height: 320px; object-fit: contain;" />
 
                                 <div class="text-muted small text-break mt-3">
                                     @Model.Image
@@ -291,7 +308,7 @@
                                 <i class="fa-solid fa-image fa-3x text-muted mb-3"></i>
 
                                 <p class="text-muted mb-0">
-                                    Kategori görseli bulunmuyor.
+                                    Ürün görseli bulunmuyor.
                                 </p>
 
                             </div>
@@ -303,36 +320,21 @@
 
             </div>
 
-
             <hr class="my-4" />
 
+            <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
 
-            <!-- Silme Formu -->
-            <form asp-action="Delete" method="post">
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                    <i class="fa-solid fa-arrow-left me-2"></i>
+                    Geri Dön
+                </a>
 
-                @Html.AntiForgeryToken()
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4">
+                    <i class="fa-solid fa-pen-to-square me-2"></i>
+                    Ürünü Düzenle
+                </a>
 
-                <input type="hidden" asp-for="Id" />
-
-                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
-
-                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
-
-                        <i class="fa-solid fa-xmark me-2"></i>
-                        Vazgeç
-
-                    </a>
-
-                    <button type="submit" class="btn btn-danger px-4">
-
-                        <i class="fa-solid fa-trash me-2"></i>
-                        Kategoriyi Sil
-
-                    </button>
-
-                </div>
-
-            </form>
+            </div>
 
         </div>
 

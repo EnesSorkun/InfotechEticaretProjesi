@@ -1,50 +1,54 @@
-@model Eticaret.Core.Entities.Category
+@model Eticaret.Core.Entities.Product
 
 @{
-    ViewData["Title"] = "Yeni Kategori";
+    ViewData["Title"] = "Yeni Ürün";
     Layout = "_LayoutAdmin";
 }
 
 <div class="container-fluid px-4 py-4">
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
         <div>
             <h1 class="h3 fw-bold mb-1">
-                Yeni Kategori
+                Yeni Ürün
             </h1>
 
             <p class="text-muted mb-0">
-                Sisteme yeni bir kategori ekleyebilirsiniz.
+                Sisteme yeni bir ürün ekleyebilirsiniz.
             </p>
         </div>
 
         <a asp-action="Index" class="btn btn-outline-secondary">
             <i class="fa-solid fa-arrow-left me-2"></i>
-            Kategorilere Dön
+            Ürünlere Dön
         </a>
+
     </div>
 
     <div class="card border-0 shadow-sm">
 
         <div class="card-header bg-white border-0 py-3">
+
             <div class="d-flex align-items-center gap-3">
 
                 <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
                      style="width: 46px; height: 46px;">
-                    <i class="fa-solid fa-folder-plus"></i>
+                    <i class="fa-solid fa-box-open"></i>
                 </div>
 
                 <div>
                     <h2 class="h5 fw-bold mb-1">
-                        Kategori Bilgileri
+                        Ürün Bilgileri
                     </h2>
 
                     <p class="text-muted small mb-0">
-                        Kategoriye ait temel bilgileri doldurunuz.
+                        Ürüne ait temel bilgileri doldurunuz.
                     </p>
                 </div>
 
             </div>
+
         </div>
 
         <div class="card-body p-4">
@@ -59,38 +63,44 @@
                 <div class="row g-4">
 
                     <div class="col-md-8">
+
                         <label asp-for="Name" class="form-label fw-semibold">
                         </label>
 
-                        <input asp-for="Name" class="form-control form-control-lg"
-                               placeholder="Kategori adını giriniz" />
+                        <input asp-for="Name" class="form-control form-control-lg" placeholder="Ürün adını giriniz" />
 
                         <span asp-validation-for="Name" class="text-danger small"></span>
+
                     </div>
 
                     <div class="col-md-4">
-                        <label asp-for="OrderNo" class="form-label fw-semibold">
+
+                        <label asp-for="ProductCode" class="form-label fw-semibold">
                         </label>
 
-                        <input asp-for="OrderNo" type="number" min="0" class="form-control form-control-lg"
-                               placeholder="Sıra numarası" />
+                        <input asp-for="ProductCode" class="form-control form-control-lg"
+                               placeholder="Ürün kodunu giriniz" />
 
-                        <span asp-validation-for="OrderNo" class="text-danger small"></span>
+                        <span asp-validation-for="ProductCode" class="text-danger small"></span>
+
                     </div>
 
                     <div class="col-12">
+
                         <label asp-for="Description" class="form-label fw-semibold">
                         </label>
 
                         <textarea asp-for="Description" class="form-control" rows="5"
-                                  placeholder="Kategori açıklamasını giriniz"></textarea>
+                                  placeholder="Ürün açıklamasını giriniz"></textarea>
 
                         <span asp-validation-for="Description" class="text-danger small"></span>
+
                     </div>
 
                     <div class="col-12">
+
                         <label class="form-label fw-semibold">
-                            Kategori Görseli
+                            Ürün Görseli
                         </label>
 
                         <div class="input-group input-group-lg">
@@ -100,40 +110,89 @@
                             </span>
 
                             <input type="file" name="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+
                         </div>
 
                         <span asp-validation-for="Image" class="text-danger small"></span>
+
+                        <div class="form-text">
+                            JPG, JPEG, PNG veya WEBP formatında en fazla 2 MB görsel yükleyebilirsiniz.
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="Price" class="form-label fw-semibold">
+                        </label>
+
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text">
+                                ₺
+                            </span>
+
+                            <input asp-for="Price" class="form-control" placeholder="0,00" />
+                        </div>
+
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="Stock" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Stock" type="number" min="0" class="form-control form-control-lg"
+                               placeholder="Stok miktarı" />
+
+                        <span asp-validation-for="Stock" class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label asp-for="OrderNo" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="OrderNo" type="number" min="0" class="form-control form-control-lg"
+                               placeholder="Sıra numarası" />
+
+                        <span asp-validation-for="OrderNo" class="text-danger small"></span>
 
                     </div>
 
                     <div class="col-md-6">
 
-                        <label asp-for="ParentId" class="form-label fw-semibold">
+                        <label asp-for="CategoryId" class="form-label fw-semibold">
                         </label>
 
-                        <select asp-for="ParentId" class="form-select form-select-lg">
+                        <select asp-for="CategoryId" class="form-select form-select-lg" asp-items="ViewBag.CategoryId">
 
-                            <option value="0">
-                                Ana Kategori
+                            <option value="">
+                                Kategori Seçiniz
                             </option>
-
-                            @if (ViewBag.Categories is not null)
-                            {
-                                foreach (var category in ViewBag.Categories)
-                                {
-                                    <option value="@category.Id">
-                                        @category.Name
-                                    </option>
-                                }
-                            }
 
                         </select>
 
-                        <span asp-validation-for="ParentId" class="text-danger small"></span>
+                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
 
-                        <div class="form-text">
-                            Alt kategori oluşturacaksanız bağlı olduğu üst kategoriyi seçiniz.
-                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="BrandId" class="form-label fw-semibold">
+                        </label>
+
+                        <select asp-for="BrandId" class="form-select form-select-lg" asp-items="ViewBag.BrandId">
+
+                            <option value="">
+                                Marka Seçiniz
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="BrandId" class="text-danger small"></span>
 
                     </div>
 
@@ -144,6 +203,7 @@
                 <div class="row g-3">
 
                     <div class="col-md-6">
+
                         <div class="border rounded-3 p-3 h-100">
 
                             <div class="form-check form-switch mb-0">
@@ -156,29 +216,32 @@
                             </div>
 
                             <p class="text-muted small mb-0 mt-2">
-                                Pasif kategoriler kullanıcı tarafında gösterilmez.
+                                Pasif ürünler kullanıcı tarafında görüntülenmez.
                             </p>
 
                         </div>
+
                     </div>
 
                     <div class="col-md-6">
+
                         <div class="border rounded-3 p-3 h-100">
 
                             <div class="form-check form-switch mb-0">
 
-                                <input asp-for="IsTopMenu" class="form-check-input" role="switch" />
+                                <input asp-for="IsHome" class="form-check-input" role="switch" />
 
-                                <label asp-for="IsTopMenu" class="form-check-label fw-semibold">
+                                <label asp-for="IsHome" class="form-check-label fw-semibold">
                                 </label>
 
                             </div>
 
                             <p class="text-muted small mb-0 mt-2">
-                                Aktif olduğunda kategori üst menüde gösterilir.
+                                Aktif olduğunda ürün ana sayfada gösterilir.
                             </p>
 
                         </div>
+
                     </div>
 
                 </div>
@@ -190,8 +253,10 @@
                     </a>
 
                     <button type="submit" class="btn btn-success px-4">
+
                         <i class="fa-solid fa-floppy-disk me-2"></i>
-                        Kategoriyi Kaydet
+                        Ürünü Kaydet
+
                     </button>
 
                 </div>

@@ -1,0 +1,219 @@
+@model Eticaret.Core.Entities.Slider
+
+@{
+    ViewData["Title"] = "Slider Düzenle";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid px-4 py-4">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Slider Düzenle
+            </h1>
+
+            <p class="text-muted mb-0">
+                Slider bilgilerini ve görselini güncelleyebilirsiniz.
+            </p>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-secondary">
+
+            <i class="fa-solid fa-arrow-left me-2"></i>
+            Sliderlara Dön
+
+        </a>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white border-0 py-3">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 46px; height: 46px;">
+
+                    <i class="fa-solid fa-pen-to-square"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 class="h5 fw-bold mb-1">
+                        Slider Bilgileri
+                    </h2>
+
+                    <p class="text-muted small mb-0">
+                        @Model.Title
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                </div>
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-4">
+
+                    <div class="col-12">
+
+                        <label asp-for="Title" class="form-label fw-semibold">
+                        </label>
+
+                        <input asp-for="Title" class="form-control form-control-lg"
+                               placeholder="Slider başlığını giriniz" />
+
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Description" class="form-label fw-semibold">
+                        </label>
+
+                        <textarea asp-for="Description" class="form-control" rows="5"
+                                  placeholder="Slider açıklamasını giriniz"></textarea>
+
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label class="form-label fw-semibold">
+                            Mevcut Görsel
+                        </label>
+
+                        <div class="border rounded-3 p-3 bg-light">
+
+                            @if (!string.IsNullOrWhiteSpace(Model.Image))
+                            {
+                                <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+
+                                    <img src="@Model.Image" alt="@Model.Title" class="rounded border bg-white p-2"
+                                         style="width: 240px; height: 130px; object-fit: cover;" />
+
+                                    <div>
+
+                                        <div class="fw-semibold">
+                                            Mevcut slider görseli
+                                        </div>
+
+                                        <div class="text-muted small text-break">
+                                            @Model.Image
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-muted">
+
+                                    <i class="fa-solid fa-image me-2"></i>
+                                    Bu slider için henüz görsel yüklenmemiş.
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label class="form-label fw-semibold">
+                            Yeni Görsel
+                        </label>
+
+                        <div class="input-group input-group-lg">
+
+                            <span class="input-group-text">
+                                <i class="fa-solid fa-upload"></i>
+                            </span>
+
+                            <input type="file" name="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+
+                        </div>
+
+                        <span asp-validation-for="Image" class="text-danger small"></span>
+
+                        <div class="form-text">
+                            Yeni görsel seçmezseniz mevcut görsel korunur.
+                            JPG, JPEG, PNG veya WEBP formatında en fazla 2 MB dosya yükleyebilirsiniz.
+                        </div>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Link" class="form-label fw-semibold">
+                        </label>
+
+                        <div class="input-group input-group-lg">
+
+                            <span class="input-group-text">
+                                <i class="fa-solid fa-link"></i>
+                            </span>
+
+                            <input asp-for="Link" class="form-control" placeholder="/Products veya https://..." />
+
+                        </div>
+
+                        <span asp-validation-for="Link" class="text-danger small"></span>
+
+                        <div class="form-text">
+                            Slider tıklandığında yönlendirilecek bağlantıyı belirleyebilirsiniz.
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+
+                        İptal
+
+                    </a>
+
+                    <button type="submit" class="btn btn-warning px-4">
+
+                        <i class="fa-solid fa-floppy-disk me-2"></i>
+                        Değişiklikleri Kaydet
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

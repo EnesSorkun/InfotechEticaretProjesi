@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Eticaret.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoriesController : Controller
+    public class SlidersController : Controller
     {
         private readonly DatabaseContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public CategoriesController(
+        public SlidersController(
             DatabaseContext context,
             IWebHostEnvironment webHostEnvironment)
         {
@@ -19,17 +19,17 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // GET: Admin/Categories
+        // GET: Admin/Sliders
         public async Task<IActionResult> Index()
         {
-            var categories = await _context.Categories
-                .OrderBy(x => x.OrderNo)
+            var sliders = await _context.Sliders
+                .OrderByDescending(x => x.Id)
                 .ToListAsync();
 
-            return View(categories);
+            return View(sliders);
         }
 
-        // GET: Admin/Categories/Details/5
+        // GET: Admin/Sliders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
@@ -37,62 +37,51 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var slider = await _context.Sliders
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (category is null)
+            if (slider is null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(slider);
         }
 
-        // GET: Admin/Categories/Create
-        public async Task<IActionResult> Create()
+        // GET: Admin/Sliders/Create
+        public IActionResult Create()
         {
-            ViewBag.Categories = await _context.Categories
-                .Where(x => x.IsActive)
-                .OrderBy(x => x.OrderNo)
-                .ToListAsync();
-
             return View();
         }
 
-        // POST: Admin/Categories/Create
+        // POST: Admin/Sliders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            Category category,
+            Slider slider,
             IFormFile? imageFile)
         {
             ValidateImageFile(imageFile);
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = await _context.Categories
-                    .Where(x => x.IsActive)
-                    .OrderBy(x => x.OrderNo)
-                    .ToListAsync();
-
-                return View(category);
+                return View(slider);
             }
 
-            if (imageFile is not null && imageFile.Length > 0)
+            if (imageFile is not null &&
+                imageFile.Length > 0)
             {
-                category.Image =
+                slider.Image =
                     await SaveImageFileAsync(imageFile);
             }
 
-            category.CreateDate = DateTime.UtcNow;
-
-            _context.Categories.Add(category);
+            _context.Sliders.Add(slider);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Admin/Categories/Edit/5
+        // GET: Admin/Sliders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
@@ -100,43 +89,34 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category =
-                await _context.Categories.FindAsync(id);
+            var slider =
+                await _context.Sliders.FindAsync(id);
 
-            if (category is null)
+            if (slider is null)
             {
                 return NotFound();
             }
 
-            // Üst kategori listesini dolduruyoruz.
-            // Düzenlenen kategori kendi üst kategorisi olamaz.
-            ViewBag.Categories = await _context.Categories
-                .Where(x =>
-                    x.IsActive &&
-                    x.Id != category.Id)
-                .OrderBy(x => x.OrderNo)
-                .ToListAsync();
-
-            return View(category);
+            return View(slider);
         }
 
-        // POST: Admin/Categories/Edit/5
+        // POST: Admin/Sliders/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
-            Category category,
+            Slider slider,
             IFormFile? imageFile)
         {
-            if (id != category.Id)
+            if (id != slider.Id)
             {
                 return NotFound();
             }
 
-            var existingCategory =
-                await _context.Categories.FindAsync(id);
+            var existingSlider =
+                await _context.Sliders.FindAsync(id);
 
-            if (existingCategory is null)
+            if (existingSlider is null)
             {
                 return NotFound();
             }
@@ -145,44 +125,26 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                category.Image = existingCategory.Image;
-                category.CreateDate =
-                    existingCategory.CreateDate;
+                slider.Image = existingSlider.Image;
 
-                ViewBag.Categories =
-                    await _context.Categories
-                        .Where(x =>
-                            x.IsActive &&
-                            x.Id != category.Id)
-                        .OrderBy(x => x.OrderNo)
-                        .ToListAsync();
-
-                return View(category);
+                return View(slider);
             }
 
-            // Sadece düzenlenmesine izin verilen alanları güncelliyoruz.
-            // CreateDate ve mevcut görsel gibi sistem alanları korunuyor.
-            existingCategory.Name = category.Name;
-            existingCategory.Description =
-                category.Description;
-            existingCategory.IsActive =
-                category.IsActive;
-            existingCategory.IsTopMenu =
-                category.IsTopMenu;
-            existingCategory.ParentId =
-                category.ParentId;
-            existingCategory.OrderNo =
-                category.OrderNo;
+            // Overposting'i önlemek için sadece düzenlenebilir
+            // alanları güncelliyoruz.
+            existingSlider.Title = slider.Title;
+            existingSlider.Description = slider.Description;
+            existingSlider.Link = slider.Link;
 
-            // Yeni görsel seçildiyse eski görseli sunucudan siliyoruz
+            // Yeni görsel seçildiyse eski görseli siliyoruz
             // ve yeni görseli kaydediyoruz.
             if (imageFile is not null &&
                 imageFile.Length > 0)
             {
                 DeleteImageFile(
-                    existingCategory.Image);
+                    existingSlider.Image);
 
-                existingCategory.Image =
+                existingSlider.Image =
                     await SaveImageFileAsync(
                         imageFile);
             }
@@ -193,7 +155,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CategoryExists(id))
+                if (!SliderExists(id))
                 {
                     return NotFound();
                 }
@@ -204,7 +166,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Admin/Categories/Delete/5
+        // GET: Admin/Sliders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
@@ -212,33 +174,33 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var slider = await _context.Sliders
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (category is null)
+            if (slider is null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(slider);
         }
 
-        // POST: Admin/Categories/Delete/5
+        // POST: Admin/Sliders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(
             int id)
         {
-            var category =
-                await _context.Categories.FindAsync(id);
+            var slider =
+                await _context.Sliders.FindAsync(id);
 
-            if (category is not null)
+            if (slider is not null)
             {
-                // Kategoriye ait görsel varsa önce sunucudan siliyoruz.
-                DeleteImageFile(category.Image);
+                // Slider görselini sunucudan siliyoruz.
+                DeleteImageFile(slider.Image);
 
-                // Ardından veritabanındaki kategori kaydını siliyoruz.
-                _context.Categories.Remove(category);
+                // Slider kaydını veritabanından siliyoruz.
+                _context.Sliders.Remove(slider);
 
                 await _context.SaveChangesAsync();
             }
@@ -271,7 +233,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             if (!allowedExtensions.Contains(extension))
             {
                 ModelState.AddModelError(
-                    nameof(Category.Image),
+                    nameof(Slider.Image),
                     "Sadece JPG, JPEG, PNG veya WEBP dosyası yükleyebilirsiniz.");
             }
 
@@ -281,12 +243,13 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             if (imageFile.Length > maxFileSize)
             {
                 ModelState.AddModelError(
-                    nameof(Category.Image),
+                    nameof(Slider.Image),
                     "Görsel dosyası en fazla 2 MB olabilir.");
             }
         }
 
-        // Görseli wwwroot/uploads/categories klasörüne kaydediyoruz.
+        // Slider görselini wwwroot/uploads/sliders
+        // klasörüne kaydediyoruz.
         private async Task<string> SaveImageFileAsync(
             IFormFile imageFile)
         {
@@ -297,7 +260,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             var uploadDirectory = Path.Combine(
                 _webHostEnvironment.WebRootPath,
                 "uploads",
-                "categories");
+                "sliders");
 
             Directory.CreateDirectory(
                 uploadDirectory);
@@ -316,10 +279,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
             await imageFile.CopyToAsync(stream);
 
-            return $"/uploads/categories/{fileName}";
+            return $"/uploads/sliders/{fileName}";
         }
 
-        // Görselin fiziksel dosyasını sunucudan siliyoruz.
+        // Slider görselini fiziksel olarak
+        // sunucudan siliyoruz.
         private void DeleteImageFile(
             string? imagePath)
         {
@@ -344,9 +308,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
         }
 
-        private bool CategoryExists(int id)
+        private bool SliderExists(int id)
         {
-            return _context.Categories
+            return _context.Sliders
                 .Any(x => x.Id == id);
         }
     }

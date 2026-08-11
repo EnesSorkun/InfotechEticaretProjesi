@@ -1,7 +1,7 @@
-@model Eticaret.Core.Entities.Category
+@model News
 
 @{
-    ViewData["Title"] = "Kategori Düzenle";
+    ViewData["Title"] = "Duyuru Düzenle";
     Layout = "_LayoutAdmin";
 }
 
@@ -11,17 +11,17 @@
 
         <div>
             <h1 class="h3 fw-bold mb-1">
-                Kategori Düzenle
+                Duyuru Düzenle
             </h1>
 
             <p class="text-muted mb-0">
-                Kategori bilgilerini ve görselini güncelleyebilirsiniz.
+                Kampanya veya duyuru bilgilerini güncelleyebilirsiniz.
             </p>
         </div>
 
         <a asp-action="Index" class="btn btn-outline-secondary">
             <i class="fa-solid fa-arrow-left me-2"></i>
-            Kategorilere Dön
+            Duyurulara Dön
         </a>
 
     </div>
@@ -34,12 +34,12 @@
 
                 <div class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
                      style="width: 46px; height: 46px;">
-                    <i class="fa-solid fa-folder-pen"></i>
+                    <i class="fa-solid fa-pen-to-square"></i>
                 </div>
 
                 <div>
                     <h2 class="h5 fw-bold mb-1">
-                        Kategori Bilgileri
+                        Duyuru Bilgileri
                     </h2>
 
                     <p class="text-muted small mb-0">
@@ -64,27 +64,15 @@
 
                 <div class="row g-4">
 
-                    <div class="col-md-8">
+                    <div class="col-12">
 
                         <label asp-for="Name" class="form-label fw-semibold">
                         </label>
 
                         <input asp-for="Name" class="form-control form-control-lg"
-                               placeholder="Kategori adını giriniz" />
+                               placeholder="Duyuru başlığını giriniz" />
 
                         <span asp-validation-for="Name" class="text-danger small"></span>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <label asp-for="OrderNo" class="form-label fw-semibold">
-                        </label>
-
-                        <input asp-for="OrderNo" type="number" min="0" class="form-control form-control-lg"
-                               placeholder="Sıra numarası" />
-
-                        <span asp-validation-for="OrderNo" class="text-danger small"></span>
 
                     </div>
 
@@ -93,8 +81,8 @@
                         <label asp-for="Description" class="form-label fw-semibold">
                         </label>
 
-                        <textarea asp-for="Description" class="form-control" rows="5"
-                                  placeholder="Kategori açıklamasını giriniz"></textarea>
+                        <textarea asp-for="Description" class="form-control" rows="6"
+                                  placeholder="Duyuru açıklamasını giriniz"></textarea>
 
                         <span asp-validation-for="Description" class="text-danger small"></span>
 
@@ -116,13 +104,15 @@
                                          style="width: 180px; height: 120px; object-fit: contain;" />
 
                                     <div>
+
                                         <div class="fw-semibold">
-                                            Mevcut kategori görseli
+                                            Mevcut duyuru görseli
                                         </div>
 
                                         <div class="text-muted small text-break">
                                             @Model.Image
                                         </div>
+
                                     </div>
 
                                 </div>
@@ -131,7 +121,7 @@
                             {
                                 <div class="text-muted">
                                     <i class="fa-solid fa-image me-2"></i>
-                                    Bu kategori için henüz görsel yüklenmemiş.
+                                    Bu duyuru için henüz görsel yüklenmemiş.
                                 </div>
                             }
 
@@ -164,56 +154,6 @@
 
                     </div>
 
-                    <div class="col-md-6">
-
-                        <label asp-for="ParentId" class="form-label fw-semibold">
-                        </label>
-
-                        <select asp-for="ParentId" class="form-select form-select-lg">
-
-                            <option value="0">
-                                Ana Kategori
-                            </option>
-
-                            @if (ViewBag.Categories is not null)
-                            {
-                                foreach (var category in ViewBag.Categories)
-                                {
-                                    if (category.Id != Model.Id)
-                                    {
-                                        <option value="@category.Id">
-                                            @category.Name
-                                        </option>
-                                    }
-                                }
-                            }
-
-                        </select>
-
-                        <span asp-validation-for="ParentId" class="text-danger small"></span>
-
-                        <div class="form-text">
-                            Alt kategori ise bağlı olduğu üst kategoriyi seçiniz.
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <div class="border rounded-3 p-3 h-100">
-
-                            <span class="text-muted small d-block mb-1">
-                                Kayıt Tarihi
-                            </span>
-
-                            <span class="fw-semibold">
-                                @Model.CreateDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-                            </span>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
                 <hr class="my-4" />
@@ -234,7 +174,7 @@
                             </div>
 
                             <p class="text-muted small mb-0 mt-2">
-                                Pasif kategoriler kullanıcı tarafında gösterilmez.
+                                Pasif duyurular kullanıcı tarafında görüntülenmez.
                             </p>
 
                         </div>
@@ -245,18 +185,13 @@
 
                         <div class="border rounded-3 p-3 h-100">
 
-                            <div class="form-check form-switch mb-0">
+                            <span class="text-muted small d-block mb-1">
+                                Kayıt Tarihi
+                            </span>
 
-                                <input asp-for="IsTopMenu" class="form-check-input" role="switch" />
-
-                                <label asp-for="IsTopMenu" class="form-check-label fw-semibold">
-                                </label>
-
-                            </div>
-
-                            <p class="text-muted small mb-0 mt-2">
-                                Aktif olduğunda kategori üst menüde gösterilir.
-                            </p>
+                            <span class="fw-semibold">
+                                @(Model.CreateDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm"))
+                            </span>
 
                         </div>
 

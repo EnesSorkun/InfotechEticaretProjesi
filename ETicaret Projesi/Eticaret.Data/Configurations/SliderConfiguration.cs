@@ -10,7 +10,7 @@ namespace Eticaret.Data.Configurations
         {
             builder.Property(x => x.Title).HasMaxLength(150);
             builder.Property(x => x.Description).HasMaxLength(500);
-            builder.Property(x => x.Image).HasMaxLength(100);
+            builder.Property(x => x.Image).HasMaxLength(500);
             builder.Property(x => x.Link).HasMaxLength(150);
         }
     }
