@@ -1,14 +1,26 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+using Eticaret.Data;
 using Eticaret.WebUI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.WebUI.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly DatabaseContext _context;
+
+    public HomeController(DatabaseContext context)
     {
-        return View();
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        var sliders = await _context.Sliders
+            .ToListAsync();
+
+        return View(sliders);
     }
 
     public IActionResult Privacy()
@@ -16,9 +28,8 @@ public class HomeController : Controller
         return View();
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public IActionResult ContactUs()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return View();
     }
 }

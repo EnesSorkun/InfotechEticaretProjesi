@@ -1,0 +1,97 @@
+@model IEnumerable<Eticaret.Core.Entities.Slider>
+
+@{
+    var sliders = Model?.ToList() ?? new List<Eticaret.Core.Entities.Slider>();
+}
+
+@if (sliders.Any())
+{
+    <div id="homeSlider" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+        <div class="carousel-indicators">
+
+            @for (int i = 0; i < sliders.Count; i++)
+            {
+                <button type="button" data-bs-target="#homeSlider" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"
+                        aria-current="@(i == 0 ? "true" : null)" aria-label="Slide @(i + 1)">
+                </button>
+            }
+
+        </div>
+
+        <div class="carousel-inner">
+
+            @for (int i = 0; i < sliders.Count; i++)
+            {
+                var item = sliders[i];
+
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+
+                    @if (!string.IsNullOrWhiteSpace(item.Link))
+                    {
+                        <a href="@item.Link">
+
+                            <img src="@item.Image" class="d-block w-100" style="height: 500px; object-fit: cover;"
+                                 alt="@item.Title" />
+
+                        </a>
+                    }
+                    else
+                    {
+                        <img src="@item.Image" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="@item.Title" />
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(item.Title) ||
+                         !string.IsNullOrWhiteSpace(item.Description))
+                    {
+                        <div class="carousel-caption d-none d-md-block">
+
+                            @if (!string.IsNullOrWhiteSpace(item.Title))
+                            {
+                                <h2 class="fw-bold">
+                                    @item.Title
+                                </h2>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                            {
+                                <p>
+                                    @item.Description
+                                </p>
+                            }
+
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+        @if (sliders.Count > 1)
+        {
+            <button class="carousel-control-prev" type="button" data-bs-target="#homeSlider" data-bs-slide="prev">
+
+                <span class="carousel-control-prev-icon" aria-hidden="true">
+                </span>
+
+                <span class="visually-hidden">
+                    Önceki
+                </span>
+
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#homeSlider" data-bs-slide="next">
+
+                <span class="carousel-control-next-icon" aria-hidden="true">
+                </span>
+
+                <span class="visually-hidden">
+                    Sonraki
+                </span>
+
+            </button>
+        }
+
+    </div>
+}
