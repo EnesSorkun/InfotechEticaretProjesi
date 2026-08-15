@@ -1,24 +1,355 @@
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Eticaret.WebUI</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<header class="site-header">
+
+    <div class="container py-3">
+
+        <div class="d-flex align-items-center justify-content-between gap-3">
+
+            <!-- Logo -->
+            <a class="site-logo text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
+
+                <span class="logo-main">Tekno</span>
+                <span class="logo-sub">Grit</span>
+
+            </a>
+
+
+            <!-- Arama -->
+            <form asp-controller="Products" asp-action="Index" method="get"
+                  class="header-search d-none d-md-flex flex-grow-1">
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Ürün, marka veya kategori ara..." />
+
+                    <button class="btn search-button" type="submit">
+
+                        Ara
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- Sağ Alan -->
+            <div class="header-actions">
+
+                <a href="#" class="header-action" title="Hesabım">
+
+                    <i class="fa-regular fa-user"></i>
+
+                </a>
+
+                <a href="#" class="header-action position-relative" title="Favoriler">
+
+                    <i class="fa-regular fa-heart"></i>
+
+                    <span class="action-badge">
+                        0
+                    </span>
+
+                </a>
+
+                <a href="#" class="header-action position-relative" title="Sepetim">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    <span class="action-badge">
+                        0
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Mobil Arama -->
+        <form asp-controller="Products" asp-action="Index" method="get" class="header-search d-flex d-md-none mt-3">
+
+            <div class="input-group">
+
+                <span class="input-group-text">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+
+                <input type="text" name="search" class="form-control" placeholder="Ürün ara..." />
+
+                <button class="btn search-button" type="submit">
+
+                    Ara
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- Alt Menü -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-top border-bottom">
+
+        <div class="container">
+
+            <button class="navbar-toggler my-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Menüyü Aç">
+
                 <span class="navbar-toggler-icon"></span>
+
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
+
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+
+                <ul class="navbar-nav align-items-lg-center gap-lg-1">
+
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Anasayfa</a>
+
+                        <a class="nav-link header-nav-link" asp-controller="Home" asp-action="Index">
+
+                            Anasayfa
+
+                        </a>
+
                     </li>
+
 
                     @await Component.InvokeAsync("Categories")
 
+
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Home" asp-action="ContactUs">İletişim</a>
+
+                        <a class="nav-link header-nav-link" asp-controller="Home" asp-action="ContactUs">
+
+                            İletişim
+
+                        </a>
+
                     </li>
+
                 </ul>
+
             </div>
+
         </div>
+
     </nav>
+
 </header>
+
+
+<style>
+    .site-header {
+        background-color: #ffffff;
+        position: relative;
+        z-index: 1000;
+    }
+
+
+    .site-logo {
+        display: inline-flex;
+        align-items: center;
+
+        font-size: 1.8rem;
+        font-weight: 800;
+
+        white-space: nowrap;
+    }
+
+
+    .logo-main {
+        color: #212529;
+    }
+
+
+    .logo-sub {
+        color: #0d6efd;
+    }
+
+
+    .header-search {
+        max-width: 650px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .header-search .input-group {
+        border: 1px solid #dee2e6;
+        border-radius: 14px;
+        overflow: hidden;
+
+        background-color: #f8f9fa;
+
+        transition: 0.2s ease;
+    }
+
+
+    .header-search .input-group:focus-within {
+        border-color: #212529;
+
+        box-shadow:
+            0 0 0 0.15rem rgba(33, 37, 41, 0.08);
+    }
+
+
+    .header-search .input-group-text {
+        border: 0;
+
+        background-color: transparent;
+
+        color: #6c757d;
+    }
+
+
+    .header-search .form-control {
+        border: 0;
+
+        background-color: transparent;
+
+        box-shadow: none;
+    }
+
+
+    .search-button {
+        border: 0;
+
+        padding-left: 22px;
+        padding-right: 22px;
+
+        color: #ffffff;
+
+        background-color: #212529;
+    }
+
+
+    .search-button:hover {
+        color: #ffffff;
+
+        background-color: #000000;
+    }
+
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+    }
+
+
+    .header-action {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+
+        color: #212529;
+
+        background-color: #ffffff;
+
+        text-decoration: none;
+
+        transition:
+            transform 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+
+    .header-action:hover {
+        color: #212529;
+
+        background-color: #f8f9fa;
+
+        transform: translateY(-2px);
+    }
+
+
+    .action-badge {
+        position: absolute;
+
+        top: -5px;
+        right: -5px;
+
+        min-width: 18px;
+        height: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 5px;
+
+        border-radius: 20px;
+
+        color: #ffffff;
+
+        background-color: #dc3545;
+
+        font-size: 0.65rem;
+        font-weight: 700;
+    }
+
+
+    .header-nav-link {
+        padding: 14px 12px !important;
+
+        color: #343a40 !important;
+
+        font-size: 0.92rem;
+        font-weight: 600;
+
+        border-radius: 8px;
+
+        transition:
+            color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+
+    .header-nav-link:hover {
+        color: #0d6efd !important;
+
+        background-color: #f8f9fa;
+    }
+
+
+    @@media (max-width: 767.98px) {
+
+        .site-logo {
+            font-size: 1.5rem;
+        }
+
+
+        .header-action {
+            width: 38px;
+            height: 38px;
+        }
+
+
+        .header-actions {
+            gap: 5px;
+        }
+
+
+        .search-button {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+    }
+</style>

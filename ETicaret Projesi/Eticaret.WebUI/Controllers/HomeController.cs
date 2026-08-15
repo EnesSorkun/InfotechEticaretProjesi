@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Eticaret.Core.Entities;
 using Eticaret.Data;
 using Eticaret.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,26 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var sliders = await _context.Sliders
-            .ToListAsync();
+        // Front-end'de pasif kayıtları göstermedik.
+        var model = new HomePageViewModel
+        {
+            Sliders = await _context.Sliders
+                .ToListAsync(),
 
-        return View(sliders);
+            News = await _context.News
+                .Where(x => x.IsActive)
+                .OrderByDescending(x => x.CreateDate)
+                .ToListAsync(),
+
+            Products = await _context.Products
+                .Where(x => x.IsActive && x.IsHome)
+                .Include(x => x.Category)
+                .Include(x => x.Brand)
+                .OrderBy(x => x.OrderNo)
+                .ToListAsync()
+        };
+
+        return View(model);
     }
 
     public IActionResult Privacy()
@@ -31,5 +48,26 @@ public class HomeController : Controller
     public IActionResult ContactUs()
     {
         return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ContactUs(Contact contact)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(contact);
+        }
+
+        contact.CreateDate = DateTime.UtcNow;
+
+        _context.Contacts.Add(contact);
+
+        await _context.SaveChangesAsync();
+
+        TempData["ContactSuccess"] =
+            "Mesajınız başarıyla gönderilmiştir.";
+
+        return RedirectToAction(nameof(ContactUs));
     }
 }

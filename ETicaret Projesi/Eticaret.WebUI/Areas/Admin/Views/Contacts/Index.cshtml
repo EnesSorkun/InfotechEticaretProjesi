@@ -10,6 +10,7 @@
 <div class="container-fluid px-4 py-4">
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
         <div>
             <h1 class="h3 fw-bold mb-1">
                 İletişim Formları
@@ -19,7 +20,9 @@
                 Kullanıcılardan gelen iletişim kayıtlarını görüntüleyebilirsiniz.
             </p>
         </div>
+
     </div>
+
 
     <div class="row g-3 mb-4">
 
@@ -30,6 +33,7 @@
                 <div class="card-body d-flex align-items-center justify-content-between">
 
                     <div>
+
                         <p class="text-muted small mb-1">
                             Toplam Form
                         </p>
@@ -37,11 +41,14 @@
                         <h3 class="fw-bold mb-0">
                             @contactCount
                         </h3>
+
                     </div>
 
                     <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
                          style="width: 48px; height: 48px;">
+
                         <i class="fa-solid fa-envelope fs-5"></i>
+
                     </div>
 
                 </div>
@@ -52,11 +59,13 @@
 
     </div>
 
+
     <div class="card border-0 shadow-sm">
 
         <div class="card-header bg-white border-0 py-3">
 
             <div>
+
                 <h2 class="h5 fw-bold mb-1">
                     Gelen İletişim Formları
                 </h2>
@@ -64,9 +73,11 @@
                 <p class="text-muted small mb-0">
                     Gönderilen iletişim kayıtları
                 </p>
+
             </div>
 
         </div>
+
 
         <div class="card-body p-0">
 
@@ -75,7 +86,9 @@
                 <div class="text-center py-5">
 
                     <div class="mb-3">
+
                         <i class="fa-regular fa-envelope-open fa-3x text-muted"></i>
+
                     </div>
 
                     <h3 class="h5 fw-bold">
@@ -97,6 +110,7 @@
                         <thead class="table-light">
 
                             <tr>
+
                                 <th class="ps-4">
                                     Gönderen
                                 </th>
@@ -116,9 +130,11 @@
                                 <th class="text-end pe-4">
                                     İşlemler
                                 </th>
+
                             </tr>
 
                         </thead>
+
 
                         <tbody>
 
@@ -126,6 +142,7 @@
                             {
                                 <tr>
 
+                                    <!-- Gönderen -->
                                     <td class="ps-4">
 
                                         <div class="d-flex align-items-center gap-3">
@@ -138,6 +155,7 @@
                                                     : item.Name.Substring(0, 1).ToUpper())
 
                                             </div>
+
 
                                             <div>
 
@@ -155,6 +173,8 @@
 
                                     </td>
 
+
+                                    <!-- Email -->
                                     <td>
 
                                         @if (string.IsNullOrWhiteSpace(item.Email))
@@ -166,13 +186,18 @@
                                         else
                                         {
                                             <a href="mailto:@item.Email" class="text-decoration-none">
+
                                                 <i class="fa-regular fa-envelope me-1"></i>
+
                                                 @item.Email
+
                                             </a>
                                         }
 
                                     </td>
 
+
+                                    <!-- Telefon -->
                                     <td>
 
                                         @if (string.IsNullOrWhiteSpace(item.Phone))
@@ -184,33 +209,71 @@
                                         else
                                         {
                                             <span>
+
                                                 <i class="fa-solid fa-phone me-1 text-muted"></i>
+
                                                 @item.Phone
+
                                             </span>
                                         }
 
                                     </td>
 
+
+                                    <!-- Tarih -->
                                     <td>
+                                        <div class="d-flex align-items-center gap-2">
 
-                                        <div class="fw-medium">
-                                            @(item.CreateDate.ToLocalTime().ToString("dd.MM.yyyy"))
+                                            <div>
+                                                <div class="fw-semibold">
+                                                    @item.CreateDate.ToLocalTime().ToString("dd.MM.yyyy")
+                                                </div>
+
+                                                <div class="text-muted small">
+                                                    <i class="fa-regular fa-clock me-1"></i>
+                                                    @item.CreateDate.ToLocalTime().ToString("HH:mm")
+                                                </div>
+                                            </div>
+
                                         </div>
-
-                                        <div class="text-muted small">
-                                            @(item.CreateDate.ToLocalTime().ToString("HH:mm"))
-                                        </div>
-
                                     </td>
 
+
+                                    <!-- İşlemler -->
                                     <td class="text-end pe-4">
 
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-md btn-outline-danger"
-                                           title="Sil">
+                                        <div class="btn-group" role="group">
 
-                                            <i class="fa-solid fa-trash"></i>
+                                            <!-- Detay -->
+                                            <a asp-action="Details" asp-route-id="@item.Id"
+                                               class="btn btn-md btn-outline-primary" title="Detaylar">
 
-                                        </a>
+                                                <i class="fa-solid fa-eye"></i>
+
+                                            </a>
+
+
+                                            <!-- Mail Gönder -->
+                                            @if (!string.IsNullOrWhiteSpace(item.Email))
+                                            {
+                                                <a asp-action="SendMail" asp-route-id="@item.Id"
+                                                   class="btn btn-md btn-outline-success" title="Mail Gönder">
+
+                                                    <i class="fa-solid fa-envelope"></i>
+
+                                                </a>
+                                            }
+
+
+                                            <!-- Sil -->
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-md btn-outline-danger"
+                                               title="Sil">
+
+                                                <i class="fa-solid fa-trash"></i>
+
+                                            </a>
+
+                                        </div>
 
                                     </td>
 

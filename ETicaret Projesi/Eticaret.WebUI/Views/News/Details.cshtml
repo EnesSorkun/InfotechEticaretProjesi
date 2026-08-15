@@ -1,0 +1,520 @@
+@model News
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<section class="campaign-detail-section">
+
+    <div class="container">
+
+        <!-- Geri Dön -->
+        <div class="campaign-back-wrapper">
+            <a asp-controller="Home" asp-action="Index" class="campaign-back">
+
+                <i class="fa-solid fa-arrow-left"></i>
+                Ana Sayfaya Dön
+
+            </a>
+        </div>
+
+
+        <!-- Kampanya Detay -->
+        <div class="campaign-detail-card">
+
+            <div class="row g-0 align-items-stretch">
+
+                <!-- Görsel -->
+                <div class="col-lg-7">
+
+                    <div class="campaign-detail-image-wrapper">
+
+                        <img src="@Model.Image" alt="@Model.Name" class="campaign-detail-image" />
+
+                        <div class="campaign-detail-badge">
+                            <i class="fa-solid fa-bolt"></i>
+                            Kampanya
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- İçerik -->
+                <div class="col-lg-5">
+
+                    <div class="campaign-detail-content">
+
+                        <div>
+
+                            <span class="campaign-detail-label">
+                                Özel Fırsat
+                            </span>
+
+                            <h1 class="campaign-detail-title">
+                                @Model.Name
+                            </h1>
+
+                            <div class="campaign-title-line"></div>
+
+                            <p class="campaign-detail-description">
+                                @Model.Description
+                            </p>
+
+                        </div>
+
+
+                        <div class="campaign-detail-bottom">
+
+                            <div class="campaign-info">
+
+                                <span class="campaign-info-icon">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </span>
+
+                                <span>
+                                    Kampanya detaylarını inceleyerek
+                                    fırsatlardan yararlanabilirsiniz.
+                                </span>
+
+                            </div>
+
+
+                            <a asp-controller="Products" asp-action="Index" class="campaign-products-button">
+
+                                Ürünleri İncele
+
+                                <i class="fa-solid fa-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+    /* ========================================
+       SAYFA
+       ======================================== */
+
+    .campaign-detail-section {
+        padding: 45px 0 70px;
+    }
+
+
+    /* ========================================
+       GERİ DÖN
+       ======================================== */
+
+    .campaign-back-wrapper {
+        margin-bottom: 20px;
+    }
+
+
+    .campaign-back {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 8px;
+
+        color: #6c757d;
+
+        font-size: 0.9rem;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .campaign-back:hover {
+        color: #212529;
+
+        transform: translateX(-3px);
+    }
+
+
+    /* ========================================
+       ANA KART
+       ======================================== */
+
+    .campaign-detail-card {
+        overflow: hidden;
+
+        border: 1px solid #eeeeee;
+        border-radius: 26px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.09);
+    }
+
+
+    /* ========================================
+       GÖRSEL
+       ======================================== */
+
+    .campaign-detail-image-wrapper {
+        position: relative;
+
+        width: 100%;
+        height: 100%;
+        min-height: 540px;
+
+        overflow: hidden;
+
+        background-color: #f5f5f5;
+    }
+
+
+    .campaign-detail-image {
+        width: 100%;
+        height: 100%;
+
+        position: absolute;
+        inset: 0;
+
+        object-fit: cover;
+        object-position: center;
+
+        transition: transform 0.6s ease;
+    }
+
+
+    .campaign-detail-card:hover .campaign-detail-image {
+        transform: scale(1.025);
+    }
+
+
+    /* Kampanya Etiketi */
+
+    .campaign-detail-badge {
+        position: absolute;
+
+        top: 22px;
+        left: 22px;
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        padding: 8px 14px;
+
+        border-radius: 50px;
+
+        color: #212529;
+
+        background-color: rgba(255, 255, 255, 0.94);
+
+        font-size: 0.78rem;
+        font-weight: 700;
+
+        box-shadow:
+            0 4px 15px rgba(0, 0, 0, 0.12);
+
+        backdrop-filter: blur(8px);
+    }
+
+
+    /* ========================================
+       SAĞ TARAF
+       ======================================== */
+
+    .campaign-detail-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        height: 100%;
+        min-height: 540px;
+
+        padding: 50px 42px;
+    }
+
+
+    .campaign-detail-label {
+        display: block;
+
+        margin-bottom: 12px;
+
+        color: #6c757d;
+
+        font-size: 0.75rem;
+        font-weight: 700;
+
+        letter-spacing: 1.5px;
+
+        text-transform: uppercase;
+    }
+
+
+    .campaign-detail-title {
+        margin: 0;
+
+        color: #212529;
+
+        font-size: clamp(2rem, 3vw, 3rem);
+        font-weight: 800;
+        line-height: 1.15;
+    }
+
+
+    .campaign-title-line {
+        width: 55px;
+        height: 4px;
+
+        margin: 22px 0;
+
+        border-radius: 20px;
+
+        background-color: #212529;
+    }
+
+
+    .campaign-detail-description {
+        margin: 0;
+
+        color: #6c757d;
+
+        font-size: 1rem;
+        line-height: 1.8;
+
+        white-space: pre-line;
+    }
+
+
+    /* ========================================
+       ALT BİLGİ
+       ======================================== */
+
+    .campaign-detail-bottom {
+        margin-top: 40px;
+    }
+
+
+    .campaign-info {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 12px;
+
+        margin-bottom: 20px;
+        padding: 15px;
+
+        border-radius: 12px;
+
+        color: #6c757d;
+
+        background-color: #f8f9fa;
+
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+
+    .campaign-info-icon {
+        color: #212529;
+
+        font-size: 1rem;
+    }
+
+
+    /* ========================================
+       BUTON
+       ======================================== */
+
+    .campaign-products-button {
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 10px;
+
+        padding: 13px 20px;
+
+        border-radius: 11px;
+
+        color: #ffffff;
+
+        background-color: #212529;
+
+        font-size: 0.9rem;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition:
+            background-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .campaign-products-button i {
+        transition: transform 0.2s ease;
+    }
+
+
+    .campaign-products-button:hover {
+        color: #ffffff;
+
+        background-color: #000000;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 7px 18px rgba(0, 0, 0, 0.18);
+    }
+
+
+    .campaign-products-button:hover i {
+        transform: translateX(4px);
+    }
+
+
+    /* ========================================
+       TABLET
+       ======================================== */
+
+    @@media (max-width: 991.98px) {
+
+        .campaign-detail-section {
+            padding: 30px 0 50px;
+        }
+
+
+        .campaign-detail-card {
+            border-radius: 20px;
+        }
+
+
+        .campaign-detail-image-wrapper {
+            height: 420px;
+            min-height: auto;
+        }
+
+
+        .campaign-detail-image {
+            position: relative;
+        }
+
+
+        .campaign-detail-content {
+            min-height: auto;
+
+            padding: 35px;
+        }
+
+
+        .campaign-detail-bottom {
+            margin-top: 30px;
+        }
+
+    }
+
+
+    /* ========================================
+       MOBİL
+       ======================================== */
+
+    @@media (max-width: 767.98px) {
+
+        .campaign-detail-section {
+            padding: 20px 0 40px;
+        }
+
+
+        .campaign-detail-card {
+            border-radius: 16px;
+        }
+
+
+        .campaign-detail-image-wrapper {
+            height: 280px;
+        }
+
+
+        .campaign-detail-badge {
+            top: 14px;
+            left: 14px;
+
+            padding: 6px 11px;
+
+            font-size: 0.7rem;
+        }
+
+
+        .campaign-detail-content {
+            padding: 25px 20px;
+        }
+
+
+        .campaign-detail-title {
+            font-size: 1.7rem;
+        }
+
+
+        .campaign-title-line {
+            margin: 16px 0;
+        }
+
+
+        .campaign-detail-description {
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+
+        .campaign-detail-bottom {
+            margin-top: 25px;
+        }
+
+    }
+
+
+    /* ========================================
+       KÜÇÜK TELEFON
+       ======================================== */
+
+    @@media (max-width: 480px) {
+
+        .campaign-detail-image-wrapper {
+            height: 230px;
+        }
+
+
+        .campaign-detail-content {
+            padding: 22px 17px;
+        }
+
+
+        .campaign-detail-title {
+            font-size: 1.45rem;
+        }
+
+
+        .campaign-info {
+            font-size: 0.78rem;
+        }
+
+    }
+</style>

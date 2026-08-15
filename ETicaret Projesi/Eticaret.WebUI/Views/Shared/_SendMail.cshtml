@@ -1,0 +1,193 @@
+@model Eticaret.Core.Entities.Contact
+
+@{
+    ViewData["Title"] = "Mail Gönder";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid px-4 py-4">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                Mail Gönder
+            </h1>
+
+            <p class="text-muted mb-0">
+                Kullanıcıya iletişim formu üzerinden cevap gönderebilirsiniz.
+            </p>
+        </div>
+
+        <a asp-area="Admin" asp-controller="Contacts" asp-action="Index" class="btn btn-outline-secondary">
+
+            <i class="fa-solid fa-arrow-left me-2"></i>
+            İletişim Formlarına Dön
+
+        </a>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+
+                        <div class="bg-dark text-white rounded-circle d-inline-flex align-items-center justify-content-center fw-bold mb-3"
+                             style="width:70px;height:70px;font-size:26px;">
+
+                            @(string.IsNullOrWhiteSpace(Model.Name)
+                                ? "?"
+                                : Model.Name.Substring(0, 1).ToUpper())
+
+                        </div>
+
+                        <h4 class="fw-bold mb-1">
+                            @Model.Name @Model.Surname
+                        </h4>
+
+                        <span class="text-muted small">
+                            Form #@Model.Id
+                        </span>
+
+                    </div>
+
+                    <hr />
+
+                    <div class="mb-3">
+
+                        <span class="text-muted small d-block mb-1">
+                            Email
+                        </span>
+
+                        <div class="fw-semibold">
+                            @Model.Email
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <span class="text-muted small d-block mb-1">
+                            Telefon
+                        </span>
+
+                        <div class="fw-semibold">
+                            @(string.IsNullOrWhiteSpace(Model.Phone)
+                                ? "Belirtilmemiş"
+                                : Model.Phone)
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <span class="text-muted small d-block mb-1">
+                            Kullanıcının Mesajı
+                        </span>
+
+                        <div class="bg-light rounded-3 p-3" style="white-space:pre-wrap;">
+                            @Model.Message
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white border-0 py-3">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:46px;height:46px;">
+
+                            <i class="fa-solid fa-paper-plane"></i>
+
+                        </div>
+
+                        <div>
+                            <h2 class="h5 fw-bold mb-1">
+                                Cevap Maili
+                            </h2>
+
+                            <p class="text-muted small mb-0">
+                                @Model.Email adresine gönderilecektir.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-body p-4">
+
+                    <form asp-area="Admin" asp-controller="Contacts" asp-action="SendMail" asp-route-id="@Model.Id"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Konu
+                            </label>
+
+                            <input type="text" name="subject" class="form-control form-control-lg"
+                                   placeholder="Mail konusunu giriniz" required />
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Mesaj
+                            </label>
+
+                            <textarea name="message" class="form-control" rows="10"
+                                      placeholder="Göndermek istediğiniz mesajı yazınız..." required></textarea>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a asp-area="Admin" asp-controller="Contacts" asp-action="Details" asp-route-id="@Model.Id"
+                               class="btn btn-outline-secondary px-4">
+                                Vazgeç
+                            </a>
+
+                            <button type="submit" class="btn btn-success px-4">
+
+                                <i class="fa-solid fa-paper-plane me-2"></i>
+                                Mail Gönder
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,328 @@
+@model News
+
+<div class="col mb-3">
+
+    <a href="/News/Details/@Model.Id" class="campaign-card">
+
+        <div class="campaign-image-wrapper">
+
+            <img src="@Model.Image" alt="@Model.Name" class="campaign-image" />
+
+            <span class="campaign-badge">
+                <i class="fa-solid fa-bolt me-1"></i>
+                Kampanya
+            </span>
+
+        </div>
+
+        <div class="campaign-body">
+
+            <h2 class="campaign-title">
+                @Model.Name
+            </h2>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <p class="campaign-description">
+                    @Model.Description
+                </p>
+            }
+
+            <div class="campaign-footer">
+
+                <span class="campaign-link">
+                    Kampanyayı İncele
+                </span>
+
+                <span class="campaign-arrow">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </span>
+
+            </div>
+
+        </div>
+
+    </a>
+
+</div>
+
+<style>
+    .campaign-card {
+        display: flex;
+        flex-direction: column;
+
+        height: 100%;
+
+        overflow: hidden;
+
+        border: 1px solid #eceff1;
+        border-radius: 22px;
+
+        background-color: #ffffff;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.07);
+
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
+    }
+
+
+    /* Görsel Alanı */
+
+    .campaign-image-wrapper {
+        position: relative;
+
+        width: 100%;
+        height: 285px;
+
+        overflow: hidden;
+
+        background-color: #f5f5f5;
+    }
+
+
+    .campaign-image {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+        object-position: center;
+
+        transition: transform 0.5s ease;
+    }
+
+
+    /* Kampanya Etiketi */
+
+    .campaign-badge {
+        position: absolute;
+
+        top: 16px;
+        left: 16px;
+
+        display: inline-flex;
+        align-items: center;
+
+        padding: 7px 12px;
+
+        border-radius: 50px;
+
+        color: #212529;
+
+        background-color: rgba(255, 255, 255, 0.94);
+
+        font-size: 0.75rem;
+        font-weight: 700;
+
+        box-shadow:
+            0 4px 14px rgba(0, 0, 0, 0.12);
+
+        backdrop-filter: blur(7px);
+    }
+
+
+    /* İçerik Alanı */
+
+    .campaign-body {
+        display: flex;
+        flex-direction: column;
+
+        flex: 1;
+
+        padding: 22px;
+    }
+
+
+    .campaign-title {
+        margin-bottom: 10px;
+
+        font-size: 1.35rem;
+        font-weight: 800;
+        line-height: 1.3;
+
+        color: #212529;
+    }
+
+
+    .campaign-description {
+        display: -webkit-box;
+
+        margin-bottom: 20px;
+
+        overflow: hidden;
+
+        color: #6c757d;
+
+        font-size: 0.9rem;
+        line-height: 1.6;
+
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+
+    /* Alt İncele Alanı */
+
+    .campaign-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-top: auto;
+        padding-top: 16px;
+
+        border-top: 1px solid #f0f0f0;
+    }
+
+
+    .campaign-link {
+        color: #212529;
+
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+
+    .campaign-arrow {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        color: #ffffff;
+
+        background-color: #212529;
+
+        transition:
+            transform 0.25s ease,
+            background-color 0.25s ease;
+    }
+
+
+    /* Hover */
+
+    .campaign-card:hover {
+        transform: translateY(-6px);
+
+        border-color: #dfe3e6;
+
+        box-shadow:
+            0 16px 36px rgba(0, 0, 0, 0.13);
+    }
+
+
+    .campaign-card:hover .campaign-image {
+        transform: scale(1.05);
+    }
+
+
+    .campaign-card:hover .campaign-arrow {
+        transform: translateX(4px);
+
+        background-color: #000000;
+    }
+
+
+    /* Tablet */
+
+    @@media (max-width: 991.98px) {
+
+        .campaign-image-wrapper {
+            height: 240px;
+        }
+
+        .campaign-body {
+            padding: 18px;
+        }
+
+        .campaign-title {
+            font-size: 1.2rem;
+        }
+
+    }
+
+
+    /* Telefon */
+
+    @@media (max-width: 767.98px) {
+
+        .campaign-card {
+            border-radius: 16px;
+        }
+
+        .campaign-image-wrapper {
+            height: 190px;
+        }
+
+        .campaign-badge {
+            top: 10px;
+            left: 10px;
+
+            padding: 5px 9px;
+
+            font-size: 0.65rem;
+        }
+
+        .campaign-body {
+            padding: 14px;
+        }
+
+        .campaign-title {
+            margin-bottom: 7px;
+
+            font-size: 1rem;
+        }
+
+        .campaign-description {
+            margin-bottom: 14px;
+
+            font-size: 0.78rem;
+
+            -webkit-line-clamp: 2;
+        }
+
+        .campaign-footer {
+            padding-top: 12px;
+        }
+
+        .campaign-link {
+            font-size: 0.78rem;
+        }
+
+        .campaign-arrow {
+            width: 32px;
+            height: 32px;
+
+            font-size: 0.75rem;
+        }
+
+    }
+
+
+    /* Küçük Telefon */
+
+    @@media (max-width: 480px) {
+
+        .campaign-image-wrapper {
+            height: 160px;
+        }
+
+        .campaign-title {
+            font-size: 0.9rem;
+        }
+
+        .campaign-description {
+            -webkit-line-clamp: 1;
+        }
+
+    }
+</style>

@@ -1,97 +1,396 @@
-@model IEnumerable<Eticaret.Core.Entities.Slider>
+@model IEnumerable<Slider>
 
 @{
-    var sliders = Model?.ToList() ?? new List<Eticaret.Core.Entities.Slider>();
+    var sliders = Model?.ToList()
+                  ?? new List<Slider>();
 }
 
 @if (sliders.Any())
 {
-    <div id="homeSlider" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <section class="home-slider-wrapper">
 
-        <div class="carousel-indicators">
+        <div id="homeSlider" class="carousel slide carousel-fade home-slider" data-bs-ride="carousel"
+             data-bs-interval="5000">
 
-            @for (int i = 0; i < sliders.Count; i++)
+            @if (sliders.Count > 1)
             {
-                <button type="button" data-bs-target="#homeSlider" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"
-                        aria-current="@(i == 0 ? "true" : null)" aria-label="Slide @(i + 1)">
-                </button>
-            }
+                <div class="carousel-indicators home-slider-indicators">
 
-        </div>
-
-        <div class="carousel-inner">
-
-            @for (int i = 0; i < sliders.Count; i++)
-            {
-                var item = sliders[i];
-
-                <div class="carousel-item @(i == 0 ? "active" : "")">
-
-                    @if (!string.IsNullOrWhiteSpace(item.Link))
+                    @for (int i = 0; i < sliders.Count; i++)
                     {
-                        <a href="@item.Link">
-
-                            <img src="@item.Image" class="d-block w-100" style="height: 500px; object-fit: cover;"
-                                 alt="@item.Title" />
-
-                        </a>
-                    }
-                    else
-                    {
-                        <img src="@item.Image" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="@item.Title" />
-                    }
-
-                    @if (!string.IsNullOrWhiteSpace(item.Title) ||
-                         !string.IsNullOrWhiteSpace(item.Description))
-                    {
-                        <div class="carousel-caption d-none d-md-block">
-
-                            @if (!string.IsNullOrWhiteSpace(item.Title))
-                            {
-                                <h2 class="fw-bold">
-                                    @item.Title
-                                </h2>
-                            }
-
-                            @if (!string.IsNullOrWhiteSpace(item.Description))
-                            {
-                                <p>
-                                    @item.Description
-                                </p>
-                            }
-
-                        </div>
+                        <button type="button" data-bs-target="#homeSlider" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"
+                                aria-current="@(i == 0 ? "true" : null)" aria-label="Slide @(i + 1)">
+                        </button>
                     }
 
                 </div>
             }
 
+            <div class="carousel-inner">
+
+                @for (int i = 0; i < sliders.Count; i++)
+                {
+                    var item = sliders[i];
+
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+
+                        <div class="slider-image-wrapper">
+
+                            @if (!string.IsNullOrWhiteSpace(item.Link))
+                            {
+                                <a href="@item.Link" class="d-block">
+
+                                    <img src="@item.Image" class="d-block w-100 slider-image" alt="@item.Title" />
+
+                                </a>
+                            }
+                            else
+                            {
+                                <img src="@item.Image" class="d-block w-100 slider-image" alt="@item.Title" />
+                            }
+
+                            <div class="slider-overlay"></div>
+
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(item.Title) ||
+                             !string.IsNullOrWhiteSpace(item.Description))
+                        {
+                            <div class="carousel-caption slider-caption">
+
+                                @if (!string.IsNullOrWhiteSpace(item.Title))
+                                {
+                                    <h2 class="slider-title">
+                                        @item.Title
+                                    </h2>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(item.Description))
+                                {
+                                    <p class="slider-description">
+                                        @item.Description
+                                    </p>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(item.Link))
+                                {
+                                    <a href="@item.Link" class="btn btn-light slider-button">
+
+                                        İncele
+
+                                        <i class="fa-solid fa-arrow-right ms-2"></i>
+
+                                    </a>
+                                }
+
+                            </div>
+                        }
+
+                    </div>
+                }
+
+            </div>
+
+            @if (sliders.Count > 1)
+            {
+                <button class="carousel-control-prev slider-control" type="button" data-bs-target="#homeSlider"
+                        data-bs-slide="prev">
+
+                    <span class="slider-control-icon">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </span>
+
+                    <span class="visually-hidden">
+                        Önceki
+                    </span>
+
+                </button>
+
+                <button class="carousel-control-next slider-control" type="button" data-bs-target="#homeSlider"
+                        data-bs-slide="next">
+
+                    <span class="slider-control-icon">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </span>
+
+                    <span class="visually-hidden">
+                        Sonraki
+                    </span>
+
+                </button>
+            }
+
         </div>
 
-        @if (sliders.Count > 1)
-        {
-            <button class="carousel-control-prev" type="button" data-bs-target="#homeSlider" data-bs-slide="prev">
+    </section>
+}
 
-                <span class="carousel-control-prev-icon" aria-hidden="true">
-                </span>
+<style>
+    .home-slider-wrapper {
+        max-width: 1400px;
+        margin: 24px auto;
+        padding: 0 16px;
+    }
 
-                <span class="visually-hidden">
-                    Önceki
-                </span>
+    .home-slider {
+        overflow: hidden;
+        border-radius: 24px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.10);
+    }
 
-            </button>
+    .slider-image-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
 
-            <button class="carousel-control-next" type="button" data-bs-target="#homeSlider" data-bs-slide="next">
+    .slider-image {
+        height: 520px;
+        object-fit: cover;
+        object-position: center;
+    }
 
-                <span class="carousel-control-next-icon" aria-hidden="true">
-                </span>
+    .slider-overlay {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(90deg,
+                rgba(0, 0, 0, 0.55) 0%,
+                rgba(0, 0, 0, 0.25) 45%,
+                rgba(0, 0, 0, 0.05) 100%);
 
-                <span class="visually-hidden">
-                    Sonraki
-                </span>
+        pointer-events: none;
+    }
 
-            </button>
+    .slider-caption {
+        left: 7%;
+        right: auto;
+        bottom: 70px;
+
+        width: min(560px, 80%);
+
+        padding: 0;
+
+        text-align: left;
+        color: #fff;
+    }
+
+    .slider-title {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 16px;
+
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .slider-description {
+        max-width: 500px;
+
+        font-size: 1.05rem;
+        line-height: 1.7;
+
+        margin-bottom: 24px;
+
+        color: rgba(255, 255, 255, 0.92);
+    }
+
+    .slider-button {
+        border: none;
+        border-radius: 10px;
+
+        padding: 11px 22px;
+
+        font-weight: 600;
+    }
+
+    .slider-control {
+        width: auto;
+        opacity: 1;
+    }
+
+    .carousel-control-prev.slider-control {
+        left: 18px;
+    }
+
+    .carousel-control-next.slider-control {
+        right: 18px;
+    }
+
+    .slider-control-icon {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        /* Ok koyu renk */
+        color: #212529;
+        /* Buton açık renk */
+        background: rgba(255, 255, 255, 0.10);
+        /* Görsel üzerinde daha belirgin olması için */
+        border: 1px solid rgba(255, 255, 255, 0.60);
+
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.18);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: 0.2s ease;
+    }
+
+    .slider-control:hover .slider-control-icon {
+        color: #000;
+        background: #ffffff;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        transform: scale(1.08);
+    }
+
+    .home-slider-indicators {
+        margin-bottom: 18px;
+    }
+
+    .home-slider-indicators [data-bs-target] {
+        width: 28px;
+        height: 4px;
+
+        border: 0;
+        border-radius: 20px;
+
+        margin: 0 4px;
+    }
+
+    @@media (max-width: 991.98px) {
+
+        .home-slider-wrapper {
+            margin-top: 16px;
         }
 
-    </div>
-}
+        .home-slider {
+            border-radius: 18px;
+        }
+
+        .slider-image {
+            height: 400px;
+        }
+
+        .slider-caption {
+            left: 6%;
+            bottom: 45px;
+
+            width: 75%;
+        }
+
+        .slider-description {
+            font-size: 0.95rem;
+        }
+
+    }
+
+    @@media (max-width: 767.98px) {
+
+        .home-slider-wrapper {
+            padding: 0 12px;
+            margin: 12px auto 20px;
+        }
+
+        .home-slider {
+            border-radius: 16px;
+        }
+
+        .slider-image {
+            height: 280px;
+        }
+
+        .slider-overlay {
+            background:
+                linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.65) 0%,
+                    rgba(0, 0, 0, 0.10) 70%);
+        }
+
+        .slider-caption {
+            display: block !important;
+
+            left: 20px;
+            right: 20px;
+            bottom: 28px;
+
+            width: auto;
+
+            text-align: left;
+        }
+
+        .slider-title {
+            font-size: 1.55rem;
+            margin-bottom: 8px;
+        }
+
+        .slider-description {
+            display: -webkit-box;
+
+            overflow: hidden;
+
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+
+            font-size: 0.85rem;
+            line-height: 1.45;
+
+            margin-bottom: 14px;
+        }
+
+        .slider-button {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        .slider-control-icon {
+            width: 36px;
+            height: 36px;
+            font-size: 0.85rem;
+        }
+
+        .carousel-control-prev.slider-control {
+            left: 8px;
+        }
+
+        .carousel-control-next.slider-control {
+            right: 8px;
+        }
+
+        .home-slider-indicators {
+            margin-bottom: 8px;
+        }
+
+        .home-slider-indicators [data-bs-target] {
+            width: 20px;
+            height: 3px;
+        }
+
+    }
+
+    @@media (max-width: 480px) {
+
+        .slider-image {
+            height: 235px;
+        }
+
+        .slider-caption {
+            left: 16px;
+            right: 16px;
+            bottom: 20px;
+        }
+
+        .slider-title {
+            font-size: 1.3rem;
+        }
+
+        .slider-description {
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .slider-button {
+            padding: 7px 13px;
+        }
+
+    }
+</style>
