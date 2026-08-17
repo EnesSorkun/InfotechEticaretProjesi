@@ -1,0 +1,225 @@
+@{
+    ViewData["Title"] = "Erişim Engellendi";
+}
+
+<section class="access-denied-page">
+
+    <div class="container">
+
+        <div class="access-denied-card">
+
+            <div class="denied-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <div class="error-code">
+                403
+            </div>
+
+            <h1>
+                Erişim Engellendi
+            </h1>
+
+            <p>
+                Bu sayfayı görüntülemek için gerekli yetkiye sahip değilsiniz.
+            </p>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="user-info">
+
+                    <i class="fa-regular fa-user me-2"></i>
+
+                    <span>
+                        @User.Identity.Name
+                    </span>
+
+                    @if (User.IsInRole("Customer"))
+                    {
+                        <span class="role-badge">
+                            Müşteri
+                        </span>
+                    }
+                    else if (User.IsInRole("Admin"))
+                    {
+                        <span class="role-badge">
+                            Yönetici
+                        </span>
+                    }
+
+                </div>
+            }
+
+            <div class="denied-actions">
+
+                <a asp-controller="Home" asp-action="Index" asp-area="" class="btn btn-dark">
+
+                    <i class="fa-solid fa-house me-2"></i>
+                    Ana Sayfaya Dön
+
+                </a>
+
+                <button type="button" onclick="history.back()" class="btn btn-outline-secondary">
+
+                    <i class="fa-solid fa-arrow-left me-2"></i>
+                    Geri Dön
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+    .access-denied-page {
+        min-height: 70vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 60px 16px;
+
+        background-color: #f7f8fa;
+    }
+
+    .access-denied-card {
+        width: 100%;
+        max-width: 600px;
+
+        padding: 50px 40px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 24px;
+
+        background-color: #ffffff;
+
+        text-align: center;
+
+        box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.07);
+    }
+
+    .denied-icon {
+        width: 80px;
+        height: 80px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 20px;
+
+        border-radius: 50%;
+
+        color: #dc3545;
+
+        background-color: rgba(220, 53, 69, 0.10);
+
+        font-size: 2rem;
+    }
+
+    .error-code {
+        margin-bottom: 4px;
+
+        color: #dc3545;
+
+        font-size: 0.85rem;
+        font-weight: 800;
+
+        letter-spacing: 3px;
+    }
+
+    .access-denied-card h1 {
+        margin-bottom: 12px;
+
+        color: #212529;
+
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    .access-denied-card>p {
+        max-width: 430px;
+
+        margin: 0 auto;
+
+        color: #6c757d;
+
+        line-height: 1.7;
+    }
+
+    .user-info {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        margin-top: 25px;
+        padding: 10px 15px;
+
+        border-radius: 10px;
+
+        background-color: #f8f9fa;
+
+        color: #495057;
+
+        font-size: 0.9rem;
+    }
+
+    .role-badge {
+        margin-left: 6px;
+        padding: 3px 8px;
+
+        border-radius: 20px;
+
+        color: #ffffff;
+
+        background-color: #212529;
+
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .denied-actions {
+        display: flex;
+        justify-content: center;
+
+        gap: 10px;
+
+        margin-top: 30px;
+    }
+
+    .denied-actions .btn {
+        padding: 11px 18px;
+
+        border-radius: 10px;
+
+        font-weight: 600;
+    }
+
+    @@media (max-width: 575.98px) {
+
+        .access-denied-card {
+            padding: 38px 20px;
+        }
+
+        .access-denied-card h1 {
+            font-size: 1.6rem;
+        }
+
+        .denied-actions {
+            flex-direction: column;
+        }
+
+        .denied-actions .btn {
+            width: 100%;
+        }
+
+    }
+</style>

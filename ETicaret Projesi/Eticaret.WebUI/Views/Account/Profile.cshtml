@@ -1,0 +1,571 @@
+@model Eticaret.Core.Entities.AppUser
+
+@{
+    ViewData["Title"] = "Kullanıcı Bilgilerim";
+}
+
+<section class="profile-section">
+
+    <div class="container py-5">
+
+        <div class="row justify-content-center">
+
+            <div class="col-xl-9 col-lg-10">
+
+                <div class="profile-card">
+
+                    <!-- ÜST ALAN -->
+                    <div class="profile-header">
+
+                        <div class="profile-header-content">
+
+                            <div class="profile-avatar">
+
+                                @(string.IsNullOrWhiteSpace(Model.Name)
+                                    ? "?"
+                                    : Model.Name.Substring(0, 1).ToUpper())
+
+                            </div>
+
+                            <div>
+
+                                <span class="profile-label">
+                                    HESABIM
+                                </span>
+
+                                <h1 class="profile-name">
+                                    @Model.Name @Model.Surname
+                                </h1>
+
+                                <p class="profile-username">
+                                    <i class="fa-solid fa-at me-1"></i>
+
+                                    @(string.IsNullOrWhiteSpace(Model.UserName)
+                                        ? "Kullanıcı adı belirtilmemiş"
+                                        : Model.UserName)
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- İÇERİK -->
+                    <div class="profile-body">
+
+                        <div class="mb-4">
+
+                            <h2 class="profile-section-title">
+                                Kullanıcı Bilgileri
+                            </h2>
+
+                            <p class="text-muted mb-0">
+                                Hesabınıza ait kişisel ve iletişim bilgilerinizi görüntüleyebilirsiniz.
+                            </p>
+
+                        </div>
+
+
+                        <div class="row g-3">
+
+                            <!-- AD -->
+                            <div class="col-md-6">
+
+                                <div class="profile-info-card">
+
+                                    <div class="profile-info-icon">
+                                        <i class="fa-regular fa-user"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <span class="profile-info-label">
+                                            Ad
+                                        </span>
+
+                                        <div class="profile-info-value">
+                                            @Model.Name
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- SOYAD -->
+                            <div class="col-md-6">
+
+                                <div class="profile-info-card">
+
+                                    <div class="profile-info-icon">
+                                        <i class="fa-regular fa-id-card"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <span class="profile-info-label">
+                                            Soyad
+                                        </span>
+
+                                        <div class="profile-info-value">
+                                            @Model.Surname
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+                            <div class="col-md-6">
+
+                                <div class="profile-info-card">
+
+                                    <div class="profile-info-icon">
+                                        <i class="fa-regular fa-envelope"></i>
+                                    </div>
+
+                                    <div class="overflow-hidden">
+
+                                        <span class="profile-info-label">
+                                            E-posta
+                                        </span>
+
+                                        <div class="profile-info-value text-break">
+                                            @Model.Email
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- TELEFON -->
+                            <div class="col-md-6">
+
+                                <div class="profile-info-card">
+
+                                    <div class="profile-info-icon">
+                                        <i class="fa-solid fa-phone"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <span class="profile-info-label">
+                                            Telefon
+                                        </span>
+
+                                        <div class="profile-info-value">
+
+                                            @(string.IsNullOrWhiteSpace(Model.Phone)
+                                                ? "Belirtilmemiş"
+                                                : Model.Phone)
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- KULLANICI ADI -->
+                            <div class="col-md-6">
+
+                                <div class="profile-info-card">
+
+                                    <div class="profile-info-icon">
+                                        <i class="fa-solid fa-at"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <span class="profile-info-label">
+                                            Kullanıcı Adı
+                                        </span>
+
+                                        <div class="profile-info-value">
+
+                                            @(string.IsNullOrWhiteSpace(Model.UserName)
+                                                ? "Belirtilmemiş"
+                                                : Model.UserName)
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- KAYIT TARİHİ -->
+                            <div class="col-md-6">
+
+                                <div class="profile-info-card">
+
+                                    <div class="profile-info-icon">
+                                        <i class="fa-regular fa-calendar"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <span class="profile-info-label">
+                                            Kayıt Tarihi
+                                        </span>
+
+                                        <div class="profile-info-value">
+                                            @Model.CreateDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ALT BUTONLAR -->
+                        <div class="profile-actions">
+
+                            <a asp-controller="Home" asp-action="Index" class="btn profile-back-button">
+
+                                <i class="fa-solid fa-arrow-left me-2"></i>
+                                Ana Sayfaya Dön
+
+                            </a>
+
+                            <a asp-controller="Account" asp-action="EditProfile" class="btn profile-edit-button">
+
+                                <i class="fa-solid fa-user-pen me-2"></i>
+                                Bilgilerimi Düzenle
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+    .profile-section {
+        min-height: 70vh;
+        background-color: #f7f8fa;
+    }
+
+
+    .profile-card {
+        overflow: hidden;
+
+        border: 1px solid #e9ecef;
+        border-radius: 24px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.07);
+    }
+
+
+    .profile-header {
+        padding: 40px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #212529 0%,
+                #343a40 60%,
+                #0d6efd 150%);
+    }
+
+
+    .profile-header-content {
+        display: flex;
+        align-items: center;
+
+        gap: 22px;
+    }
+
+
+    .profile-avatar {
+        width: 88px;
+        height: 88px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border: 3px solid rgba(255, 255, 255, 0.25);
+        border-radius: 50%;
+
+        color: #212529;
+
+        background-color: #ffffff;
+
+        font-size: 2rem;
+        font-weight: 800;
+
+        box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+
+    .profile-label {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: rgba(255, 255, 255, 0.65);
+
+        font-size: 0.72rem;
+        font-weight: 700;
+
+        letter-spacing: 1.8px;
+    }
+
+
+    .profile-name {
+        margin: 0 0 7px 0;
+
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+
+    .profile-username {
+        margin: 0;
+
+        color: rgba(255, 255, 255, 0.75);
+
+        font-size: 0.95rem;
+    }
+
+
+    .profile-body {
+        padding: 38px;
+    }
+
+
+    .profile-section-title {
+        margin-bottom: 6px;
+
+        color: #212529;
+
+        font-size: 1.3rem;
+        font-weight: 750;
+    }
+
+
+    .profile-info-card {
+        min-height: 95px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 16px;
+
+        padding: 18px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 15px;
+
+        background-color: #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+
+    .profile-info-card:hover {
+        border-color: #d5d9dd;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 7px 20px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .profile-info-icon {
+        width: 45px;
+        height: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 12px;
+
+        color: #212529;
+
+        background-color: #f1f3f5;
+
+        font-size: 1rem;
+    }
+
+
+    .profile-info-label {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #868e96;
+
+        font-size: 0.76rem;
+        font-weight: 600;
+    }
+
+
+    .profile-info-value {
+        color: #212529;
+
+        font-size: 0.95rem;
+        font-weight: 650;
+    }
+
+
+    .profile-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-top: 32px;
+        padding-top: 26px;
+
+        border-top: 1px solid #eeeeee;
+    }
+
+
+    .profile-back-button {
+        padding: 11px 18px;
+
+        border: 1px solid #dee2e6;
+        border-radius: 11px;
+
+        color: #495057;
+
+        background-color: #ffffff;
+
+        font-weight: 600;
+    }
+
+
+    .profile-back-button:hover {
+        color: #212529;
+
+        background-color: #f8f9fa;
+    }
+
+
+    .profile-edit-button {
+        padding: 11px 18px;
+
+        border-radius: 11px;
+
+        color: #ffffff;
+
+        background-color: #212529;
+
+        font-weight: 600;
+    }
+
+
+    .profile-edit-button:hover {
+        color: #ffffff;
+
+        background-color: #000000;
+    }
+
+
+    @@media (max-width: 767.98px) {
+
+        .profile-header {
+            padding: 28px 22px;
+        }
+
+
+        .profile-header-content {
+            align-items: flex-start;
+        }
+
+
+        .profile-avatar {
+            width: 68px;
+            height: 68px;
+
+            font-size: 1.5rem;
+        }
+
+
+        .profile-name {
+            font-size: 1.5rem;
+        }
+
+
+        .profile-body {
+            padding: 24px 20px;
+        }
+
+
+        .profile-actions {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+
+
+        .profile-back-button,
+        .profile-edit-button {
+            width: 100%;
+        }
+
+    }
+
+
+    @@media (max-width: 480px) {
+
+        .profile-header-content {
+            flex-direction: column;
+        }
+
+
+        .profile-name {
+            font-size: 1.35rem;
+        }
+
+
+        .profile-info-card {
+            min-height: auto;
+        }
+
+    }
+</style>

@@ -7,7 +7,9 @@
 
 <div class="container-fluid px-4 py-4">
 
+    <!-- SAYFA BAŞLIĞI -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
         <div>
             <h1 class="h3 fw-bold mb-1">
                 Kullanıcı Düzenle
@@ -19,20 +21,33 @@
         </div>
 
         <a asp-action="Index" class="btn btn-outline-secondary">
+
             <i class="fa-solid fa-arrow-left me-2"></i>
+
             Kullanıcılara Dön
+
         </a>
+
     </div>
 
+
+    <!-- KART -->
     <div class="card border-0 shadow-sm">
+
+        <!-- KART BAŞLIĞI -->
         <div class="card-header bg-white border-0 py-3">
+
             <div class="d-flex align-items-center gap-3">
+
                 <div class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
                      style="width: 46px; height: 46px;">
+
                     <i class="fa-solid fa-user-pen"></i>
+
                 </div>
 
                 <div>
+
                     <h2 class="h5 fw-bold mb-1">
                         Kullanıcı Bilgileri
                     </h2>
@@ -40,198 +55,539 @@
                     <p class="text-muted small mb-0">
                         @Model.Name @Model.Surname
                     </p>
+
                 </div>
+
             </div>
+
         </div>
 
+
+        <!-- KART İÇERİĞİ -->
         <div class="card-body p-4">
-            <form asp-action="Edit" method="post">
+
+            <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+
                 @Html.AntiForgeryToken()
 
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+
+                <!-- Validation -->
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
                 </div>
 
+
+                <!-- Kullanıcı ID -->
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="CreateDate" />
-                <input type="hidden" asp-for="UserGuid" />
 
-                <div class="row g-3">
 
+                <!-- KULLANICI BİLGİLERİ -->
+                <div class="row g-4">
+
+                    <!-- AD -->
                     <div class="col-md-6">
+
                         <label asp-for="Name" class="form-label fw-semibold">
+
                             Ad
-                        </label>
 
-                        <input asp-for="Name" class="form-control form-control-lg"
-                               placeholder="Kullanıcının adını giriniz" />
-
-                        <span asp-validation-for="Name" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Surname" class="form-label fw-semibold">
-                            Soyad
-                        </label>
-
-                        <input asp-for="Surname" class="form-control form-control-lg"
-                               placeholder="Kullanıcının soyadını giriniz" />
-
-                        <span asp-validation-for="Surname" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Email" class="form-label fw-semibold">
-                            E-posta
                         </label>
 
                         <div class="input-group input-group-lg">
+
                             <span class="input-group-text">
-                                <i class="fa-solid fa-envelope"></i>
+                                <i class="fa-regular fa-user"></i>
+                            </span>
+
+                            <input asp-for="Name" class="form-control" placeholder="Kullanıcının adını giriniz" />
+
+                        </div>
+
+                        <span asp-validation-for="Name" class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <!-- SOYAD -->
+                    <div class="col-md-6">
+
+                        <label asp-for="Surname" class="form-label fw-semibold">
+
+                            Soyad
+
+                        </label>
+
+                        <div class="input-group input-group-lg">
+
+                            <span class="input-group-text">
+                                <i class="fa-regular fa-user"></i>
+                            </span>
+
+                            <input asp-for="Surname" class="form-control" placeholder="Kullanıcının soyadını giriniz" />
+
+                        </div>
+
+                        <span asp-validation-for="Surname" class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div class="col-md-6">
+
+                        <label asp-for="Email" class="form-label fw-semibold">
+
+                            E-posta
+
+                        </label>
+
+                        <div class="input-group input-group-lg">
+
+                            <span class="input-group-text">
+                                <i class="fa-regular fa-envelope"></i>
                             </span>
 
                             <input asp-for="Email" type="email" class="form-control" placeholder="ornek@site.com" />
+
                         </div>
 
-                        <span asp-validation-for="Email" class="text-danger small"></span>
+                        <span asp-validation-for="Email" class="text-danger small">
+                        </span>
+
                     </div>
 
+
+                    <!-- TELEFON -->
                     <div class="col-md-6">
+
                         <label asp-for="Phone" class="form-label fw-semibold">
+
                             Telefon
+
                         </label>
 
                         <div class="input-group input-group-lg">
+
                             <span class="input-group-text">
                                 <i class="fa-solid fa-phone"></i>
                             </span>
 
                             <input asp-for="Phone" type="tel" class="form-control" placeholder="05xx xxx xx xx" />
+
                         </div>
 
-                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                        <span asp-validation-for="Phone" class="text-danger small">
+                        </span>
+
                     </div>
 
+
+                    <!-- KULLANICI ADI -->
                     <div class="col-md-6">
+
                         <label asp-for="UserName" class="form-label fw-semibold">
+
                             Kullanıcı Adı
+
                         </label>
 
                         <div class="input-group input-group-lg">
+
                             <span class="input-group-text">
                                 <i class="fa-solid fa-at"></i>
                             </span>
 
                             <input asp-for="UserName" class="form-control" placeholder="Kullanıcı adını giriniz" />
+
                         </div>
 
-                        <span asp-validation-for="UserName" class="text-danger small"></span>
+                        <span asp-validation-for="UserName" class="text-danger small">
+                        </span>
+
                     </div>
 
+
+                    <!-- ŞİFRE -->
                     <div class="col-md-6">
+
                         <label asp-for="Password" class="form-label fw-semibold">
-                            Şifre
+
+                            Yeni Şifre
+
                         </label>
 
                         <div class="input-group input-group-lg">
+
                             <span class="input-group-text">
                                 <i class="fa-solid fa-lock"></i>
                             </span>
 
                             <input asp-for="Password" type="password" class="form-control"
-                                   placeholder="Şifreyi giriniz" />
+                                   placeholder="Değiştirmek istemiyorsanız boş bırakın" autocomplete="new-password" />
+
                         </div>
 
-                        <span asp-validation-for="Password" class="text-danger small"></span>
+                        <span asp-validation-for="Password" class="text-danger small">
+                        </span>
 
                         <div class="form-text">
-                            Mevcut şifreyi değiştirmek istemiyorsanız alanın yönetimini
-                            controller tarafında ayrıca ele almalısınız.
+
+                            <i class="fa-solid fa-circle-info me-1"></i>
+
+                            Şifreyi değiştirmek istemiyorsanız bu alanı boş bırakınız.
+
                         </div>
+
                     </div>
 
                 </div>
+
 
                 <hr class="my-4" />
 
+
+                <!-- HESAP AYARLARI -->
+                <div class="mb-3">
+
+                    <h3 class="h6 fw-bold mb-1">
+                        Hesap Ayarları
+                    </h3>
+
+                    <p class="text-muted small mb-0">
+                        Kullanıcının hesap durumunu ve yönetici yetkisini belirleyebilirsiniz.
+                    </p>
+
+                </div>
+
+
                 <div class="row g-3">
 
+                    <!-- AKTİF / PASİF -->
                     <div class="col-md-6">
-                        <div class="border rounded-3 p-3 h-100">
-                            <div class="form-check form-switch mb-0">
-                                <input asp-for="IsActive" class="form-check-input" role="switch" />
 
-                                <label asp-for="IsActive" class="form-check-label fw-semibold">
-                                    Kullanıcı aktif
-                                </label>
+                        <div class="account-setting-card">
+
+                            <div class="d-flex align-items-start gap-3">
+
+                                <div class="setting-icon bg-success-subtle text-success">
+
+                                    <i class="fa-solid fa-circle-check"></i>
+
+                                </div>
+
+                                <div class="flex-grow-1">
+
+                                    <div class="form-check form-switch mb-0">
+
+                                        <input asp-for="IsActive" class="form-check-input" role="switch" />
+
+                                        <label asp-for="IsActive" class="form-check-label fw-semibold">
+
+                                            Kullanıcı Aktif
+
+                                        </label>
+
+                                    </div>
+
+                                    <p class="text-muted small mb-0 mt-2">
+
+                                        Kullanıcı pasif duruma getirildiğinde sisteme giriş yapamaz.
+
+                                    </p>
+
+                                </div>
+
                             </div>
 
-                            <p class="text-muted small mb-0 mt-2">
-                                Pasif kullanıcıların sisteme erişimini kısıtlamak için kapatabilirsiniz.
-                            </p>
                         </div>
+
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="border rounded-3 p-3 h-100">
-                            <div class="form-check form-switch mb-0">
-                                <input asp-for="IsAdmin" class="form-check-input" role="switch" />
 
-                                <label asp-for="IsAdmin" class="form-check-label fw-semibold">
-                                    Yönetici yetkisi
-                                </label>
+                    <!-- ADMIN -->
+                    <div class="col-md-6">
+
+                        <div class="account-setting-card">
+
+                            <div class="d-flex align-items-start gap-3">
+
+                                <div class="setting-icon bg-danger-subtle text-danger">
+
+                                    <i class="fa-solid fa-shield-halved"></i>
+
+                                </div>
+
+                                <div class="flex-grow-1">
+
+                                    <div class="form-check form-switch mb-0">
+
+                                        <input asp-for="IsAdmin" class="form-check-input" role="switch" />
+
+                                        <label asp-for="IsAdmin" class="form-check-label fw-semibold">
+
+                                            Yönetici Yetkisi
+
+                                        </label>
+
+                                    </div>
+
+                                    <p class="text-muted small mb-0 mt-2">
+
+                                        Bu seçenek aktif olduğunda kullanıcı admin paneline erişebilir.
+
+                                    </p>
+
+                                </div>
+
                             </div>
 
-                            <p class="text-muted small mb-0 mt-2">
-                                Bu seçenek kullanıcıya yönetim paneli yetkisi verir.
-                            </p>
                         </div>
+
                     </div>
 
                 </div>
 
-                <div class="bg-light rounded-3 p-3 mt-4">
+
+                <!-- SİSTEM BİLGİLERİ -->
+                <div class="system-info mt-4">
+
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <span class="text-muted small d-block">
-                                Kayıt tarihi
-                            </span>
 
-                            <span class="fw-semibold">
-                                @Model.CreateDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-                            </span>
+                        <!-- KAYIT TARİHİ -->
+                        <div class="col-md-6">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="system-info-icon">
+
+                                    <i class="fa-regular fa-calendar"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <span class="text-muted small d-block">
+                                        Kayıt Tarihi
+                                    </span>
+
+                                    <span class="fw-semibold">
+
+                                        @Model.CreateDate
+                                        .ToLocalTime()
+                                        .ToString("dd.MM.yyyy HH:mm")
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
-                        <div class="col-md-6">
-                            <span class="text-muted small d-block">
-                                Kullanıcı kimliği
-                            </span>
 
-                            <span class="fw-semibold text-break">
-                                @(Model.UserGuid?.ToString() ?? "Kimlik bulunmuyor")
-                            </span>
+                        <!-- USER GUID -->
+                        <div class="col-md-6">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="system-info-icon">
+
+                                    <i class="fa-solid fa-fingerprint"></i>
+
+                                </div>
+
+                                <div class="overflow-hidden">
+
+                                    <span class="text-muted small d-block">
+                                        Kullanıcı Kimliği
+                                    </span>
+
+                                    <span class="fw-semibold text-break">
+
+                                        @(Model.UserGuid?.ToString()
+                                            ?? "Kimlik bulunmuyor")
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
                         </div>
+
                     </div>
+
                 </div>
 
+
+                <!-- BUTONLAR -->
                 <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+
                     <a asp-action="Index" class="btn btn-outline-secondary px-4">
+
                         İptal
+
                     </a>
 
                     <button type="submit" class="btn btn-warning px-4">
+
                         <i class="fa-solid fa-floppy-disk me-2"></i>
+
                         Değişiklikleri Kaydet
+
                     </button>
+
                 </div>
 
             </form>
+
         </div>
+
     </div>
 
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+<style>
+    /* Inputlar */
+
+    .form-control,
+    .input-group-text {
+        border-color: #dee2e6;
     }
+
+
+    .form-control:focus {
+        border-color: #adb5bd;
+
+        box-shadow:
+            0 0 0 0.2rem rgba(33, 37, 41, 0.05);
+    }
+
+
+    .input-group-text {
+        min-width: 50px;
+
+        justify-content: center;
+
+        color: #6c757d;
+
+        background-color: #f8f9fa;
+    }
+
+
+    /* Hesap Ayarları */
+
+    .account-setting-card {
+        height: 100%;
+
+        padding: 20px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 14px;
+
+        background-color: #ffffff;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .account-setting-card:hover {
+        border-color: #ced4da;
+
+        box-shadow:
+            0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+
+    .setting-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+    }
+
+
+    /* Switch */
+
+    .form-check-input {
+        cursor: pointer;
+    }
+
+
+    .form-check-label {
+        cursor: pointer;
+    }
+
+
+    /* Sistem Bilgileri */
+
+    .system-info {
+        padding: 20px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 14px;
+
+        background-color: #f8f9fa;
+    }
+
+
+    .system-info-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #495057;
+
+        background-color: #ffffff;
+
+        border: 1px solid #e9ecef;
+    }
+
+
+    /* Mobil */
+
+    @@media (max-width: 767.98px) {
+
+        .card-body {
+            padding: 20px !important;
+        }
+
+
+        .account-setting-card {
+            padding: 16px;
+        }
+
+
+        .system-info {
+            padding: 16px;
+        }
+
+    }
+</style>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+
 }

@@ -12,8 +12,8 @@ namespace Eticaret.Data.Configurations
             builder.Property(x => x.Surname).IsRequired().HasColumnType("varchar(50)").HasMaxLength(50);
             builder.Property(x => x.Email).IsRequired().HasColumnType("varchar(50)").HasMaxLength(50);
             builder.Property(x => x.Phone).HasColumnType("varchar(15)").HasMaxLength(15);
-            builder.Property(x => x.Password).IsRequired().HasColumnType("varchar(50)").HasMaxLength(50);
-            builder.Property(x => x.UserName).HasColumnType("varchar(50)").HasMaxLength(50);
+            builder.Property(x => x.Password).IsRequired().HasColumnType("varchar(200)").HasMaxLength(200);
+            builder.Property(x => x.UserName).HasColumnType("varchar(70)").HasMaxLength(70);
             builder.HasData(
                 new AppUser
                 {

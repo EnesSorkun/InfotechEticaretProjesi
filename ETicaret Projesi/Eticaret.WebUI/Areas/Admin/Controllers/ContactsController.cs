@@ -1,5 +1,6 @@
 using Eticaret.Core.Entities;
 using Eticaret.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Net.Mail;
 namespace Eticaret.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Policy = "AdminPolicy")]
     public class ContactsController : Controller
     {
         private readonly DatabaseContext _context;

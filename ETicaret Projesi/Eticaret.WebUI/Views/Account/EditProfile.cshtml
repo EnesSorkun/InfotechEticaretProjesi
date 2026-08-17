@@ -1,0 +1,406 @@
+@model Eticaret.Core.Entities.AppUser
+
+@{
+    ViewData["Title"] = "Bilgilerimi Düzenle";
+}
+
+<section class="edit-profile-section">
+
+    <div class="container py-5">
+
+        <div class="row justify-content-center">
+
+            <div class="col-xl-8 col-lg-9">
+
+                <div class="edit-profile-card">
+
+                    <div class="edit-profile-header">
+
+                        <div>
+
+                            <span class="edit-profile-label">
+                                HESABIM
+                            </span>
+
+                            <h1>
+                                Bilgilerimi Düzenle
+                            </h1>
+
+                            <p>
+                                Hesabınıza ait kişisel bilgileri güncelleyebilirsiniz.
+                            </p>
+
+                        </div>
+
+                        <div class="edit-profile-avatar">
+
+                            @(string.IsNullOrWhiteSpace(Model.Name)
+                                ? "?"
+                                : Model.Name.Substring(0, 1).ToUpper())
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="edit-profile-body">
+
+                        <form asp-controller="Account" asp-action="EditProfile" method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+                            </div>
+
+
+                            <div class="row g-4">
+
+                                <!-- AD -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="Name" class="form-label fw-semibold">
+                                    </label>
+
+                                    <div class="profile-input">
+
+                                        <i class="fa-regular fa-user"></i>
+
+                                        <input asp-for="Name" class="form-control" placeholder="Adınızı giriniz" />
+
+                                    </div>
+
+                                    <span asp-validation-for="Name" class="text-danger small">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- SOYAD -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="Surname" class="form-label fw-semibold">
+                                    </label>
+
+                                    <div class="profile-input">
+
+                                        <i class="fa-regular fa-id-card"></i>
+
+                                        <input asp-for="Surname" class="form-control"
+                                               placeholder="Soyadınızı giriniz" />
+
+                                    </div>
+
+                                    <span asp-validation-for="Surname" class="text-danger small">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- EMAIL -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="Email" class="form-label fw-semibold">
+                                    </label>
+
+                                    <div class="profile-input">
+
+                                        <i class="fa-regular fa-envelope"></i>
+
+                                        <input asp-for="Email" type="email" class="form-control"
+                                               placeholder="ornek@email.com" />
+
+                                    </div>
+
+                                    <span asp-validation-for="Email" class="text-danger small">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- TELEFON -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="Phone" class="form-label fw-semibold">
+                                    </label>
+
+                                    <div class="profile-input">
+
+                                        <i class="fa-solid fa-phone"></i>
+
+                                        <input asp-for="Phone" type="tel" class="form-control"
+                                               placeholder="05xx xxx xx xx" />
+
+                                    </div>
+
+                                    <span asp-validation-for="Phone" class="text-danger small">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- USERNAME -->
+                                <div class="col-12">
+
+                                    <label asp-for="UserName" class="form-label fw-semibold">
+                                    </label>
+
+                                    <div class="profile-input">
+
+                                        <i class="fa-solid fa-at"></i>
+
+                                        <input asp-for="UserName" class="form-control"
+                                               placeholder="Kullanıcı adınızı giriniz" />
+
+                                    </div>
+
+                                    <span asp-validation-for="UserName" class="text-danger small">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- YENİ ŞİFRE -->
+                                <div class="col-12">
+
+                                    <label asp-for="Password" class="form-label fw-semibold">
+
+                                        Yeni Şifre
+
+                                    </label>
+
+                                    <div class="profile-input">
+
+                                        <i class="fa-solid fa-lock"></i>
+
+                                        <input type="password" name="newPassword" class="form-control"
+                                               placeholder="Değiştirmek istemiyorsanız boş bırakın"
+                                               autocomplete="new-password" />
+
+                                    </div>
+
+                                    <div class="form-text">
+                                        Şifrenizi değiştirmek istemiyorsanız bu alanı boş bırakabilirsiniz.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="edit-profile-actions">
+
+                                <a asp-controller="Account" asp-action="Profile" class="btn btn-outline-secondary">
+
+                                    <i class="fa-solid fa-arrow-left me-2"></i>
+                                    Vazgeç
+
+                                </a>
+
+                                <button type="submit" class="btn btn-dark">
+
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>
+                                    Değişiklikleri Kaydet
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+    .edit-profile-section {
+        min-height: 70vh;
+        background-color: #f7f8fa;
+    }
+
+    .edit-profile-card {
+        overflow: hidden;
+
+        border: 1px solid #e9ecef;
+        border-radius: 24px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 12px 40px rgba(0, 0, 0, 0.07);
+    }
+
+    .edit-profile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        padding: 34px 38px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #212529 0%,
+                #343a40 65%,
+                #0d6efd 160%);
+    }
+
+    .edit-profile-label {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: rgba(255, 255, 255, 0.65);
+
+        font-size: 0.72rem;
+        font-weight: 700;
+
+        letter-spacing: 1.8px;
+    }
+
+    .edit-profile-header h1 {
+        margin-bottom: 8px;
+
+        font-size: 1.8rem;
+        font-weight: 800;
+    }
+
+    .edit-profile-header p {
+        margin: 0;
+
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .edit-profile-avatar {
+        width: 72px;
+        height: 72px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border: 3px solid rgba(255, 255, 255, 0.25);
+        border-radius: 50%;
+
+        color: #212529;
+
+        background-color: #ffffff;
+
+        font-size: 1.6rem;
+        font-weight: 800;
+    }
+
+    .edit-profile-body {
+        padding: 38px;
+    }
+
+    .profile-input {
+        height: 52px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 0 15px;
+
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+
+        background-color: #ffffff;
+
+        transition: 0.2s ease;
+    }
+
+    .profile-input:focus-within {
+        border-color: #212529;
+
+        box-shadow:
+            0 0 0 0.18rem rgba(33, 37, 41, 0.07);
+    }
+
+    .profile-input i {
+        width: 20px;
+
+        color: #adb5bd;
+    }
+
+    .profile-input .form-control {
+        height: 100%;
+
+        border: 0;
+
+        background-color: transparent;
+
+        box-shadow: none;
+    }
+
+    .edit-profile-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        gap: 10px;
+
+        margin-top: 32px;
+        padding-top: 25px;
+
+        border-top: 1px solid #eeeeee;
+    }
+
+    .edit-profile-actions .btn {
+        padding: 11px 20px;
+
+        border-radius: 10px;
+
+        font-weight: 600;
+    }
+
+    @@media (max-width: 767.98px) {
+
+        .edit-profile-header {
+            padding: 26px 22px;
+        }
+
+        .edit-profile-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .edit-profile-avatar {
+            width: 60px;
+            height: 60px;
+        }
+
+        .edit-profile-body {
+            padding: 25px 20px;
+        }
+
+        .edit-profile-actions {
+            flex-direction: column-reverse;
+        }
+
+        .edit-profile-actions .btn {
+            width: 100%;
+        }
+
+    }
+</style>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
