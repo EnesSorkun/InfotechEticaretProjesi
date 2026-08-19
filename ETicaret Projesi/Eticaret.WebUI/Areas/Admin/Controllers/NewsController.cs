@@ -1,5 +1,5 @@
 using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,28 +10,38 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
     [Authorize(Policy = "AdminPolicy")]
     public class NewsController : Controller
     {
-        private readonly DatabaseContext _context;
+        private readonly IService<News> _newsService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public NewsController(
-            DatabaseContext context,
+            IService<News> newsService,
             IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _newsService = newsService;
             _webHostEnvironment = webHostEnvironment;
         }
 
+
+        // =====================================================
         // GET: Admin/News
+        // =====================================================
+
         public async Task<IActionResult> Index()
         {
-            var news = await _context.News
+            var news = await _newsService
+                .GetQueryable()
                 .OrderByDescending(x => x.CreateDate)
+                .AsNoTracking()
                 .ToListAsync();
 
             return View(news);
         }
 
+
+        // =====================================================
         // GET: Admin/News/Details/5
+        // =====================================================
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
@@ -39,52 +49,86 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News
-                .FirstOrDefaultAsync(x => x.Id == id);
+
+            var news =
+                await _newsService.FindAsync(
+                    id.Value);
+
 
             if (news is null)
             {
                 return NotFound();
             }
 
+
             return View(news);
         }
 
+
+        // =====================================================
         // GET: Admin/News/Create
+        // =====================================================
+
         public IActionResult Create()
         {
             return View();
         }
 
+
+        // =====================================================
         // POST: Admin/News/Create
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             News news,
             IFormFile? imageFile)
         {
-            ValidateImageFile(imageFile);
+            ValidateImageFile(
+                imageFile);
+
 
             if (!ModelState.IsValid)
             {
                 return View(news);
             }
 
-            if (imageFile is not null && imageFile.Length > 0)
+
+            if (imageFile is not null &&
+                imageFile.Length > 0)
             {
                 news.Image =
-                    await SaveImageFileAsync(imageFile);
+                    await SaveImageFileAsync(
+                        imageFile);
             }
 
-            news.CreateDate = DateTime.UtcNow;
 
-            _context.News.Add(news);
-            await _context.SaveChangesAsync();
+            news.CreateDate =
+                DateTime.UtcNow;
 
-            return RedirectToAction(nameof(Index));
+
+            await _newsService
+                .AddAsync(news);
+
+
+            await _newsService
+                .SaveChangesAsync();
+
+
+            TempData["SuccessMessage"] =
+                "Kampanya başarıyla oluşturuldu.";
+
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
+
+        // =====================================================
         // GET: Admin/News/Edit/5
+        // =====================================================
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
@@ -92,17 +136,26 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News.FindAsync(id);
+
+            var news =
+                await _newsService.FindAsync(
+                    id.Value);
+
 
             if (news is null)
             {
                 return NotFound();
             }
 
+
             return View(news);
         }
 
+
+        // =====================================================
         // POST: Admin/News/Edit/5
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -115,43 +168,78 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var existingNews =
-                await _context.News.FindAsync(id);
+                await _newsService.FindAsync(
+                    id);
+
 
             if (existingNews is null)
             {
                 return NotFound();
             }
 
-            ValidateImageFile(imageFile);
+
+            ValidateImageFile(
+                imageFile);
+
 
             if (!ModelState.IsValid)
             {
-                news.Image = existingNews.Image;
-                news.CreateDate = existingNews.CreateDate;
+                news.Image =
+                    existingNews.Image;
+
+                news.CreateDate =
+                    existingNews.CreateDate;
 
                 return View(news);
             }
 
-            existingNews.Name = news.Name;
-            existingNews.Description = news.Description;
-            existingNews.IsActive = news.IsActive;
 
+            // Sadece düzenlenmesine izin verilen
+            // alanları güncelliyoruz.
+            existingNews.Name =
+                news.Name;
+
+            existingNews.Description =
+                news.Description;
+
+            existingNews.IsActive =
+                news.IsActive;
+
+
+            // Yeni görsel seçildiyse
+            // eski görseli silip yenisini kaydediyoruz.
             if (imageFile is not null &&
                 imageFile.Length > 0)
             {
-                DeleteImageFile(existingNews.Image);
+                DeleteImageFile(
+                    existingNews.Image);
+
 
                 existingNews.Image =
-                    await SaveImageFileAsync(imageFile);
+                    await SaveImageFileAsync(
+                        imageFile);
             }
 
-            await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            await _newsService
+                .SaveChangesAsync();
+
+
+            TempData["SuccessMessage"] =
+                "Kampanya başarıyla güncellendi.";
+
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
+
+        // =====================================================
         // GET: Admin/News/Delete/5
+        // =====================================================
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
@@ -159,35 +247,68 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var news = await _context.News
-                .FirstOrDefaultAsync(x => x.Id == id);
+
+            var news =
+                await _newsService.FindAsync(
+                    id.Value);
+
 
             if (news is null)
             {
                 return NotFound();
             }
 
+
             return View(news);
         }
 
+
+        // =====================================================
         // POST: Admin/News/Delete/5
+        // =====================================================
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(
+            int id)
         {
-            var news = await _context.News.FindAsync(id);
+            var news =
+                await _newsService.FindAsync(
+                    id);
 
-            if (news is not null)
+
+            if (news is null)
             {
-                DeleteImageFile(news.Image);
-
-                _context.News.Remove(news);
-
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+
+            // Önce fiziksel görseli siliyoruz.
+            DeleteImageFile(
+                news.Image);
+
+
+            // Sonra veritabanındaki kaydı siliyoruz.
+            _newsService.Delete(
+                news);
+
+
+            await _newsService
+                .SaveChangesAsync();
+
+
+            TempData["SuccessMessage"] =
+                "Kampanya başarıyla silindi.";
+
+
+            return RedirectToAction(
+                nameof(Index));
         }
+
+
+        // =====================================================
+        // GÖRSEL DOĞRULAMA
+        // =====================================================
 
         private void ValidateImageFile(
             IFormFile? imageFile)
@@ -198,29 +319,38 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return;
             }
 
-            var allowedExtensions = new[]
-            {
-                ".jpg",
-                ".jpeg",
-                ".png",
-                ".webp"
-            };
 
-            var extension = Path
-                .GetExtension(imageFile.FileName)
-                .ToLowerInvariant();
+            var allowedExtensions =
+                new[]
+                {
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".webp"
+                };
 
-            if (!allowedExtensions.Contains(extension))
+
+            var extension =
+                Path.GetExtension(
+                        imageFile.FileName)
+                    .ToLowerInvariant();
+
+
+            if (!allowedExtensions.Contains(
+                    extension))
             {
                 ModelState.AddModelError(
                     nameof(News.Image),
                     "Sadece JPG, JPEG, PNG veya WEBP dosyası yükleyebilirsiniz.");
             }
 
+
             const long maxFileSize =
                 2 * 1024 * 1024;
 
-            if (imageFile.Length > maxFileSize)
+
+            if (imageFile.Length >
+                maxFileSize)
             {
                 ModelState.AddModelError(
                     nameof(News.Image),
@@ -228,61 +358,86 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
         }
 
+
+        // =====================================================
+        // GÖRSEL KAYDET
+        // =====================================================
+
         private async Task<string> SaveImageFileAsync(
             IFormFile imageFile)
         {
-            var extension = Path
-                .GetExtension(imageFile.FileName)
-                .ToLowerInvariant();
+            var extension =
+                Path.GetExtension(
+                        imageFile.FileName)
+                    .ToLowerInvariant();
 
-            var uploadDirectory = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                "uploads",
-                "news");
 
-            Directory.CreateDirectory(uploadDirectory);
+            var uploadDirectory =
+                Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    "uploads",
+                    "news");
+
+
+            Directory.CreateDirectory(
+                uploadDirectory);
+
 
             var fileName =
                 $"{Guid.NewGuid()}{extension}";
 
-            var physicalPath = Path.Combine(
-                uploadDirectory,
-                fileName);
+
+            var physicalPath =
+                Path.Combine(
+                    uploadDirectory,
+                    fileName);
+
 
             await using var stream =
                 new FileStream(
                     physicalPath,
                     FileMode.Create);
 
-            await imageFile.CopyToAsync(stream);
 
-            return $"/uploads/news/{fileName}";
+            await imageFile.CopyToAsync(
+                stream);
+
+
+            return
+                $"/uploads/news/{fileName}";
         }
+
+
+        // =====================================================
+        // GÖRSEL SİL
+        // =====================================================
 
         private void DeleteImageFile(
             string? imagePath)
         {
-            if (string.IsNullOrWhiteSpace(imagePath))
+            if (string.IsNullOrWhiteSpace(
+                    imagePath))
             {
                 return;
             }
 
+
             var relativePath =
                 imagePath.TrimStart('/');
 
-            var physicalPath = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                relativePath);
 
-            if (System.IO.File.Exists(physicalPath))
+            var physicalPath =
+                Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    relativePath);
+
+
+            if (System.IO.File.Exists(
+                    physicalPath))
             {
-                System.IO.File.Delete(physicalPath);
+                System.IO.File.Delete(
+                    physicalPath);
             }
-        }
-
-        private bool NewsExists(int id)
-        {
-            return _context.News.Any(x => x.Id == id);
         }
     }
 }

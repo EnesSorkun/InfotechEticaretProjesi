@@ -1,8 +1,7 @@
 using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Mail;
 
@@ -12,14 +11,14 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
     [Authorize(Policy = "AdminPolicy")]
     public class ContactsController : Controller
     {
-        private readonly DatabaseContext _context;
+        private readonly IService<Contact> _contactService;
         private readonly IConfiguration _configuration;
 
         public ContactsController(
-            DatabaseContext context,
+            IService<Contact> contactService,
             IConfiguration configuration)
         {
-            _context = context;
+            _contactService = contactService;
             _configuration = configuration;
         }
 
@@ -30,9 +29,12 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var contacts = await _context.Contacts
+            var contacts =
+                await _contactService.GetAllAsync();
+
+            contacts = contacts
                 .OrderByDescending(x => x.CreateDate)
-                .ToListAsync();
+                .ToList();
 
             return View(contacts);
         }
@@ -49,13 +51,17 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var contact = await _context.Contacts
-                .FirstOrDefaultAsync(x => x.Id == id);
+
+            var contact =
+                await _contactService.FindAsync(
+                    id.Value);
+
 
             if (contact is null)
             {
                 return NotFound();
             }
+
 
             return View(contact);
         }
@@ -72,13 +78,17 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var contact = await _context.Contacts
-                .FirstOrDefaultAsync(x => x.Id == id);
+
+            var contact =
+                await _contactService.FindAsync(
+                    id.Value);
+
 
             if (contact is null)
             {
                 return NotFound();
             }
+
 
             return View(contact);
         }
@@ -90,24 +100,34 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(
+            int id)
         {
-            var contact = await _context.Contacts
-                .FindAsync(id);
+            var contact =
+                await _contactService.FindAsync(
+                    id);
+
 
             if (contact is null)
             {
                 return NotFound();
             }
 
-            _context.Contacts.Remove(contact);
 
-            await _context.SaveChangesAsync();
+            _contactService.Delete(
+                contact);
+
+
+            await _contactService
+                .SaveChangesAsync();
+
 
             TempData["SuccessMessage"] =
                 "İletişim kaydı başarıyla silindi.";
 
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
 
@@ -116,27 +136,36 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         // =====================================================
 
         [HttpGet]
-        public async Task<IActionResult> SendMail(int id)
+        public async Task<IActionResult> SendMail(
+            int id)
         {
-            var contact = await _context.Contacts
-                .FindAsync(id);
+            var contact =
+                await _contactService.FindAsync(
+                    id);
+
 
             if (contact is null)
             {
                 return NotFound();
             }
 
-            if (string.IsNullOrWhiteSpace(contact.Email))
+
+            if (string.IsNullOrWhiteSpace(
+                    contact.Email))
             {
                 TempData["ErrorMessage"] =
                     "Bu kullanıcıya ait email adresi bulunmuyor.";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                    nameof(Index));
             }
+
 
             // _SendMail.cshtml Shared klasöründe olduğu için
             // View adını açıkça belirtiyoruz.
-            return View("_SendMail", contact);
+            return View(
+                "_SendMail",
+                contact);
         }
 
 
@@ -151,8 +180,10 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             string subject,
             string message)
         {
-            var contact = await _context.Contacts
-                .FindAsync(id);
+            var contact =
+                await _contactService.FindAsync(
+                    id);
+
 
             if (contact is null)
             {
@@ -161,17 +192,20 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
 
             // Kullanıcının email adresi var mı?
-            if (string.IsNullOrWhiteSpace(contact.Email))
+            if (string.IsNullOrWhiteSpace(
+                    contact.Email))
             {
                 TempData["ErrorMessage"] =
                     "Bu kullanıcıya ait email adresi bulunmuyor.";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                    nameof(Index));
             }
 
 
             // Konu kontrolü
-            if (string.IsNullOrWhiteSpace(subject))
+            if (string.IsNullOrWhiteSpace(
+                    subject))
             {
                 ModelState.AddModelError(
                     "subject",
@@ -180,7 +214,8 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
 
             // Mesaj kontrolü
-            if (string.IsNullOrWhiteSpace(message))
+            if (string.IsNullOrWhiteSpace(
+                    message))
             {
                 ModelState.AddModelError(
                     "message",
@@ -190,7 +225,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View("_SendMail", contact);
+                return View(
+                    "_SendMail",
+                    contact);
             }
 
 
@@ -199,30 +236,46 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             // =================================================
 
             var smtpHost =
-                _configuration["MailSettings:Host"];
+                _configuration[
+                    "MailSettings:Host"];
+
 
             var smtpPortValue =
-                _configuration["MailSettings:Port"];
+                _configuration[
+                    "MailSettings:Port"];
+
 
             var smtpUser =
-                _configuration["MailSettings:UserName"];
+                _configuration[
+                    "MailSettings:UserName"];
+
 
             var smtpPassword =
-                _configuration["MailSettings:Password"];
+                _configuration[
+                    "MailSettings:Password"];
+
 
             var fromEmail =
-                _configuration["MailSettings:FromEmail"];
+                _configuration[
+                    "MailSettings:FromEmail"];
+
 
             var fromName =
-                _configuration["MailSettings:FromName"];
+                _configuration[
+                    "MailSettings:FromName"];
 
 
-            // Ayarlar eksik mi?
-            if (string.IsNullOrWhiteSpace(smtpHost) ||
-                string.IsNullOrWhiteSpace(smtpPortValue) ||
-                string.IsNullOrWhiteSpace(smtpUser) ||
-                string.IsNullOrWhiteSpace(smtpPassword) ||
-                string.IsNullOrWhiteSpace(fromEmail))
+            // SMTP ayarları eksik mi?
+            if (string.IsNullOrWhiteSpace(
+                    smtpHost) ||
+                string.IsNullOrWhiteSpace(
+                    smtpPortValue) ||
+                string.IsNullOrWhiteSpace(
+                    smtpUser) ||
+                string.IsNullOrWhiteSpace(
+                    smtpPassword) ||
+                string.IsNullOrWhiteSpace(
+                    fromEmail))
             {
                 TempData["ErrorMessage"] =
                     "Mail ayarları eksik veya hatalı.";
@@ -233,6 +286,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
 
+            // Port geçerli bir sayı mı?
             if (!int.TryParse(
                     smtpPortValue,
                     out var smtpPort))
@@ -257,9 +311,14 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                         smtpHost,
                         smtpPort);
 
-                smtpClient.EnableSsl = true;
 
-                smtpClient.UseDefaultCredentials = false;
+                smtpClient.EnableSsl =
+                    true;
+
+
+                smtpClient.UseDefaultCredentials =
+                    false;
+
 
                 smtpClient.Credentials =
                     new NetworkCredential(
@@ -270,28 +329,35 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 using var mailMessage =
                     new MailMessage();
 
+
                 mailMessage.From =
                     new MailAddress(
                         fromEmail,
-                        string.IsNullOrWhiteSpace(fromName)
+                        string.IsNullOrWhiteSpace(
+                            fromName)
                             ? "Eticaret"
                             : fromName);
+
 
                 mailMessage.To.Add(
                     contact.Email);
 
+
                 mailMessage.Subject =
                     subject.Trim();
 
+
                 mailMessage.Body =
                     message.Trim();
+
 
                 mailMessage.IsBodyHtml =
                     false;
 
 
                 await smtpClient
-                    .SendMailAsync(mailMessage);
+                    .SendMailAsync(
+                        mailMessage);
 
 
                 TempData["SuccessMessage"] =

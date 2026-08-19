@@ -1,0 +1,439 @@
+@model List<Product>
+
+@{
+    ViewData["Title"] = "Favorilerim";
+}
+
+<section class="favorites-page">
+
+    <div class="container py-5">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+            <div>
+
+                <span class="text-primary fw-bold small">
+                    HESABIM
+                </span>
+
+                <h1 class="fw-bold mb-1">
+                    Favorilerim
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Beğendiğiniz ürünleri burada görüntüleyebilirsiniz.
+                </p>
+
+            </div>
+
+
+            <div class="favorite-count">
+
+                <i class="fa-regular fa-heart"></i>
+
+                <span>
+                    @Model.Count Ürün
+                </span>
+
+            </div>
+
+        </div>
+
+
+        @if (TempData["SuccessMessage"] is not null)
+        {
+            <div class="alert alert-success">
+
+                <i class="fa-solid fa-circle-check me-2"></i>
+
+                @TempData["SuccessMessage"]
+
+            </div>
+        }
+
+
+        @if (TempData["InfoMessage"] is not null)
+        {
+            <div class="alert alert-info">
+
+                <i class="fa-solid fa-circle-info me-2"></i>
+
+                @TempData["InfoMessage"]
+
+            </div>
+        }
+
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-favorites">
+
+                <div class="empty-icon">
+
+                    <i class="fa-regular fa-heart"></i>
+
+                </div>
+
+                <h2 class="fw-bold">
+                    Favori ürününüz bulunmuyor
+                </h2>
+
+                <p class="text-muted">
+                    Beğendiğiniz ürünleri favorilerinize ekleyerek
+                    daha sonra kolayca ulaşabilirsiniz.
+                </p>
+
+                <a asp-controller="Products" asp-action="Index" class="btn btn-dark">
+
+                    <i class="fa-solid fa-bag-shopping me-2"></i>
+
+                    Ürünleri İncele
+
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+
+                @foreach (var item in Model)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+
+                        <div class="favorite-card">
+
+                            <!-- Ürün Resmi -->
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
+                               class="favorite-image-area">
+
+                                <img src="@item.Image" alt="@item.Name" class="favorite-image" />
+
+                            </a>
+
+
+                            <!-- Favoriden Çıkar -->
+                            <form asp-controller="Favorites" asp-action="Remove" method="post" class="remove-form">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@item.Id" />
+
+
+                                <button type="submit" class="remove-button" title="Favorilerden Kaldır">
+
+                                    <i class="fa-solid fa-heart"></i>
+
+                                </button>
+
+                            </form>
+
+
+                            <!-- Ürün Bilgileri -->
+                            <div class="favorite-content">
+
+                                @if (item.Brand is not null)
+                                {
+                                    <span class="brand-name">
+                                        @item.Brand.Name
+                                    </span>
+                                }
+
+
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="product-name">
+
+                                    @item.Name
+
+                                </a>
+
+
+                                @if (!string.IsNullOrWhiteSpace(item.ProductCode))
+                                {
+                                    <div class="product-code">
+
+                                        Ürün Kodu:
+                                        @item.ProductCode
+
+                                    </div>
+                                }
+
+
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+
+                                    <span class="product-price">
+                                        @item.Price.ToString("N2") ₺
+                                    </span>
+
+
+                                    @if (item.Stock > 0)
+                                    {
+                                        <span class="badge bg-success-subtle text-success">
+                                            Stokta
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger">
+                                            Tükendi
+                                        </span>
+                                    }
+
+                                </div>
+
+
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-dark w-100 mt-3">
+
+                                    Ürünü İncele
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<style>
+    .favorites-page {
+        min-height: 70vh;
+
+        background-color: #f7f8fa;
+    }
+
+
+    .favorite-count {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 10px 16px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+
+        color: #dc3545;
+
+        background-color: #ffffff;
+
+        font-weight: 600;
+    }
+
+
+    .favorite-card {
+        position: relative;
+
+        height: 100%;
+
+        overflow: hidden;
+
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 6px 20px rgba(0, 0, 0, 0.05);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .favorite-card:hover {
+        transform: translateY(-5px);
+
+        box-shadow:
+            0 14px 30px rgba(0, 0, 0, 0.10);
+    }
+
+
+    .favorite-image-area {
+        display: block;
+
+        height: 230px;
+
+        padding: 18px;
+
+        background-color: #ffffff;
+    }
+
+
+    .favorite-image {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition: transform 0.3s ease;
+    }
+
+
+    .favorite-card:hover .favorite-image {
+        transform: scale(1.04);
+    }
+
+
+    .remove-form {
+        position: absolute;
+
+        top: 14px;
+        right: 14px;
+    }
+
+
+    .remove-button {
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #e9ecef;
+        border-radius: 50%;
+
+        color: #dc3545;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 4px 12px rgba(0, 0, 0, 0.08);
+
+        transition: 0.2s ease;
+    }
+
+
+    .remove-button:hover {
+        color: #ffffff;
+
+        border-color: #dc3545;
+
+        background-color: #dc3545;
+
+        transform: scale(1.06);
+    }
+
+
+    .favorite-content {
+        padding: 20px;
+
+        border-top: 1px solid #f1f3f5;
+    }
+
+
+    .brand-name {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #868e96;
+
+        font-size: 0.75rem;
+        font-weight: 700;
+
+        text-transform: uppercase;
+    }
+
+
+    .product-name {
+        display: block;
+
+        color: #212529;
+
+        font-size: 1rem;
+        font-weight: 700;
+
+        text-decoration: none;
+    }
+
+
+    .product-name:hover {
+        color: #0d6efd;
+    }
+
+
+    .product-code {
+        margin-top: 7px;
+
+        color: #868e96;
+
+        font-size: 0.78rem;
+    }
+
+
+    .product-price {
+        color: #212529;
+
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+
+    .empty-favorites {
+        max-width: 620px;
+
+        margin: 50px auto;
+
+        padding: 60px 30px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 22px;
+
+        background-color: #ffffff;
+
+        text-align: center;
+
+        box-shadow:
+            0 8px 28px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .empty-icon {
+        width: 85px;
+        height: 85px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 20px;
+
+        border-radius: 50%;
+
+        color: #dc3545;
+
+        background-color: #fff0f1;
+
+        font-size: 2rem;
+    }
+
+
+    @@media (max-width: 767.98px) {
+
+        .favorite-image-area {
+            height: 200px;
+        }
+
+    }
+
+
+    @@media (max-width: 480px) {
+
+        .favorite-image-area {
+            height: 180px;
+        }
+
+    }
+</style>

@@ -1,4 +1,5 @@
-using Eticaret.Data;
+using Eticaret.Core.Entities;
+using Eticaret.Service.Abstract;
 using Eticaret.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,20 +8,28 @@ namespace Eticaret.WebUI.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly DatabaseContext _context;
+        private readonly IService<Product> _productService;
 
-        public ProductsController(DatabaseContext context)
+        public ProductsController(
+            IService<Product> productService)
         {
-            _context = context;
+            _productService = productService;
         }
+
+
+        // =====================================================
+        // ÜRÜNLERİ LİSTELE + ARAMA
+        // =====================================================
 
         public async Task<IActionResult> Index(string? search)
         {
-            var query = _context.Products
+            var query = _productService
+                .GetQueryable()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
                 .Where(x => x.IsActive)
                 .AsQueryable();
+
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -29,16 +38,26 @@ namespace Eticaret.WebUI.Controllers
                 query = query.Where(x =>
                     x.Name.Contains(search) ||
                     x.ProductCode.Contains(search) ||
-                    (x.Brand != null && x.Brand.Name.Contains(search)) ||
-                    (x.Category != null && x.Category.Name.Contains(search)));
+                    (x.Brand != null &&
+                     x.Brand.Name.Contains(search)) ||
+                    (x.Category != null &&
+                     x.Category.Name.Contains(search)));
             }
+
 
             var products = await query
                 .OrderBy(x => x.OrderNo)
+                .AsNoTracking()
                 .ToListAsync();
+
 
             return View(products);
         }
+
+
+        // =====================================================
+        // ÜRÜN DETAYI
+        // =====================================================
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -47,21 +66,39 @@ namespace Eticaret.WebUI.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+
+            var product = await _productService
+                .GetQueryable()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                    x.Id == id.Value);
+
 
             if (product is null)
             {
                 return NotFound();
             }
 
-            var model = new ProductDetailViewModel()
+
+            var relatedProducts = await _productService
+                .GetQueryable()
+                .Where(x =>
+                    x.IsActive &&
+                    x.CategoryId == product.CategoryId &&
+                    x.Id != product.Id)
+                .OrderBy(x => x.OrderNo)
+                .AsNoTracking()
+                .ToListAsync();
+
+
+            var model = new ProductDetailViewModel
             {
                 Product = product,
-                RelatedProducts = _context.Products.Where(p => p.IsActive && p.CategoryId == product.CategoryId && p.Id != product.Id)
+                RelatedProducts = relatedProducts
             };
+
 
             return View(model);
         }

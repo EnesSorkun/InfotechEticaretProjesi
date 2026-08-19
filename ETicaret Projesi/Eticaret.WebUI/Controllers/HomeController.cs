@@ -1,6 +1,5 @@
-using System.Diagnostics;
 using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Eticaret.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,65 +8,116 @@ namespace Eticaret.WebUI.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly DatabaseContext _context;
+    private readonly IService<Slider> _sliderService;
+    private readonly IService<News> _newsService;
+    private readonly IService<Product> _productService;
+    private readonly IService<Contact> _contactService;
 
-    public HomeController(DatabaseContext context)
+    public HomeController(
+        IService<Slider> sliderService,
+        IService<News> newsService,
+        IService<Product> productService,
+        IService<Contact> contactService)
     {
-        _context = context;
+        _sliderService = sliderService;
+        _newsService = newsService;
+        _productService = productService;
+        _contactService = contactService;
     }
+
+
+    // =====================================================
+    // HOME
+    // =====================================================
 
     public async Task<IActionResult> Index()
     {
-        // Front-end'de pasif kayıtları göstermedik.
         var model = new HomePageViewModel
         {
-            Sliders = await _context.Sliders
-                .ToListAsync(),
+            // Slider kayıtları
+            Sliders = await _sliderService
+                .GetAllAsync(),
 
-            News = await _context.News
+
+            // Sadece aktif kampanyalar
+            News = await _newsService
+                .GetQueryable()
                 .Where(x => x.IsActive)
                 .OrderByDescending(x => x.CreateDate)
+                .AsNoTracking()
                 .ToListAsync(),
 
-            Products = await _context.Products
-                .Where(x => x.IsActive && x.IsHome)
+
+            // Ana sayfada gösterilecek aktif ürünler
+            Products = await _productService
+                .GetQueryable()
+                .Where(x =>
+                    x.IsActive &&
+                    x.IsHome)
                 .Include(x => x.Category)
                 .Include(x => x.Brand)
                 .OrderBy(x => x.OrderNo)
+                .AsNoTracking()
                 .ToListAsync()
         };
 
         return View(model);
     }
 
+
+    // =====================================================
+    // PRIVACY
+    // =====================================================
+
     public IActionResult Privacy()
     {
         return View();
     }
 
+
+    // =====================================================
+    // CONTACT US GET
+    // =====================================================
+
+    [HttpGet]
     public IActionResult ContactUs()
     {
         return View();
     }
 
+
+    // =====================================================
+    // CONTACT US POST
+    // =====================================================
+
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ContactUs(Contact contact)
+    public async Task<IActionResult> ContactUs(
+        Contact contact)
     {
         if (!ModelState.IsValid)
         {
             return View(contact);
         }
 
-        contact.CreateDate = DateTime.UtcNow;
 
-        _context.Contacts.Add(contact);
+        contact.CreateDate =
+            DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+
+        await _contactService
+            .AddAsync(contact);
+
+
+        await _contactService
+            .SaveChangesAsync();
+
 
         TempData["ContactSuccess"] =
             "Mesajınız başarıyla gönderilmiştir.";
 
-        return RedirectToAction(nameof(ContactUs));
+
+        return RedirectToAction(
+            nameof(ContactUs));
     }
 }

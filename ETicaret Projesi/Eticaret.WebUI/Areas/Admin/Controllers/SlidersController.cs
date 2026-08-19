@@ -1,5 +1,5 @@
 using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,28 +10,38 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
     [Authorize(Policy = "AdminPolicy")]
     public class SlidersController : Controller
     {
-        private readonly DatabaseContext _context;
+        private readonly IService<Slider> _sliderService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public SlidersController(
-            DatabaseContext context,
+            IService<Slider> sliderService,
             IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _sliderService = sliderService;
             _webHostEnvironment = webHostEnvironment;
         }
 
+
+        // =====================================================
         // GET: Admin/Sliders
+        // =====================================================
+
         public async Task<IActionResult> Index()
         {
-            var sliders = await _context.Sliders
+            var sliders = await _sliderService
+                .GetQueryable()
                 .OrderByDescending(x => x.Id)
+                .AsNoTracking()
                 .ToListAsync();
 
             return View(sliders);
         }
 
+
+        // =====================================================
         // GET: Admin/Sliders/Details/5
+        // =====================================================
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
@@ -39,8 +49,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var slider = await _context.Sliders
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var slider =
+                await _sliderService.FindAsync(
+                    id.Value);
 
             if (slider is null)
             {
@@ -50,13 +61,21 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(slider);
         }
 
+
+        // =====================================================
         // GET: Admin/Sliders/Create
+        // =====================================================
+
         public IActionResult Create()
         {
             return View();
         }
 
+
+        // =====================================================
         // POST: Admin/Sliders/Create
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -74,16 +93,28 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 imageFile.Length > 0)
             {
                 slider.Image =
-                    await SaveImageFileAsync(imageFile);
+                    await SaveImageFileAsync(
+                        imageFile);
             }
 
-            _context.Sliders.Add(slider);
-            await _context.SaveChangesAsync();
+            await _sliderService
+                .AddAsync(slider);
 
-            return RedirectToAction(nameof(Index));
+            await _sliderService
+                .SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Slider başarıyla oluşturuldu.";
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
+
+        // =====================================================
         // GET: Admin/Sliders/Edit/5
+        // =====================================================
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
@@ -92,7 +123,8 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
             var slider =
-                await _context.Sliders.FindAsync(id);
+                await _sliderService.FindAsync(
+                    id.Value);
 
             if (slider is null)
             {
@@ -102,7 +134,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(slider);
         }
 
+
+        // =====================================================
         // POST: Admin/Sliders/Edit/5
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -116,7 +152,8 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
             var existingSlider =
-                await _context.Sliders.FindAsync(id);
+                await _sliderService.FindAsync(
+                    id);
 
             if (existingSlider is null)
             {
@@ -127,16 +164,22 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                slider.Image = existingSlider.Image;
+                slider.Image =
+                    existingSlider.Image;
 
                 return View(slider);
             }
 
-            // Overposting'i önlemek için sadece düzenlenebilir
-            // alanları güncelliyoruz.
-            existingSlider.Title = slider.Title;
-            existingSlider.Description = slider.Description;
-            existingSlider.Link = slider.Link;
+            // Sadece düzenlenebilir alanları güncelliyoruz.
+            existingSlider.Title =
+                slider.Title;
+
+            existingSlider.Description =
+                slider.Description;
+
+            existingSlider.Link =
+                slider.Link;
+
 
             // Yeni görsel seçildiyse eski görseli siliyoruz
             // ve yeni görseli kaydediyoruz.
@@ -151,24 +194,21 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                         imageFile);
             }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SliderExists(id))
-                {
-                    return NotFound();
-                }
+            await _sliderService
+                .SaveChangesAsync();
 
-                throw;
-            }
+            TempData["SuccessMessage"] =
+                "Slider başarıyla güncellendi.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(
+                nameof(Index));
         }
 
+
+        // =====================================================
         // GET: Admin/Sliders/Delete/5
+        // =====================================================
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
@@ -176,8 +216,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var slider = await _context.Sliders
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var slider =
+                await _sliderService.FindAsync(
+                    id.Value);
 
             if (slider is null)
             {
@@ -187,30 +228,48 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(slider);
         }
 
+
+        // =====================================================
         // POST: Admin/Sliders/Delete/5
+        // =====================================================
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(
             int id)
         {
             var slider =
-                await _context.Sliders.FindAsync(id);
+                await _sliderService.FindAsync(
+                    id);
 
-            if (slider is not null)
+            if (slider is null)
             {
-                // Slider görselini sunucudan siliyoruz.
-                DeleteImageFile(slider.Image);
-
-                // Slider kaydını veritabanından siliyoruz.
-                _context.Sliders.Remove(slider);
-
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+            // Slider görselini sunucudan siliyoruz.
+            DeleteImageFile(
+                slider.Image);
+
+            // Slider kaydını veritabanından siliyoruz.
+            _sliderService.Delete(
+                slider);
+
+            await _sliderService
+                .SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Slider başarıyla silindi.";
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
-        // Yüklenen görselin uzantısını ve boyutunu kontrol ediyoruz.
+
+        // =====================================================
+        // GÖRSEL DOĞRULAMA
+        // =====================================================
+
         private void ValidateImageFile(
             IFormFile? imageFile)
         {
@@ -220,19 +279,22 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return;
             }
 
-            var allowedExtensions = new[]
-            {
-                ".jpg",
-                ".jpeg",
-                ".png",
-                ".webp"
-            };
+            var allowedExtensions =
+                new[]
+                {
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".webp"
+                };
 
-            var extension = Path
-                .GetExtension(imageFile.FileName)
-                .ToLowerInvariant();
+            var extension =
+                Path.GetExtension(
+                        imageFile.FileName)
+                    .ToLowerInvariant();
 
-            if (!allowedExtensions.Contains(extension))
+            if (!allowedExtensions.Contains(
+                    extension))
             {
                 ModelState.AddModelError(
                     nameof(Slider.Image),
@@ -242,7 +304,8 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             const long maxFileSize =
                 2 * 1024 * 1024;
 
-            if (imageFile.Length > maxFileSize)
+            if (imageFile.Length >
+                maxFileSize)
             {
                 ModelState.AddModelError(
                     nameof(Slider.Image),
@@ -250,19 +313,24 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
         }
 
-        // Slider görselini wwwroot/uploads/sliders
-        // klasörüne kaydediyoruz.
+
+        // =====================================================
+        // GÖRSEL KAYDET
+        // =====================================================
+
         private async Task<string> SaveImageFileAsync(
             IFormFile imageFile)
         {
-            var extension = Path
-                .GetExtension(imageFile.FileName)
-                .ToLowerInvariant();
+            var extension =
+                Path.GetExtension(
+                        imageFile.FileName)
+                    .ToLowerInvariant();
 
-            var uploadDirectory = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                "uploads",
-                "sliders");
+            var uploadDirectory =
+                Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    "uploads",
+                    "sliders");
 
             Directory.CreateDirectory(
                 uploadDirectory);
@@ -270,27 +338,33 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             var fileName =
                 $"{Guid.NewGuid()}{extension}";
 
-            var physicalPath = Path.Combine(
-                uploadDirectory,
-                fileName);
+            var physicalPath =
+                Path.Combine(
+                    uploadDirectory,
+                    fileName);
 
             await using var stream =
                 new FileStream(
                     physicalPath,
                     FileMode.Create);
 
-            await imageFile.CopyToAsync(stream);
+            await imageFile.CopyToAsync(
+                stream);
 
-            return $"/uploads/sliders/{fileName}";
+            return
+                $"/uploads/sliders/{fileName}";
         }
 
-        // Slider görselini fiziksel olarak
-        // sunucudan siliyoruz.
+
+        // =====================================================
+        // GÖRSEL SİL
+        // =====================================================
+
         private void DeleteImageFile(
             string? imagePath)
         {
             if (string.IsNullOrWhiteSpace(
-                imagePath))
+                    imagePath))
             {
                 return;
             }
@@ -298,22 +372,17 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             var relativePath =
                 imagePath.TrimStart('/');
 
-            var physicalPath = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                relativePath);
+            var physicalPath =
+                Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    relativePath);
 
             if (System.IO.File.Exists(
-                physicalPath))
+                    physicalPath))
             {
                 System.IO.File.Delete(
                     physicalPath);
             }
-        }
-
-        private bool SliderExists(int id)
-        {
-            return _context.Sliders
-                .Any(x => x.Id == id);
         }
     }
 }

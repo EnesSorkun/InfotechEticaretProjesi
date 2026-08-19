@@ -1,34 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Eticaret.Data;
+using Eticaret.Core.Entities;
+using Eticaret.Service.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Eticaret.WebUI.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly DatabaseContext _context;
-        public CategoriesController(DatabaseContext context)
+        private readonly IService<Category> _categoryService;
+
+        public CategoriesController(
+            IService<Category> categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
-        public async Task<IActionResult> IndexAsync(int? id)
+        public async Task<IActionResult> Index(int? id)
         {
             if (id is null)
             {
                 return NotFound();
             }
 
-            var category = await _context
-            .Categories
-            .Include(p => p.Products)
-            .FirstOrDefaultAsync(x => x.Id == id);
+            var category = await _categoryService
+                .GetQueryable()
+                .Include(x => x.Products)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (category is null)
             {

@@ -1,9 +1,8 @@
 using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.WebUI.Areas.Admin.Controllers
 {
@@ -11,28 +10,38 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
     [Authorize(Policy = "AdminPolicy")]
     public class AppUsersController : Controller
     {
-        private readonly DatabaseContext _context;
+        private readonly IService<AppUser> _userService;
         private readonly PasswordHasher<AppUser> _passwordHasher;
 
-        public AppUsersController(DatabaseContext context)
+        public AppUsersController(
+            IService<AppUser> userService)
         {
-            _context = context;
+            _userService = userService;
             _passwordHasher = new PasswordHasher<AppUser>();
         }
 
 
+        // =====================================================
         // GET: Admin/AppUsers
+        // =====================================================
+
         public async Task<IActionResult> Index()
         {
-            var users = await _context.AppUsers
+            var users = await _userService
+                .GetAllAsync();
+
+            users = users
                 .OrderByDescending(x => x.CreateDate)
-                .ToListAsync();
+                .ToList();
 
             return View(users);
         }
 
 
+        // =====================================================
         // GET: Admin/AppUsers/Details/5
+        // =====================================================
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
@@ -40,29 +49,40 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUsers
-                .FirstOrDefaultAsync(x => x.Id == id);
+
+            var appUser =
+                await _userService.FindAsync(
+                    id.Value);
+
 
             if (appUser is null)
             {
                 return NotFound();
             }
 
+
             return View(appUser);
         }
 
 
+        // =====================================================
         // GET: Admin/AppUsers/Create
+        // =====================================================
+
         public IActionResult Create()
         {
             return View();
         }
 
 
+        // =====================================================
         // POST: Admin/AppUsers/Create
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AppUser appUser)
+        public async Task<IActionResult> Create(
+            AppUser appUser)
         {
             if (!ModelState.IsValid)
             {
@@ -71,10 +91,12 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
 
             // Aynı email ile daha önce kullanıcı oluşturulmuş mu?
-            var emailExists = await _context.AppUsers
-                .AnyAsync(x => x.Email == appUser.Email);
+            var existingUser =
+                await _userService.GetAsync(x =>
+                    x.Email == appUser.Email);
 
-            if (emailExists)
+
+            if (existingUser is not null)
             {
                 ModelState.AddModelError(
                     nameof(AppUser.Email),
@@ -84,30 +106,44 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
 
-            // Şifreyi düz metin olarak değil HASH olarak kaydediyoruz.
-            appUser.Password = _passwordHasher.HashPassword(
-                appUser,
-                appUser.Password);
+            // Şifreyi düz metin olarak değil
+            // hashlenmiş şekilde kaydediyoruz.
+            appUser.Password =
+                _passwordHasher.HashPassword(
+                    appUser,
+                    appUser.Password);
 
 
             // Sistem tarafından oluşturulan alanlar
-            appUser.CreateDate = DateTime.UtcNow;
-            appUser.UserGuid = Guid.NewGuid();
+            appUser.CreateDate =
+                DateTime.UtcNow;
 
 
-            await _context.AppUsers.AddAsync(appUser);
+            appUser.UserGuid =
+                Guid.NewGuid();
 
-            await _context.SaveChangesAsync();
+
+            await _userService
+                .AddAsync(appUser);
+
+
+            await _userService
+                .SaveChangesAsync();
 
 
             TempData["SuccessMessage"] =
                 "Kullanıcı başarıyla oluşturuldu.";
 
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
 
+        // =====================================================
         // GET: Admin/AppUsers/Edit/5
+        // =====================================================
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
@@ -115,8 +151,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUsers
-                .FindAsync(id);
+
+            var appUser =
+                await _userService.FindAsync(
+                    id.Value);
+
 
             if (appUser is null)
             {
@@ -124,16 +163,19 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
 
-            // Veritabanındaki hash değerini forma kesinlikle basmıyoruz.
-            // Şifre alanı boş açılacak.
-            appUser.Password = string.Empty;
+            // Veritabanındaki hash değerini forma basmıyoruz.
+            appUser.Password =
+                string.Empty;
 
 
             return View(appUser);
         }
 
 
+        // =====================================================
         // POST: Admin/AppUsers/Edit/5
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -146,12 +188,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
 
-            /*
-             * Edit işleminde şifre değiştirmek zorunlu değil.
-             * AppUser entity'sinde Password Required olduğu için
-             * burada Password validation'ını kaldırıyoruz.
-             */
-            ModelState.Remove(nameof(AppUser.Password));
+            // Edit işleminde şifre değiştirmek zorunlu değil.
+            ModelState.Remove(
+                nameof(AppUser.Password));
 
 
             if (!ModelState.IsValid)
@@ -160,8 +199,10 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
 
-            var existingUser = await _context.AppUsers
-                .FindAsync(id);
+            var existingUser =
+                await _userService.FindAsync(
+                    id);
+
 
             if (existingUser is null)
             {
@@ -169,13 +210,14 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
 
-            // Başka bir kullanıcı aynı email'i kullanıyor mu?
-            var emailExists = await _context.AppUsers
-                .AnyAsync(x =>
+            // Başka kullanıcı aynı email'i kullanıyor mu?
+            var emailOwner =
+                await _userService.GetAsync(x =>
                     x.Email == appUser.Email &&
                     x.Id != id);
 
-            if (emailExists)
+
+            if (emailOwner is not null)
             {
                 ModelState.AddModelError(
                     nameof(AppUser.Email),
@@ -185,22 +227,33 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
 
-            // Düzenlenmesine izin verilen alanlar
-            existingUser.Name = appUser.Name;
-            existingUser.Surname = appUser.Surname;
-            existingUser.Email = appUser.Email;
-            existingUser.Phone = appUser.Phone;
-            existingUser.UserName = appUser.UserName;
-            existingUser.IsActive = appUser.IsActive;
-            existingUser.IsAdmin = appUser.IsAdmin;
+            // Sadece düzenlenmesine izin verilen alanlar
+            existingUser.Name =
+                appUser.Name;
+
+            existingUser.Surname =
+                appUser.Surname;
+
+            existingUser.Email =
+                appUser.Email;
+
+            existingUser.Phone =
+                appUser.Phone;
+
+            existingUser.UserName =
+                appUser.UserName;
+
+            existingUser.IsActive =
+                appUser.IsActive;
+
+            existingUser.IsAdmin =
+                appUser.IsAdmin;
 
 
-            /*
-             * Admin yeni bir şifre girdiyse hashleyip değiştir.
-             *
-             * Şifre alanı boş bırakılmışsa eski hash aynen korunur.
-             */
-            if (!string.IsNullOrWhiteSpace(appUser.Password))
+            // Admin yeni şifre girdiyse
+            // hashleyerek değiştiriyoruz.
+            if (!string.IsNullOrWhiteSpace(
+                    appUser.Password))
             {
                 existingUser.Password =
                     _passwordHasher.HashPassword(
@@ -210,33 +263,27 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
 
             // CreateDate ve UserGuid değiştirilmez.
-            // existingUser.CreateDate korunuyor.
-            // existingUser.UserGuid korunuyor.
+            // existingUser.CreateDate korunur.
+            // existingUser.UserGuid korunur.
 
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AppUserExists(id))
-                {
-                    return NotFound();
-                }
-
-                throw;
-            }
+            await _userService
+                .SaveChangesAsync();
 
 
             TempData["SuccessMessage"] =
                 "Kullanıcı başarıyla güncellendi.";
 
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
 
+        // =====================================================
         // GET: Admin/AppUsers/Delete/5
+        // =====================================================
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
@@ -244,25 +291,35 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var appUser = await _context.AppUsers
-                .FirstOrDefaultAsync(x => x.Id == id);
+
+            var appUser =
+                await _userService.FindAsync(
+                    id.Value);
+
 
             if (appUser is null)
             {
                 return NotFound();
             }
+
 
             return View(appUser);
         }
 
 
+        // =====================================================
         // POST: Admin/AppUsers/Delete/5
+        // =====================================================
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(
+            int id)
         {
-            var appUser = await _context.AppUsers
-                .FindAsync(id);
+            var appUser =
+                await _userService.FindAsync(
+                    id);
+
 
             if (appUser is null)
             {
@@ -270,22 +327,36 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
 
-            _context.AppUsers.Remove(appUser);
+            _userService.Delete(
+                appUser);
 
-            await _context.SaveChangesAsync();
+
+            await _userService
+                .SaveChangesAsync();
 
 
             TempData["SuccessMessage"] =
                 "Kullanıcı başarıyla silindi.";
 
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
 
-        private bool AppUserExists(int id)
+        // =====================================================
+        // USER EXISTS
+        // =====================================================
+
+        private async Task<bool> AppUserExistsAsync(
+            int id)
         {
-            return _context.AppUsers
-                .Any(x => x.Id == id);
+            var user =
+                await _userService.FindAsync(
+                    id);
+
+
+            return user is not null;
         }
     }
 }

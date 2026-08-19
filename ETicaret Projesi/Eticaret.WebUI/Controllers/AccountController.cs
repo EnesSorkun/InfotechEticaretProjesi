@@ -1,25 +1,27 @@
 using System.Security.Claims;
 using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Eticaret.WebUI.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.WebUI.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly DatabaseContext _context;
+        private readonly IService<AppUser> _userService;
         private readonly PasswordHasher<AppUser> _passwordHasher;
 
-        public AccountController(DatabaseContext context)
+        public AccountController(
+            IService<AppUser> userService)
         {
-            _context = context;
+            _userService = userService;
             _passwordHasher = new PasswordHasher<AppUser>();
         }
+
 
         public IActionResult Index()
         {
@@ -59,8 +61,8 @@ namespace Eticaret.WebUI.Controllers
 
 
             // Kullanıcıyı email adresine göre buluyoruz.
-            var user = await _context.AppUsers
-                .FirstOrDefaultAsync(x =>
+            var user = await _userService
+                .GetAsync(x =>
                     x.Email == loginViewModel.Email);
 
 
@@ -74,7 +76,7 @@ namespace Eticaret.WebUI.Controllers
             }
 
 
-            // Kullanıcı aktif değilse sisteme giriş yapamaz.
+            // Kullanıcı aktif değilse giriş yapamaz.
             if (!user.IsActive)
             {
                 ModelState.AddModelError(
@@ -85,8 +87,7 @@ namespace Eticaret.WebUI.Controllers
             }
 
 
-            // Veritabanındaki hashlenmiş şifre ile
-            // kullanıcının girdiği şifreyi karşılaştırıyoruz.
+            // Hashlenmiş şifreyi kontrol ediyoruz.
             PasswordVerificationResult passwordResult;
 
             try
@@ -143,8 +144,6 @@ namespace Eticaret.WebUI.Controllers
                         ? "Admin"
                         : "Customer"),
 
-                // Kullanıcının "Beni Hatırla" tercihini
-                // cookie claim içerisinde saklıyoruz.
                 new Claim(
                     "RememberMe",
                     loginViewModel.RememberMe.ToString())
@@ -169,15 +168,14 @@ namespace Eticaret.WebUI.Controllers
                 };
 
 
-            // Cookie oluşturulur ve kullanıcı giriş yapmış olur.
+            // Cookie oluşturulur.
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
                 authProperties);
 
 
-            // Kullanıcı korumalı bir sayfadan login ekranına
-            // yönlendirilmişse girişten sonra tekrar o sayfaya döner.
+            // ReturnUrl varsa kullanıcıyı geldiği sayfaya döndür.
             if (!string.IsNullOrWhiteSpace(
                     loginViewModel.ReturnUrl) &&
                 Url.IsLocalUrl(
@@ -188,8 +186,6 @@ namespace Eticaret.WebUI.Controllers
             }
 
 
-            // Admin veya Customer fark etmeksizin
-            // normal girişte ana sayfaya gönderiyoruz.
             return RedirectToAction(
                 "Index",
                 "Home");
@@ -216,11 +212,10 @@ namespace Eticaret.WebUI.Controllers
         public async Task<IActionResult> SignUp(
             AppUser appUser)
         {
-            // Site üzerinden kayıt olan kullanıcı
-            // hiçbir zaman admin olamaz.
+            // Site üzerinden kayıt olan kullanıcı admin olamaz.
             appUser.IsAdmin = false;
 
-            // Yeni kullanıcı aktif olarak oluşturulur.
+            // Yeni kullanıcı aktif oluşturulur.
             appUser.IsActive = true;
 
 
@@ -230,14 +225,13 @@ namespace Eticaret.WebUI.Controllers
             }
 
 
-            // Aynı email ile ikinci kullanıcı oluşturulmasını engeller.
-            var emailExists =
-                await _context.AppUsers
-                    .AnyAsync(x =>
-                        x.Email == appUser.Email);
+            // Email daha önce kullanılmış mı?
+            var existingUser =
+                await _userService.GetAsync(x =>
+                    x.Email == appUser.Email);
 
 
-            if (emailExists)
+            if (existingUser is not null)
             {
                 ModelState.AddModelError(
                     nameof(AppUser.Email),
@@ -255,19 +249,19 @@ namespace Eticaret.WebUI.Controllers
                 Guid.NewGuid();
 
 
-            // Şifreyi düz metin olarak kaydetmiyoruz.
-            // Hashleyerek veritabanına gönderiyoruz.
+            // Şifreyi hashleyerek kaydediyoruz.
             appUser.Password =
                 _passwordHasher.HashPassword(
                     appUser,
                     appUser.Password);
 
 
-            await _context.AppUsers
+            await _userService
                 .AddAsync(appUser);
 
 
-            await _context.SaveChangesAsync();
+            await _userService
+                .SaveChangesAsync();
 
 
             TempData["SuccessMessage"] =
@@ -294,15 +288,10 @@ namespace Eticaret.WebUI.Controllers
         // PROFILE
         // =====================================================
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
-            if (User.Identity?.IsAuthenticated != true)
-            {
-                return RedirectToAction(nameof(SignIn));
-            }
-
-
             var userIdValue =
                 User.FindFirstValue(
                     ClaimTypes.NameIdentifier);
@@ -312,13 +301,14 @@ namespace Eticaret.WebUI.Controllers
                     userIdValue,
                     out var userId))
             {
-                return RedirectToAction(nameof(SignIn));
+                return RedirectToAction(
+                    nameof(SignIn));
             }
 
 
-            var user = await _context.AppUsers
-                .FirstOrDefaultAsync(x =>
-                    x.Id == userId);
+            var user =
+                await _userService.FindAsync(
+                    userId);
 
 
             if (user is null)
@@ -326,7 +316,8 @@ namespace Eticaret.WebUI.Controllers
                 await HttpContext.SignOutAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme);
 
-                return RedirectToAction(nameof(SignIn));
+                return RedirectToAction(
+                    nameof(SignIn));
             }
 
 
@@ -338,15 +329,10 @@ namespace Eticaret.WebUI.Controllers
         // EDIT PROFILE GET
         // =====================================================
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
-            if (User.Identity?.IsAuthenticated != true)
-            {
-                return RedirectToAction(nameof(SignIn));
-            }
-
-
             var userIdValue =
                 User.FindFirstValue(
                     ClaimTypes.NameIdentifier);
@@ -356,13 +342,14 @@ namespace Eticaret.WebUI.Controllers
                     userIdValue,
                     out var userId))
             {
-                return RedirectToAction(nameof(SignIn));
+                return RedirectToAction(
+                    nameof(SignIn));
             }
 
 
-            var user = await _context.AppUsers
-                .FirstOrDefaultAsync(x =>
-                    x.Id == userId);
+            var user =
+                await _userService.FindAsync(
+                    userId);
 
 
             if (user is null)
@@ -372,7 +359,8 @@ namespace Eticaret.WebUI.Controllers
 
 
             // Hashlenmiş şifreyi forma göndermiyoruz.
-            user.Password = string.Empty;
+            user.Password =
+                string.Empty;
 
 
             return View(user);
@@ -383,18 +371,13 @@ namespace Eticaret.WebUI.Controllers
         // EDIT PROFILE POST
         // =====================================================
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(
             AppUser appUser,
             string? newPassword)
         {
-            if (User.Identity?.IsAuthenticated != true)
-            {
-                return RedirectToAction(nameof(SignIn));
-            }
-
-
             var userIdValue =
                 User.FindFirstValue(
                     ClaimTypes.NameIdentifier);
@@ -404,11 +387,12 @@ namespace Eticaret.WebUI.Controllers
                     userIdValue,
                     out var userId))
             {
-                return RedirectToAction(nameof(SignIn));
+                return RedirectToAction(
+                    nameof(SignIn));
             }
 
 
-            // Password AppUser entity'sinde zorunlu olduğu için
+            // Password AppUser içerisinde Required olduğu için
             // profil düzenleme sırasında validation'dan çıkarıyoruz.
             ModelState.Remove(
                 nameof(AppUser.Password));
@@ -421,9 +405,8 @@ namespace Eticaret.WebUI.Controllers
 
 
             var existingUser =
-                await _context.AppUsers
-                    .FirstOrDefaultAsync(x =>
-                        x.Id == userId);
+                await _userService.FindAsync(
+                    userId);
 
 
             if (existingUser is null)
@@ -432,14 +415,14 @@ namespace Eticaret.WebUI.Controllers
             }
 
 
-            var emailExists =
-                await _context.AppUsers
-                    .AnyAsync(x =>
-                        x.Email == appUser.Email &&
-                        x.Id != existingUser.Id);
+            // Email başka kullanıcı tarafından kullanılıyor mu?
+            var emailOwner =
+                await _userService.GetAsync(x =>
+                    x.Email == appUser.Email &&
+                    x.Id != existingUser.Id);
 
 
-            if (emailExists)
+            if (emailOwner is not null)
             {
                 ModelState.AddModelError(
                     nameof(AppUser.Email),
@@ -466,8 +449,8 @@ namespace Eticaret.WebUI.Controllers
                 appUser.UserName;
 
 
-            // Kullanıcı yeni şifre yazdıysa değiştir.
-            // Boş bıraktıysa eski hash aynen korunur.
+            // Kullanıcı yeni şifre girdiyse değiştir.
+            // Boş bıraktıysa eski hash korunur.
             if (!string.IsNullOrWhiteSpace(
                     newPassword))
             {
@@ -478,11 +461,12 @@ namespace Eticaret.WebUI.Controllers
             }
 
 
-            await _context.SaveChangesAsync();
+            await _userService
+                .SaveChangesAsync();
 
 
             // =================================================
-            // ESKİ "BENİ HATIRLA" TERCİHİNİ AL
+            // BENİ HATIRLA TERCİHİNİ AL
             // =================================================
 
             var rememberMeClaim =
@@ -498,7 +482,7 @@ namespace Eticaret.WebUI.Controllers
 
 
             // =================================================
-            // COOKIE CLAIM'LERİNİ GÜNCELLE
+            // COOKIE CLAIM'LERİNİ YENİLE
             // =================================================
 
             var claims = new List<Claim>
@@ -526,7 +510,6 @@ namespace Eticaret.WebUI.Controllers
                         ? "Admin"
                         : "Customer"),
 
-                // Eski RememberMe tercihini koruyoruz.
                 new Claim(
                     "RememberMe",
                     rememberMe.ToString())
@@ -540,21 +523,19 @@ namespace Eticaret.WebUI.Controllers
 
 
             var principal =
-                new ClaimsPrincipal(identity);
+                new ClaimsPrincipal(
+                    identity);
 
 
             var authProperties =
                 new AuthenticationProperties
                 {
-                    // Kullanıcı girişte Beni Hatırla seçtiyse true,
-                    // seçmediyse false olarak korunur.
                     IsPersistent =
                         rememberMe
                 };
 
 
-            // Cookie'yi yeni kullanıcı bilgileriyle güncelliyoruz.
-            // Kullanıcı oturumdan çıkmaz.
+            // Cookie'yi yeni bilgilerle tekrar oluşturuyoruz.
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
@@ -574,6 +555,7 @@ namespace Eticaret.WebUI.Controllers
         // SIGN OUT
         // =====================================================
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignOut()

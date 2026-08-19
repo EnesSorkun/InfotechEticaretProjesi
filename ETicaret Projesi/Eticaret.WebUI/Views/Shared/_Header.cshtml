@@ -1,3 +1,14 @@
+@using Eticaret.Core.Entities
+@using Eticaret.WebUI.ExtensionMethods
+
+@{
+    var favoriteProducts =
+        Context.Session.GetJson<List<Product>>("Favorites")
+        ?? new List<Product>();
+
+    var favoriteCount = favoriteProducts.Count;
+}
+
 <header class="site-header">
 
     <div class="container py-3">
@@ -319,7 +330,7 @@
                 <!-- =================================================
                      FAVORİLER
                      ================================================= -->
-                <a href="#" class="header-action position-relative" title="Favoriler">
+                <a href="/Favorites" class="header-action position-relative" title="Favorilerim">
 
                     <i class="fa-regular fa-heart"></i>
 

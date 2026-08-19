@@ -1,5 +1,5 @@
 using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,30 +11,46 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
     [Authorize(Policy = "AdminPolicy")]
     public class ProductsController : Controller
     {
-        private readonly DatabaseContext _context;
+        private readonly IService<Product> _productService;
+        private readonly IService<Brand> _brandService;
+        private readonly IService<Category> _categoryService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public ProductsController(
-            DatabaseContext context,
+            IService<Product> productService,
+            IService<Brand> brandService,
+            IService<Category> categoryService,
             IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _productService = productService;
+            _brandService = brandService;
+            _categoryService = categoryService;
             _webHostEnvironment = webHostEnvironment;
         }
 
+
+        // =====================================================
         // GET: Admin/Products
+        // =====================================================
+
         public async Task<IActionResult> Index()
         {
-            var products = await _context.Products
+            var products = await _productService
+                .GetQueryable()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
                 .OrderBy(x => x.OrderNo)
+                .AsNoTracking()
                 .ToListAsync();
 
             return View(products);
         }
 
+
+        // =====================================================
         // GET: Admin/Products/Details/5
+        // =====================================================
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
@@ -42,10 +58,13 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            var product = await _productService
+                .GetQueryable()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                    x.Id == id.Value);
 
             if (product is null)
             {
@@ -55,7 +74,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(product);
         }
 
+
+        // =====================================================
         // GET: Admin/Products/Create
+        // =====================================================
+
         public async Task<IActionResult> Create()
         {
             await FillSelectListsAsync();
@@ -63,7 +86,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View();
         }
 
+
+        // =====================================================
         // POST: Admin/Products/Create
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -85,18 +112,31 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 imageFile.Length > 0)
             {
                 product.Image =
-                    await SaveImageFileAsync(imageFile);
+                    await SaveImageFileAsync(
+                        imageFile);
             }
 
-            product.CreateDate = DateTime.UtcNow;
+            product.CreateDate =
+                DateTime.UtcNow;
 
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            await _productService
+                .AddAsync(product);
 
-            return RedirectToAction(nameof(Index));
+            await _productService
+                .SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Ürün başarıyla oluşturuldu.";
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
+
+        // =====================================================
         // GET: Admin/Products/Edit/5
+        // =====================================================
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
@@ -105,7 +145,8 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
             var product =
-                await _context.Products.FindAsync(id);
+                await _productService.FindAsync(
+                    id.Value);
 
             if (product is null)
             {
@@ -119,7 +160,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(product);
         }
 
+
+        // =====================================================
         // POST: Admin/Products/Edit/5
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -133,7 +178,8 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
 
             var existingProduct =
-                await _context.Products.FindAsync(id);
+                await _productService.FindAsync(
+                    id);
 
             if (existingProduct is null)
             {
@@ -157,9 +203,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return View(product);
             }
 
-            // Overposting'i önlemek için sadece düzenlenmesine
-            // izin verilen alanları güncelliyoruz.
-            // CreateDate ve mevcut görsel gibi sistem alanları korunuyor.
+
+            // Sadece düzenlenmesine izin verilen
+            // alanları güncelliyoruz.
             existingProduct.Name =
                 product.Name;
 
@@ -190,6 +236,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             existingProduct.OrderNo =
                 product.OrderNo;
 
+
             // Yeni görsel seçildiyse eski görseli
             // sunucudan silip yeni görseli kaydediyoruz.
             if (imageFile is not null &&
@@ -203,24 +250,24 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                         imageFile);
             }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
 
-                throw;
-            }
+            await _productService
+                .SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+
+            TempData["SuccessMessage"] =
+                "Ürün başarıyla güncellendi.";
+
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
+
+        // =====================================================
         // GET: Admin/Products/Delete/5
+        // =====================================================
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
@@ -228,10 +275,13 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            var product = await _productService
+                .GetQueryable()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                    x.Id == id.Value);
 
             if (product is null)
             {
@@ -241,60 +291,96 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(product);
         }
 
+
+        // =====================================================
         // POST: Admin/Products/Delete/5
+        // =====================================================
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(
             int id)
         {
             var product =
-                await _context.Products.FindAsync(id);
+                await _productService.FindAsync(
+                    id);
 
-            if (product is not null)
+            if (product is null)
             {
-                // Ürüne ait görsel varsa sunucudan siliyoruz.
-                DeleteImageFile(product.Image);
-
-                // Ardından ürünü veritabanından siliyoruz.
-                _context.Products.Remove(product);
-
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+
+            // Ürüne ait görsel varsa
+            // fiziksel dosyayı siliyoruz.
+            DeleteImageFile(
+                product.Image);
+
+
+            // Ardından veritabanındaki ürünü siliyoruz.
+            _productService.Delete(
+                product);
+
+
+            await _productService
+                .SaveChangesAsync();
+
+
+            TempData["SuccessMessage"] =
+                "Ürün başarıyla silindi.";
+
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
-        // Marka ve kategori dropdown listelerini dolduruyoruz.
+
+        // =====================================================
+        // MARKA VE KATEGORİ DROPDOWN
+        // =====================================================
+
         private async Task FillSelectListsAsync(
             int? selectedBrandId = null,
             int? selectedCategoryId = null)
         {
-            var brands = await _context.Brands
+            var brands = await _brandService
+                .GetQueryable()
                 .Where(x => x.IsActive)
                 .OrderBy(x => x.Name)
+                .AsNoTracking()
                 .ToListAsync();
 
-            var categories =
-                await _context.Categories
-                    .Where(x => x.IsActive)
-                    .OrderBy(x => x.OrderNo)
-                    .ThenBy(x => x.Name)
-                    .ToListAsync();
 
-            ViewData["BrandId"] = new SelectList(
-                brands,
-                "Id",
-                "Name",
-                selectedBrandId);
+            var categories = await _categoryService
+                .GetQueryable()
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.OrderNo)
+                .ThenBy(x => x.Name)
+                .AsNoTracking()
+                .ToListAsync();
 
-            ViewData["CategoryId"] = new SelectList(
-                categories,
-                "Id",
-                "Name",
-                selectedCategoryId);
+
+            ViewData["BrandId"] =
+                new SelectList(
+                    brands,
+                    "Id",
+                    "Name",
+                    selectedBrandId);
+
+
+            ViewData["CategoryId"] =
+                new SelectList(
+                    categories,
+                    "Id",
+                    "Name",
+                    selectedCategoryId);
         }
 
-        // Yüklenen görselin uzantısını ve boyutunu kontrol ediyoruz.
+
+        // =====================================================
+        // GÖRSEL DOĞRULAMA
+        // =====================================================
+
         private void ValidateImageFile(
             IFormFile? imageFile)
         {
@@ -304,19 +390,22 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return;
             }
 
-            var allowedExtensions = new[]
-            {
-                ".jpg",
-                ".jpeg",
-                ".png",
-                ".webp"
-            };
+            var allowedExtensions =
+                new[]
+                {
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".webp"
+                };
 
-            var extension = Path
-                .GetExtension(imageFile.FileName)
-                .ToLowerInvariant();
+            var extension =
+                Path.GetExtension(
+                        imageFile.FileName)
+                    .ToLowerInvariant();
 
-            if (!allowedExtensions.Contains(extension))
+            if (!allowedExtensions.Contains(
+                    extension))
             {
                 ModelState.AddModelError(
                     nameof(Product.Image),
@@ -326,7 +415,8 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             const long maxFileSize =
                 2 * 1024 * 1024;
 
-            if (imageFile.Length > maxFileSize)
+            if (imageFile.Length >
+                maxFileSize)
             {
                 ModelState.AddModelError(
                     nameof(Product.Image),
@@ -334,19 +424,24 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
         }
 
-        // Ürün görselini wwwroot/uploads/products
-        // klasörüne kaydediyoruz.
+
+        // =====================================================
+        // GÖRSEL KAYDET
+        // =====================================================
+
         private async Task<string> SaveImageFileAsync(
             IFormFile imageFile)
         {
-            var extension = Path
-                .GetExtension(imageFile.FileName)
-                .ToLowerInvariant();
+            var extension =
+                Path.GetExtension(
+                        imageFile.FileName)
+                    .ToLowerInvariant();
 
-            var uploadDirectory = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                "uploads",
-                "products");
+            var uploadDirectory =
+                Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    "uploads",
+                    "products");
 
             Directory.CreateDirectory(
                 uploadDirectory);
@@ -354,26 +449,33 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             var fileName =
                 $"{Guid.NewGuid()}{extension}";
 
-            var physicalPath = Path.Combine(
-                uploadDirectory,
-                fileName);
+            var physicalPath =
+                Path.Combine(
+                    uploadDirectory,
+                    fileName);
 
             await using var stream =
                 new FileStream(
                     physicalPath,
                     FileMode.Create);
 
-            await imageFile.CopyToAsync(stream);
+            await imageFile.CopyToAsync(
+                stream);
 
-            return $"/uploads/products/{fileName}";
+            return
+                $"/uploads/products/{fileName}";
         }
 
-        // Ürün görselini fiziksel olarak sunucudan siliyoruz.
+
+        // =====================================================
+        // GÖRSEL SİL
+        // =====================================================
+
         private void DeleteImageFile(
             string? imagePath)
         {
             if (string.IsNullOrWhiteSpace(
-                imagePath))
+                    imagePath))
             {
                 return;
             }
@@ -381,22 +483,17 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             var relativePath =
                 imagePath.TrimStart('/');
 
-            var physicalPath = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                relativePath);
+            var physicalPath =
+                Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    relativePath);
 
             if (System.IO.File.Exists(
-                physicalPath))
+                    physicalPath))
             {
                 System.IO.File.Delete(
                     physicalPath);
             }
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products
-                .Any(x => x.Id == id);
         }
     }
 }

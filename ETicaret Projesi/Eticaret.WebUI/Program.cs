@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using Eticaret.Data;
+using Eticaret.Service.Abstract;
+using Eticaret.Service.Concrete;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,12 +11,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".TeknoGrit.Session";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromDays(1);
+    options.IOTimeout = TimeSpan.FromMinutes(10);
+});
+
 
 // Database
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString(
             "DefaultConnection")));
+
+builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
 
 // Authentication
@@ -74,6 +87,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+app.UseSession(); // session kullan
 
 
 // Önce Authentication

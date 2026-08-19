@@ -1,8 +1,7 @@
 using Eticaret.Core.Entities;
-using Eticaret.Data;
+using Eticaret.Service.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.WebUI.Areas.Admin.Controllers
 {
@@ -10,28 +9,39 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
     [Authorize(Policy = "AdminPolicy")]
     public class BrandsController : Controller
     {
-        private readonly DatabaseContext _context;
+        private readonly IService<Brand> _brandService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public BrandsController(
-            DatabaseContext context,
+            IService<Brand> brandService,
             IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _brandService = brandService;
             _webHostEnvironment = webHostEnvironment;
         }
 
+
+        // =====================================================
         // GET: Admin/Brands
+        // =====================================================
+
         public async Task<IActionResult> Index()
         {
-            var brands = await _context.Brands
+            var brands = await _brandService
+                .GetAllAsync();
+
+            brands = brands
                 .OrderBy(x => x.OrderNo)
-                .ToListAsync();
+                .ToList();
 
             return View(brands);
         }
 
+
+        // =====================================================
         // GET: Admin/Brands/Details/5
+        // =====================================================
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
@@ -39,8 +49,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var brand =
+                await _brandService.FindAsync(
+                    id.Value);
 
             if (brand is null)
             {
@@ -50,13 +61,21 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(brand);
         }
 
+
+        // =====================================================
         // GET: Admin/Brands/Create
+        // =====================================================
+
         public IActionResult Create()
         {
             return View();
         }
 
+
+        // =====================================================
         // POST: Admin/Brands/Create
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -70,20 +89,35 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return View(brand);
             }
 
-            if (logoFile is not null && logoFile.Length > 0)
+            if (logoFile is not null &&
+                logoFile.Length > 0)
             {
-                brand.Logo = await SaveLogoFileAsync(logoFile);
+                brand.Logo =
+                    await SaveLogoFileAsync(
+                        logoFile);
             }
 
-            brand.CreateDate = DateTime.UtcNow;
+            brand.CreateDate =
+                DateTime.UtcNow;
 
-            _context.Brands.Add(brand);
-            await _context.SaveChangesAsync();
+            await _brandService
+                .AddAsync(brand);
 
-            return RedirectToAction(nameof(Index));
+            await _brandService
+                .SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                "Marka başarıyla oluşturuldu.";
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
+
+        // =====================================================
         // GET: Admin/Brands/Edit/5
+        // =====================================================
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
@@ -91,7 +125,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var brand = await _context.Brands.FindAsync(id);
+            var brand =
+                await _brandService.FindAsync(
+                    id.Value);
 
             if (brand is null)
             {
@@ -101,7 +137,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(brand);
         }
 
+
+        // =====================================================
         // POST: Admin/Brands/Edit/5
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -114,7 +154,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var existingBrand = await _context.Brands.FindAsync(id);
+            var existingBrand =
+                await _brandService.FindAsync(
+                    id);
 
             if (existingBrand is null)
             {
@@ -125,44 +167,57 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                brand.Logo = existingBrand.Logo;
-                brand.CreateDate = existingBrand.CreateDate;
+                brand.Logo =
+                    existingBrand.Logo;
+
+                brand.CreateDate =
+                    existingBrand.CreateDate;
 
                 return View(brand);
             }
 
-            // Overposting'i önlemek için sadece düzenlenebilir alanları güncelliyoruz.
-            // CreateDate gibi sistem tarafından oluşturulan alanlar korunuyor.
-            existingBrand.Name = brand.Name;
-            existingBrand.IsActive = brand.IsActive;
-            existingBrand.OrderNo = brand.OrderNo;
+            // Sadece düzenlenebilir alanları değiştiriyoruz.
+            existingBrand.Name =
+                brand.Name;
 
-            if (logoFile is not null && logoFile.Length > 0)
+            existingBrand.IsActive =
+                brand.IsActive;
+
+            existingBrand.OrderNo =
+                brand.OrderNo;
+
+
+            // Yeni logo yüklendiyse eski logoyu sil,
+            // yeni dosyayı kaydet.
+            if (logoFile is not null &&
+                logoFile.Length > 0)
             {
-                DeleteLogoFile(existingBrand.Logo);
+                DeleteLogoFile(
+                    existingBrand.Logo);
 
                 existingBrand.Logo =
-                    await SaveLogoFileAsync(logoFile);
+                    await SaveLogoFileAsync(
+                        logoFile);
             }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BrandExists(id))
-                {
-                    return NotFound();
-                }
 
-                throw;
-            }
+            await _brandService
+                .SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+
+            TempData["SuccessMessage"] =
+                "Marka başarıyla güncellendi.";
+
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
+
+        // =====================================================
         // GET: Admin/Brands/Delete/5
+        // =====================================================
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
@@ -170,8 +225,9 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var brand =
+                await _brandService.FindAsync(
+                    id.Value);
 
             if (brand is null)
             {
@@ -181,53 +237,92 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             return View(brand);
         }
 
+
+        // =====================================================
         // POST: Admin/Brands/Delete/5
+        // =====================================================
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(
+            int id)
         {
-            var brand = await _context.Brands.FindAsync(id);
+            var brand =
+                await _brandService.FindAsync(
+                    id);
 
-            if (brand is not null)
+            if (brand is null)
             {
-                DeleteLogoFile(brand.Logo);
-
-                _context.Brands.Remove(brand);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+
+            DeleteLogoFile(
+                brand.Logo);
+
+
+            _brandService.Delete(
+                brand);
+
+
+            await _brandService
+                .SaveChangesAsync();
+
+
+            TempData["SuccessMessage"] =
+                "Marka başarıyla silindi.";
+
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
-        private void ValidateLogoFile(IFormFile? logoFile)
+
+        // =====================================================
+        // LOGO VALIDATION
+        // =====================================================
+
+        private void ValidateLogoFile(
+            IFormFile? logoFile)
         {
-            if (logoFile is null || logoFile.Length == 0)
+            if (logoFile is null ||
+                logoFile.Length == 0)
             {
                 return;
             }
 
-            var allowedExtensions = new[]
-            {
-                ".jpg",
-                ".jpeg",
-                ".png",
-                ".webp"
-            };
 
-            var extension = Path
-                .GetExtension(logoFile.FileName)
-                .ToLowerInvariant();
+            var allowedExtensions =
+                new[]
+                {
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".webp"
+                };
 
-            if (!allowedExtensions.Contains(extension))
+
+            var extension =
+                Path.GetExtension(
+                        logoFile.FileName)
+                    .ToLowerInvariant();
+
+
+            if (!allowedExtensions.Contains(
+                    extension))
             {
                 ModelState.AddModelError(
                     nameof(Brand.Logo),
                     "Sadece JPG, JPEG, PNG veya WEBP dosyası yükleyebilirsiniz.");
             }
 
-            const long maxFileSize = 2 * 1024 * 1024;
 
-            if (logoFile.Length > maxFileSize)
+            const long maxFileSize =
+                2 * 1024 * 1024;
+
+
+            if (logoFile.Length >
+                maxFileSize)
             {
                 ModelState.AddModelError(
                     nameof(Brand.Logo),
@@ -235,58 +330,86 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             }
         }
 
+
+        // =====================================================
+        // LOGO KAYDET
+        // =====================================================
+
         private async Task<string> SaveLogoFileAsync(
             IFormFile logoFile)
         {
-            var extension = Path
-                .GetExtension(logoFile.FileName)
-                .ToLowerInvariant();
+            var extension =
+                Path.GetExtension(
+                        logoFile.FileName)
+                    .ToLowerInvariant();
 
-            var uploadDirectory = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                "uploads",
-                "brands");
 
-            Directory.CreateDirectory(uploadDirectory);
+            var uploadDirectory =
+                Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    "uploads",
+                    "brands");
+
+
+            Directory.CreateDirectory(
+                uploadDirectory);
+
 
             var fileName =
                 $"{Guid.NewGuid()}{extension}";
 
-            var physicalPath = Path.Combine(
-                uploadDirectory,
-                fileName);
 
-            await using var stream = new FileStream(
-                physicalPath,
-                FileMode.Create);
+            var physicalPath =
+                Path.Combine(
+                    uploadDirectory,
+                    fileName);
 
-            await logoFile.CopyToAsync(stream);
 
-            return $"/uploads/brands/{fileName}";
+            await using var stream =
+                new FileStream(
+                    physicalPath,
+                    FileMode.Create);
+
+
+            await logoFile.CopyToAsync(
+                stream);
+
+
+            return
+                $"/uploads/brands/{fileName}";
         }
 
-        private void DeleteLogoFile(string? logoPath)
+
+        // =====================================================
+        // LOGO SİL
+        // =====================================================
+
+        private void DeleteLogoFile(
+            string? logoPath)
         {
-            if (string.IsNullOrWhiteSpace(logoPath))
+            if (string.IsNullOrWhiteSpace(
+                    logoPath))
             {
                 return;
             }
 
-            var relativePath = logoPath.TrimStart('/');
 
-            var physicalPath = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                relativePath);
+            var relativePath =
+                logoPath.TrimStart('/');
 
-            if (System.IO.File.Exists(physicalPath))
+
+            var physicalPath =
+                Path.Combine(
+                    _webHostEnvironment.WebRootPath,
+                    relativePath);
+
+
+            if (System.IO.File.Exists(
+                    physicalPath))
             {
-                System.IO.File.Delete(physicalPath);
+                System.IO.File.Delete(
+                    physicalPath);
             }
-        }
-
-        private bool BrandExists(int id)
-        {
-            return _context.Brands.Any(x => x.Id == id);
         }
     }
 }
