@@ -23,3 +23,13 @@
 3) Eğer uğraşmamak için bakmak isterseniz Örnek olarak oluşturduğum müşteri hesabı ;
    email : voso@mailinator.com
    şifre : 12345
+
+<!--************************************************************************************-->
+
+19.08.2026
+
+1. Favoriler Kısmı yapıldı. Ekleme, Listeleme ve Kaldırma işlemleri
+
+2. Generic Repository Pattern kullanıldı. DatabaseContext'ler Servis ile değiştirildi(Admin Paneli de dahil).
+
+3. Bir sonraki adım ise ; Sepet İşlemleri olacak.
