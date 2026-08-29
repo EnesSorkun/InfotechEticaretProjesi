@@ -1,0 +1,630 @@
+@model CartViewModel
+
+@{
+    ViewData["Title"] = "Sepetim";
+}
+
+<section class="cart-page">
+
+    <div class="container py-5">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+            <div>
+
+                <span class="text-primary fw-bold small">
+                    ALIŞVERİŞ
+                </span>
+
+                <h1 class="fw-bold mb-1">
+                    Sepetim
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Sepetinizdeki ürünleri görüntüleyebilir ve düzenleyebilirsiniz.
+                </p>
+
+            </div>
+
+            <div class="cart-count">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span>
+                    @Model.CartLines.Count Ürün
+                </span>
+
+            </div>
+
+        </div>
+
+
+        @if (TempData["SuccessMessage"] is not null)
+        {
+            <div class="alert alert-success border-0 shadow-sm">
+
+                <i class="fa-solid fa-circle-check me-2"></i>
+
+                @TempData["SuccessMessage"]
+
+            </div>
+        }
+
+
+        @if (!Model.CartLines.Any())
+        {
+            <div class="empty-cart">
+
+                <div class="empty-cart-icon">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                </div>
+
+                <h2 class="fw-bold">
+                    Sepetiniz boş
+                </h2>
+
+                <p class="text-muted">
+                    Beğendiğiniz ürünleri sepete ekleyerek alışverişe başlayabilirsiniz.
+                </p>
+
+                <a asp-controller="Products" asp-action="Index" class="btn btn-dark">
+
+                    <i class="fa-solid fa-bag-shopping me-2"></i>
+
+                    Ürünleri İncele
+
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+
+                <!-- SOL TARAF -->
+                <div class="col-lg-8">
+
+                    <div class="cart-items">
+
+                        @foreach (var item in Model.CartLines)
+                        {
+                            <div class="cart-item">
+
+                                <!-- RESİM -->
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.Id"
+                                   class="cart-image-wrapper">
+
+                                    <img src="@item.Product.Image" alt="@item.Product.Name" class="cart-image" />
+
+                                </a>
+
+
+                                <!-- BİLGİLER -->
+                                <div class="cart-product-info">
+
+                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.Id"
+                                       class="cart-product-name">
+
+                                        @item.Product.Name
+
+                                    </a>
+
+
+                                    <div class="text-muted small mt-1">
+
+                                        @if (!string.IsNullOrWhiteSpace(item.Product.ProductCode))
+                                        {
+                                            <span>
+                                                Ürün Kodu:
+                                                @item.Product.ProductCode
+                                            </span>
+                                        }
+
+                                    </div>
+
+
+                                    <div class="cart-price mt-3">
+
+                                        @item.Product.Price.ToString("N2") ₺
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ADET -->
+                                <div class="cart-quantity-area">
+
+                                    <form asp-controller="Cart" asp-action="Update" method="post" class="quantity-form">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden" name="productId" value="@item.Product.Id" />
+
+
+                                        <div class="quantity-control">
+
+                                            <!-- AZALT -->
+                                            <button type="submit" name="quantity" value="@(item.Quantity - 1)"
+                                                    class="quantity-button" @(item.Quantity <= 1 ? "disabled" : null)>
+
+                                                <i class="fa-solid fa-minus"></i>
+
+                                            </button>
+
+
+                                            <!-- MEVCUT ADET -->
+                                            <span class="quantity-value">
+
+                                                @item.Quantity
+
+                                            </span>
+
+
+                                            <!-- ARTIR -->
+                                            <button type="submit" name="quantity" value="@(item.Quantity + 1)"
+                                                    class="quantity-button" @(item.Quantity >= item.Product.Stock ? "disabled" :
+                                                                                                                                                                                                    null)>
+
+                                                <i class="fa-solid fa-plus"></i>
+
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+
+                                    <div class="item-total mt-3">
+
+                                        <span class="text-muted small">
+                                            Toplam
+                                        </span>
+
+                                        <strong>
+                                            @((item.Product.Price * item.Quantity).ToString("N2")) ₺
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- SİL -->
+                                <div>
+
+                                    <form asp-controller="Cart" asp-action="Remove" method="post">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden" name="productId" value="@item.Product.Id" />
+
+                                        <button type="submit" class="remove-cart-button" title="Sepetten Kaldır">
+
+                                            <i class="fa-solid fa-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <div class="d-flex justify-content-between mt-3">
+
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary">
+
+                            <i class="fa-solid fa-arrow-left me-2"></i>
+
+                            Alışverişe Devam Et
+
+                        </a>
+
+
+                        <form asp-controller="Cart" asp-action="Clear" method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit" class="btn btn-outline-danger">
+
+                                <i class="fa-solid fa-trash me-2"></i>
+
+                                Sepeti Temizle
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SAĞ TARAF -->
+                <div class="col-lg-4">
+
+                    <div class="cart-summary">
+
+                        <h2 class="h5 fw-bold mb-4">
+                            Sipariş Özeti
+                        </h2>
+
+
+                        <div class="summary-row">
+
+                            <span>
+                                Ürün Toplamı
+                            </span>
+
+                            <strong>
+                                @Model.TotalPrice.ToString("N2") ₺
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-row">
+
+                            <span>
+                                Kargo
+                            </span>
+
+                            <strong class="text-success">
+                                Ücretsiz
+                            </strong>
+
+                        </div>
+
+
+                        <hr />
+
+
+                        <div class="summary-total">
+
+                            <span>
+                                Toplam
+                            </span>
+
+                            <strong>
+                                @Model.TotalPrice.ToString("N2") ₺
+                            </strong>
+
+                        </div>
+
+
+                        <a asp-controller="Cart" asp-action="Checkout" class="btn btn-dark w-100 mt-4">
+
+                            <i class="fa-solid fa-credit-card me-2"></i>
+
+                            Ödemeye Geç
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<style>
+    .cart-page {
+        min-height: 70vh;
+        background-color: #f7f8fa;
+    }
+
+
+    .cart-count {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 10px 16px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+
+        background-color: #ffffff;
+
+        font-weight: 600;
+    }
+
+
+    .cart-items {
+        overflow: hidden;
+
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+    }
+
+
+    .cart-item {
+        display: grid;
+
+        grid-template-columns:
+            120px minmax(0, 1fr) 180px 45px;
+
+        align-items: center;
+
+        gap: 20px;
+
+        padding: 20px;
+
+        border-bottom: 1px solid #eeeeee;
+    }
+
+
+    .cart-item:last-child {
+        border-bottom: 0;
+    }
+
+
+    .cart-image-wrapper {
+        height: 100px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .cart-image {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+
+    .cart-product-name {
+        color: #212529;
+
+        font-size: 1rem;
+        font-weight: 700;
+
+        text-decoration: none;
+    }
+
+
+    .cart-product-name:hover {
+        color: #0d6efd;
+    }
+
+
+    .cart-price {
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       ADET ARTIR / AZALT
+       ===================================================== */
+
+    .quantity-control {
+        display: inline-flex;
+        align-items: center;
+
+        overflow: hidden;
+
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+
+        background-color: #ffffff;
+    }
+
+
+    .quantity-button {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+
+        border: 0;
+
+        color: #212529;
+
+        background-color: #f8f9fa;
+
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease;
+    }
+
+
+    .quantity-button:hover:not(:disabled) {
+        color: #ffffff;
+
+        background-color: #212529;
+    }
+
+
+    .quantity-button:disabled {
+        opacity: 0.35;
+
+        cursor: not-allowed;
+    }
+
+
+    .quantity-value {
+        min-width: 46px;
+
+        padding: 0 8px;
+
+        text-align: center;
+
+        font-weight: 700;
+    }
+
+
+    .item-total {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    /* =====================================================
+       SİL BUTONU
+       ===================================================== */
+
+    .remove-cart-button {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #f1c7cb;
+        border-radius: 10px;
+
+        color: #dc3545;
+
+        background-color: #ffffff;
+
+        transition: 0.2s ease;
+    }
+
+
+    .remove-cart-button:hover {
+        color: #ffffff;
+
+        background-color: #dc3545;
+    }
+
+
+    /* =====================================================
+       SİPARİŞ ÖZETİ
+       ===================================================== */
+
+    .cart-summary {
+        position: sticky;
+        top: 20px;
+
+        padding: 25px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+
+        margin-bottom: 15px;
+
+        color: #495057;
+    }
+
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+
+    /* =====================================================
+       BOŞ SEPET
+       ===================================================== */
+
+    .empty-cart {
+        max-width: 620px;
+
+        margin: 50px auto;
+
+        padding: 60px 30px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 22px;
+
+        background-color: #ffffff;
+
+        text-align: center;
+
+        box-shadow:
+            0 8px 28px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .empty-cart-icon {
+        width: 85px;
+        height: 85px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 20px;
+
+        border-radius: 50%;
+
+        background-color: #f1f3f5;
+
+        font-size: 2rem;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
+
+    @@media (max-width: 991.98px) {
+
+        .cart-item {
+            grid-template-columns:
+                100px minmax(0, 1fr);
+        }
+
+
+        .cart-quantity-area {
+            grid-column: 2;
+        }
+
+    }
+
+
+    @@media (max-width: 575.98px) {
+
+        .cart-item {
+            grid-template-columns: 1fr;
+        }
+
+
+        .cart-image-wrapper {
+            height: 180px;
+        }
+
+
+        .cart-quantity-area {
+            grid-column: auto;
+        }
+
+    }
+</style>

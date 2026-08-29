@@ -1,11 +1,14 @@
 using Eticaret.Core.Entities;
 using Eticaret.Service.Abstract;
 using Eticaret.WebUI.ExtensionMethods;
+using Eticaret.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.WebUI.Controllers
 {
+    [Authorize]
     public class FavoritesController : Controller
     {
         private readonly IService<Product> _productService;
@@ -43,6 +46,7 @@ namespace Eticaret.WebUI.Controllers
                 .GetQueryable()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
 
@@ -62,7 +66,29 @@ namespace Eticaret.WebUI.Controllers
 
             if (!exists)
             {
-                products.Add(product);
+                var favoriteProduct =
+                    new FavoriteProductViewModel
+                    {
+                        Id = product.Id,
+
+                        Name = product.Name,
+
+                        ProductCode = product.ProductCode,
+
+                        Price = product.Price,
+
+                        Stock = product.Stock,
+
+                        Image = product.Image,
+
+                        BrandName = product.Brand?.Name,
+
+                        CategoryName = product.Category?.Name
+                    };
+
+
+                products.Add(
+                    favoriteProduct);
 
 
                 HttpContext.Session.SetJson(
@@ -100,7 +126,9 @@ namespace Eticaret.WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove(int id)
+        public IActionResult Remove(
+            int id,
+            string? returnUrl = null)
         {
             var products = GetProducts();
 
@@ -124,25 +152,33 @@ namespace Eticaret.WebUI.Controllers
             }
 
 
+            // Kullanıcı hangi sayfadaysa
+            // favoriden kaldırdıktan sonra aynı sayfaya dönsün.
+            if (!string.IsNullOrWhiteSpace(returnUrl) &&
+                Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+
             return RedirectToAction(
                 nameof(Index));
         }
-
 
         // =====================================================
         // SESSION'DAKİ FAVORİLERİ GETİR
         // =====================================================
 
-        private List<Product> GetProducts()
+        private List<FavoriteProductViewModel> GetProducts()
         {
             var products =
                 HttpContext.Session
-                    .GetJson<List<Product>>(
+                    .GetJson<List<FavoriteProductViewModel>>(
                         "Favorites");
 
 
             return products
-                   ?? new List<Product>();
+                   ?? new List<FavoriteProductViewModel>();
         }
     }
 }

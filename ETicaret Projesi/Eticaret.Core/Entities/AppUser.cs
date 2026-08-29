@@ -7,6 +7,10 @@ namespace Eticaret.Core.Entities
     {
         public int Id { get; set; }
 
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+        public ICollection<Address> Addresses { get; set; } = new List<Address>();
+
 
         [DisplayName("Ad")]
         [Required(ErrorMessage = "Ad alanını boş geçmeyiniz.")]
@@ -56,5 +60,13 @@ namespace Eticaret.Core.Entities
 
 
         public Guid? UserGuid { get; set; }
+
+
+        // Şifre sıfırlama token'ının hashlenmiş hali.
+        public string? PasswordResetToken { get; set; }
+
+
+        // Token'ın geçerli olduğu son tarih.
+        public DateTime? PasswordResetTokenExpireDate { get; set; }
     }
 }

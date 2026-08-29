@@ -1,9 +1,31 @@
+@using Eticaret.WebUI.ExtensionMethods
+@using Eticaret.WebUI.Models
+
 @model Product
 
+@{
+    var favoriteProducts =
+        Context.Session
+            .GetJson<List<FavoriteProductViewModel>>(
+                "Favorites")
+        ?? new List<FavoriteProductViewModel>();
+
+    var isFavorite =
+        favoriteProducts.Any(x =>
+            x.Id == Model.Id);
+
+    var returnUrl =
+        $"{Context.Request.Path}{Context.Request.QueryString}";
+}
+
 <div class="col mb-5">
+
     <div class="card h-100 position-relative">
 
-        <!-- İndirim -->
+        <!-- =====================================================
+             İNDİRİM
+             ===================================================== -->
+
         <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; left: 0.5rem; z-index: 2;">
 
             İndirim
@@ -11,49 +33,122 @@
         </div>
 
 
-        <!-- Favorilere Ekle -->
-        <form asp-controller="Favorites" asp-action="Add" method="post" class="position-absolute"
-              style="top: 0.5rem; right: 0.5rem; z-index: 2;">
+        <!-- =====================================================
+             FAVORİ
+             ===================================================== -->
 
-            @Html.AntiForgeryToken()
+        @if (isFavorite)
+        {
+            <!-- Favorilerden Kaldır -->
 
-            <input type="hidden" name="id" value="@Model.Id" />
+            <form asp-area="" asp-controller="Favorites" asp-action="Remove" method="post" class="position-absolute"
+                  style="top: 0.5rem; right: 0.5rem; z-index: 2;">
 
-            <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-
-
-            <button type="submit" class="btn btn-light rounded-circle shadow-sm" style="width: 40px; height: 40px;"
-                    title="Favorilere Ekle">
-
-                <i class="fa-regular fa-heart text-danger"></i>
-
-            </button>
-
-        </form>
+                @Html.AntiForgeryToken()
 
 
-        <!-- Product image -->
-        <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id">
+                <input type="hidden" name="id" value="@Model.Id" />
 
-            <img class="card-img-top" src="@Model.Image" alt="@Model.Name">
+
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+
+                <button type="submit" class="btn btn-light rounded-circle shadow-sm favorite-button"
+                        title="Favorilerden Kaldır">
+
+                    <i class="fa-solid fa-heart text-danger"></i>
+
+                </button>
+
+            </form>
+        }
+        else
+        {
+            <!-- Favorilere Ekle -->
+
+            <form asp-area="" asp-controller="Favorites" asp-action="Add" method="post" class="position-absolute"
+                  style="top: 0.5rem; right: 0.5rem; z-index: 2;">
+
+                @Html.AntiForgeryToken()
+
+
+                <input type="hidden" name="id" value="@Model.Id" />
+
+
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+
+                <button type="submit" class="btn btn-light rounded-circle shadow-sm favorite-button"
+                        title="Favorilere Ekle">
+
+                    <i class="fa-regular fa-heart text-danger"></i>
+
+                </button>
+
+            </form>
+        }
+
+
+        <!-- =====================================================
+             ÜRÜN GÖRSELİ
+             ===================================================== -->
+
+        <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id">
+
+            <img class="card-img-top" src="@Model.Image" alt="@Model.Name" />
 
         </a>
 
 
-        <!-- Product details -->
+        <!-- =====================================================
+             ÜRÜN BİLGİLERİ
+             ===================================================== -->
+
         <div class="card-body p-4">
 
             <div class="text-center">
 
-                <!-- Product name -->
+                <!-- Ürün Adı -->
+
                 <h5 class="fw-bolder">
                     @Model.Name
                 </h5>
 
 
-                <!-- Product price -->
+                <!-- Ürün Fiyatı -->
+
                 <div class="fw-semibold">
+
                     @Model.Price.ToString("N2") ₺
+
+                </div>
+
+
+                <!-- Stok -->
+
+                <div class="mt-2">
+
+                    @if (Model.Stock > 0)
+                    {
+                        <span class="badge bg-success-subtle text-success">
+
+                            <i class="fa-solid fa-circle-check me-1"></i>
+
+                            Stokta
+
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger-subtle text-danger">
+
+                            <i class="fa-solid fa-circle-xmark me-1"></i>
+
+                            Stokta Yok
+
+                        </span>
+                    }
+
                 </div>
 
             </div>
@@ -61,20 +156,80 @@
         </div>
 
 
-        <!-- Product actions -->
+        <!-- =====================================================
+             ÜRÜN İŞLEMLERİ
+             ===================================================== -->
+
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
 
-            <div class="text-center">
+            @if (Model.Stock > 0)
+            {
+                <form asp-area="" asp-controller="Cart" asp-action="Add" method="post">
 
-                <a class="btn btn-outline-dark mt-auto" href="#">
+                    @Html.AntiForgeryToken()
 
-                    Sepete Ekle
 
-                </a>
+                    <input type="hidden" name="productId" value="@Model.Id" />
 
-            </div>
+
+                    <input type="hidden" name="quantity" value="1" />
+
+
+                    <button type="submit" class="btn btn-outline-dark w-100">
+
+                        <i class="fa-solid fa-cart-shopping me-2"></i>
+
+                        Sepete Ekle
+
+                    </button>
+
+                </form>
+            }
+            else
+            {
+                <button type="button" class="btn btn-secondary w-100" disabled>
+
+                    <i class="fa-solid fa-ban me-2"></i>
+
+                    Stokta Yok
+
+                </button>
+            }
 
         </div>
 
     </div>
+
 </div>
+
+
+<style>
+    .favorite-button {
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+
+        border: 0;
+
+        transition:
+            transform 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+
+    .favorite-button:hover {
+        transform: scale(1.08);
+
+        background-color: #f8f9fa;
+    }
+
+
+    .favorite-button i {
+        font-size: 1.05rem;
+    }
+</style>

@@ -21,8 +21,12 @@ namespace Eticaret.WebUI.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            // Bütün aktif kategorileri getiriyoruz.
+            // IsTopMenu kontrolünü View tarafında
+            // sadece ana kategoriler için yapacağız.
             var categories =
-                await _categoryService.GetAllAsync(c => c.IsTopMenu && c.IsActive);
+                await _categoryService.GetAllAsync(
+                    c => c.IsActive);
 
             return View(categories);
         }

@@ -1,0 +1,776 @@
+@model CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Ödeme";
+}
+
+<section class="checkout-page">
+
+    <div class="container py-5">
+
+        <!-- =====================================================
+             SAYFA BAŞLIĞI
+             ===================================================== -->
+
+        <div class="mb-4">
+
+            <span class="text-primary fw-bold small">
+                CHECKOUT
+            </span>
+
+            <h1 class="fw-bold mb-1">
+                Siparişi Tamamla
+            </h1>
+
+            <p class="text-muted mb-0">
+                Teslimat adresinizi seçin ve ödeme bilgilerinizi girerek siparişinizi tamamlayın.
+            </p>
+
+        </div>
+
+
+        <form asp-controller="Cart" asp-action="Checkout" method="post">
+
+            @Html.AntiForgeryToken()
+
+
+            <!-- =====================================================
+                 VALIDATION
+                 ===================================================== -->
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+            </div>
+
+
+            <div class="row g-4">
+
+
+                <!-- =================================================
+                     SOL TARAF
+                     ================================================= -->
+
+                <div class="col-lg-8">
+
+
+                    <!-- =================================================
+                         TESLİMAT ADRESİ
+                         ================================================= -->
+
+                    <div class="checkout-card mb-4">
+
+                        <div class="checkout-card-header">
+
+                            <div class="checkout-step">
+                                1
+                            </div>
+
+
+                            <div class="flex-grow-1">
+
+                                <h2 class="h5 fw-bold mb-1">
+                                    Teslimat Adresi
+                                </h2>
+
+                                <p class="text-muted small mb-0">
+                                    Siparişinizin teslim edileceği kayıtlı adresinizi seçiniz.
+                                </p>
+
+                            </div>
+
+
+                            <a asp-controller="Addresses" asp-action="Create" class="btn btn-outline-dark btn-sm">
+
+                                <i class="fa-solid fa-plus me-1"></i>
+
+                                Yeni Adres
+
+                            </a>
+
+                        </div>
+
+
+                        <span asp-validation-for="SelectedAddressId" class="text-danger small d-block mb-3">
+                        </span>
+
+
+                        @if (Model.Addresses.Any())
+                        {
+                            <div class="row g-3">
+
+                                @foreach (var address in Model.Addresses)
+                                {
+                                    <div class="col-md-6">
+
+                                        <label class="address-select-card">
+
+                                            <input type="radio" asp-for="SelectedAddressId" value="@address.Id"
+                                                   class="address-radio" />
+
+
+                                            <div class="address-select-content">
+
+                                                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+
+                                                    <strong>
+                                                        @address.Title
+                                                    </strong>
+
+
+                                                    @if (address.IsDefault)
+                                                    {
+                                                        <span class="badge bg-dark">
+                                                            Varsayılan
+                                                        </span>
+                                                    }
+
+                                                </div>
+
+
+                                                <div class="fw-semibold mb-2">
+
+                                                    @address.Name
+                                                    @address.Surname
+
+                                                </div>
+
+
+                                                <div class="text-muted small mb-1">
+
+                                                    @address.FullAddress
+
+                                                </div>
+
+
+                                                <div class="text-muted small">
+
+                                                    @address.District /
+                                                    @address.City
+
+                                                </div>
+
+
+                                                @if (!string.IsNullOrWhiteSpace(
+                                                    address.PostalCode))
+                                                {
+                                                    <div class="text-muted small mt-1">
+
+                                                        Posta Kodu:
+                                                        @address.PostalCode
+
+                                                    </div>
+                                                }
+
+
+                                                <div class="text-muted small mt-2">
+
+                                                    <i class="fa-solid fa-phone me-1"></i>
+
+                                                    @address.Phone
+
+                                                </div>
+
+                                            </div>
+
+                                        </label>
+
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div class="mt-3">
+
+                                <a asp-controller="Addresses" asp-action="Index" class="small text-decoration-none">
+
+                                    <i class="fa-solid fa-location-dot me-1"></i>
+
+                                    Adreslerimi Yönet
+
+                                </a>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning mb-0">
+
+                                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+
+                                Kayıtlı adresiniz bulunmuyor.
+
+                                <a asp-controller="Addresses" asp-action="Create" class="alert-link">
+
+                                    Yeni adres ekleyin.
+
+                                </a>
+
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ÖDEME BİLGİLERİ
+                         ================================================= -->
+
+                    <div class="checkout-card">
+
+                        <div class="checkout-card-header">
+
+                            <div class="checkout-step">
+                                2
+                            </div>
+
+
+                            <div>
+
+                                <h2 class="h5 fw-bold mb-1">
+                                    Ödeme Bilgileri
+                                </h2>
+
+                                <p class="text-muted small mb-0">
+                                    Siparişinizi tamamlamak için kart bilgilerinizi giriniz.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="row g-3">
+
+
+                            <!-- Kart Sahibinin Adı -->
+
+                            <div class="col-12">
+
+                                <label asp-for="CardHolderName" class="form-label fw-semibold">
+                                </label>
+
+
+                                <input asp-for="CardHolderName" class="form-control" autocomplete="cc-name"
+                                       placeholder="AD SOYAD" />
+
+
+                                <span asp-validation-for="CardHolderName" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- Kart Numarası -->
+
+                            <div class="col-12">
+
+                                <label asp-for="CardNumber" class="form-label fw-semibold">
+                                </label>
+
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="fa-regular fa-credit-card"></i>
+
+                                    </span>
+
+
+                                    <input asp-for="CardNumber" class="form-control" autocomplete="cc-number"
+                                           inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" />
+
+                                </div>
+
+
+                                <span asp-validation-for="CardNumber" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- Son Kullanma Tarihi -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="ExpirationDate" class="form-label fw-semibold">
+                                </label>
+
+
+                                <input asp-for="ExpirationDate" class="form-control" autocomplete="cc-exp"
+                                       placeholder="AA/YY" />
+
+
+                                <span asp-validation-for="ExpirationDate" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- CVV -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="Cvv" class="form-label fw-semibold">
+                                </label>
+
+
+                                <input asp-for="Cvv" type="password" class="form-control" autocomplete="cc-csc"
+                                       inputmode="numeric" maxlength="4" placeholder="***" />
+
+
+                                <span asp-validation-for="Cvv" class="text-danger small">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Güvenlik Bilgisi -->
+
+                        <div class="payment-security mt-4">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                            <div>
+
+                                <div class="fw-semibold">
+                                    Güvenli Ödeme
+                                </div>
+
+                                <div class="text-muted small">
+                                    Kart bilgileriniz sipariş kaydında saklanmaz.
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SAĞ TARAF - SİPARİŞ ÖZETİ
+                     ================================================= -->
+
+                <div class="col-lg-4">
+
+                    <div class="checkout-summary">
+
+                        <h2 class="h5 fw-bold mb-4">
+                            Sipariş Özeti
+                        </h2>
+
+
+                        <!-- Ürünler -->
+
+                        @foreach (var item in Model.CartLines)
+                        {
+                            <div class="checkout-product">
+
+                                <div class="checkout-product-image">
+
+                                    <img src="@item.Product.Image" alt="@item.Product.Name" />
+
+                                </div>
+
+
+                                <div class="flex-grow-1">
+
+                                    <div class="fw-semibold">
+                                        @item.Product.Name
+                                    </div>
+
+                                    <div class="text-muted small">
+                                        @item.Quantity adet
+                                    </div>
+
+                                </div>
+
+
+                                <div class="fw-semibold text-end">
+
+                                    @((item.Product.Price *
+                                        item.Quantity)
+                                        .ToString("N2")) ₺
+
+                                </div>
+
+                            </div>
+                        }
+
+
+                        <hr />
+
+
+                        <!-- Ürün Toplamı -->
+
+                        <div class="summary-row">
+
+                            <span>
+                                Ürün Toplamı
+                            </span>
+
+                            <strong>
+                                @Model.TotalPrice.ToString("N2") ₺
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Kargo -->
+
+                        <div class="summary-row">
+
+                            <span>
+                                Kargo
+                            </span>
+
+                            <strong class="text-success">
+                                Ücretsiz
+                            </strong>
+
+                        </div>
+
+
+                        <hr />
+
+
+                        <!-- Genel Toplam -->
+
+                        <div class="summary-total">
+
+                            <span>
+                                Toplam
+                            </span>
+
+                            <strong>
+                                @Model.TotalPrice.ToString("N2") ₺
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Siparişi Tamamla -->
+
+                        <button type="submit" class="btn btn-dark w-100 mt-4 py-3">
+
+                            <i class="fa-solid fa-lock me-2"></i>
+
+                            Siparişi Tamamla
+
+                        </button>
+
+
+                        <div class="text-center mt-3">
+
+                            <small class="text-muted">
+
+                                <i class="fa-solid fa-shield-halved me-1"></i>
+
+                                Güvenli ödeme
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<style>
+    /* =========================================================
+       CHECKOUT
+       ========================================================= */
+
+    .checkout-page {
+        min-height: 75vh;
+
+        background-color: #f7f8fa;
+    }
+
+
+    /* =========================================================
+       CARD
+       ========================================================= */
+
+    .checkout-card {
+        padding: 28px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 5px 20px rgba(0, 0, 0, 0.03);
+    }
+
+
+    .checkout-card-header {
+        display: flex;
+        align-items: center;
+
+        gap: 15px;
+
+        margin-bottom: 25px;
+    }
+
+
+    .checkout-step {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        color: #ffffff;
+
+        background-color: #212529;
+
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       INPUT
+       ========================================================= */
+
+    .checkout-card .form-control,
+    .checkout-card .input-group-text {
+        min-height: 48px;
+    }
+
+
+    .checkout-card .form-control {
+        border-radius: 10px;
+    }
+
+
+    .checkout-card .input-group-text {
+        min-width: 48px;
+
+        justify-content: center;
+
+        background-color: #f8f9fa;
+    }
+
+
+    /* =========================================================
+       ADRES SEÇİMİ
+       ========================================================= */
+
+    .address-select-card {
+        position: relative;
+
+        display: block;
+
+        height: 100%;
+
+        cursor: pointer;
+    }
+
+
+    .address-radio {
+        position: absolute;
+
+        opacity: 0;
+
+        pointer-events: none;
+    }
+
+
+    .address-select-content {
+        height: 100%;
+
+        padding: 18px;
+
+        border: 2px solid #e9ecef;
+        border-radius: 14px;
+
+        background-color: #ffffff;
+
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .address-select-card:hover .address-select-content {
+        border-color: #adb5bd;
+
+        transform: translateY(-2px);
+    }
+
+
+    .address-radio:checked+.address-select-content {
+        border-color: #212529;
+
+        background-color: #f8f9fa;
+
+        box-shadow:
+            0 0 0 3px rgba(33, 37, 41, 0.07);
+    }
+
+
+    /* =========================================================
+       PAYMENT SECURITY
+       ========================================================= */
+
+    .payment-security {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        padding: 15px;
+
+        border: 1px solid #d1e7dd;
+        border-radius: 12px;
+
+        color: #0f5132;
+
+        background-color: #f0fff4;
+    }
+
+
+    .payment-security>i {
+        font-size: 1.35rem;
+    }
+
+
+    /* =========================================================
+       SİPARİŞ ÖZETİ
+       ========================================================= */
+
+    .checkout-summary {
+        position: sticky;
+
+        top: 25px;
+
+        padding: 28px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .checkout-product {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        padding: 12px 0;
+
+        border-bottom: 1px solid #eeeeee;
+    }
+
+
+    .checkout-product:last-of-type {
+        border-bottom: 0;
+    }
+
+
+    .checkout-product-image {
+        width: 55px;
+        height: 55px;
+
+        flex-shrink: 0;
+    }
+
+
+    .checkout-product-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        border-radius: 8px;
+    }
+
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+
+        margin-bottom: 15px;
+
+        color: #495057;
+    }
+
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .checkout-summary {
+            position: static;
+        }
+
+    }
+
+
+    @@media (max-width: 575.98px) {
+
+        .checkout-card {
+            padding: 20px;
+        }
+
+
+        .checkout-card-header {
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+
+        .checkout-card-header .btn {
+            width: 100%;
+        }
+
+    }
+</style>
+
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

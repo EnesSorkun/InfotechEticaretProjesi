@@ -1,75 +1,538 @@
 @model ProductDetailViewModel
+
 @{
     ViewData["Title"] = Model.Product.Name;
+
+    // ProductImage tablosundaki ek resimler
+    var productImages = Model.Product.Images?
+        .OrderBy(x => x.OrderNo)
+        .ToList()
+        ?? new List<Eticaret.Core.Entities.ProductImage>();
+
+    // Ürünün mevcut ana resmi her zaman büyük resim olarak başlasın
+    var mainImagePath = Model.Product.Image;
 }
 
-<!-- Product section-->
+
+<!-- =====================================================
+     ÜRÜN DETAY
+     ===================================================== -->
+
 <section class="py-5">
+
     <div class="container px-4 px-lg-5 my-5">
-        <div class="row gx-4 gx-lg-5 align-items-center">
-            <div class="col-md-6">
-                <img class="card-img-top mb-5 mb-md-0" src="@Model.Product.Image" alt="@Model.Product.Name">
-            </div>
+
+        <div class="row gx-4 gx-lg-5 align-items-start">
+
+
+            <!-- =====================================================
+                 ÜRÜN RESİM GALERİSİ
+                 ===================================================== -->
 
             <div class="col-md-6">
-                <div class="small mb-1">
-                    SKU: @Model.Product.ProductCode
+
+
+                <!-- BÜYÜK RESİM -->
+
+                <div class="product-main-image-container">
+
+                    @if (!string.IsNullOrWhiteSpace(mainImagePath))
+                    {
+                        <img id="mainProductImage" src="@mainImagePath" alt="@Model.Product.Name"
+                             class="product-main-image" />
+                    }
+                    else
+                    {
+                        <div class="product-no-image">
+
+                            <i class="fa-solid fa-image fa-4x mb-3"></i>
+
+                            <span>
+                                Ürün resmi bulunmuyor.
+                            </span>
+
+                        </div>
+                    }
+
                 </div>
 
-                <h1 class="display-5 fw-bolder">
+
+                <!-- =================================================
+                     KÜÇÜK RESİMLER / THUMBNAIL
+                     ================================================= -->
+
+                @if (!string.IsNullOrWhiteSpace(Model.Product.Image) ||
+     productImages.Any())
+                {
+                    <div class="product-thumbnails">
+
+                        <!-- Ürünün eski / ana resmi -->
+                        @if (!string.IsNullOrWhiteSpace(Model.Product.Image))
+                        {
+                            <button type="button" class="product-thumbnail active" data-image="@Model.Product.Image">
+
+                                <img src="@Model.Product.Image" alt="@Model.Product.Name" />
+
+                            </button>
+                        }
+
+
+                        <!-- ProductImages tablosundaki ek resimler -->
+                        @foreach (var image in productImages)
+                        {
+                            <button type="button" class="product-thumbnail" data-image="@image.ImagePath">
+
+                                <img src="@image.ImagePath" alt="@Model.Product.Name" />
+
+                            </button>
+                        }
+
+                    </div>
+                }
+
+            </div>
+
+
+
+            <!-- =====================================================
+                 ÜRÜN BİLGİLERİ
+                 ===================================================== -->
+
+            <div class="col-md-6">
+
+
+                <!-- Ürün Kodu -->
+
+                <div class="small text-muted mb-2">
+
+                    SKU:
+
+                    @Model.Product.ProductCode
+
+                </div>
+
+
+                <!-- Ürün Adı -->
+
+                <h1 class="display-5 fw-bolder mb-3">
+
                     @Model.Product.Name
+
                 </h1>
 
-                <div class="fs-5 mb-5">
-                    <span>@Model.Product.Price.ToString("N2") ₺</span>
+
+                <!-- Marka -->
+
+                @if (Model.Product.Brand is not null)
+                {
+                    <div class="mb-2">
+
+                        <span class="text-muted">
+                            Marka:
+                        </span>
+
+                        <span class="fw-semibold">
+                            @Model.Product.Brand.Name
+                        </span>
+
+                    </div>
+                }
+
+
+                <!-- Kategori -->
+
+                @if (Model.Product.Category is not null)
+                {
+                    <div class="mb-3">
+
+                        <span class="text-muted">
+                            Kategori:
+                        </span>
+
+                        <span class="fw-semibold">
+                            @Model.Product.Category.Name
+                        </span>
+
+                    </div>
+                }
+
+
+                <!-- Fiyat -->
+
+                <div class="fs-4 fw-bold mb-4">
+
+                    @Model.Product.Price.ToString("N2") ₺
+
                 </div>
+
+
+                <!-- Açıklama -->
 
                 <p class="lead">
+
                     @Model.Product.Description
+
                 </p>
 
-                <div class="d-flex">
-                    <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1"
-                           style="max-width: 3rem">
 
-                    <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                        <i class="bi-cart-fill me-1"></i>
-                        Sepete Ekle
-                    </button>
+                <!-- Stok -->
+
+                <div class="mb-4">
+
+                    @if (Model.Product.Stock > 0)
+                    {
+                        <span class="badge bg-success-subtle text-success px-3 py-2">
+
+                            <i class="fa-solid fa-circle-check me-1"></i>
+
+                            Stokta
+
+                            (@Model.Product.Stock adet)
+
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
+
+                            <i class="fa-solid fa-circle-xmark me-1"></i>
+
+                            Stokta Yok
+
+                        </span>
+                    }
+
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Related items section-->
-<section class="py-5 bg-light">
-    <div class="container px-4 px-lg-5 mt-5">
-        <h2 class="fw-bolder mb-4">İlişkili Ürünler</h2>
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Fancy Product</h5>
-                            <!-- Product price-->
-                            $40.00 - $80.00
+
+
+                <!-- =================================================
+                     SEPETE EKLE
+                     ================================================= -->
+
+                @if (Model.Product.Stock > 0)
+                {
+                    <form asp-controller="Cart" asp-action="Add" method="post">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <!-- Product Id -->
+
+                        <input type="hidden" name="productId" value="@Model.Product.Id" />
+
+
+                        <div class="d-flex flex-wrap align-items-center gap-3">
+
+
+                            <!-- Adet -->
+
+                            <div>
+
+                                <label class="form-label small text-muted mb-1">
+                                    Adet
+                                </label>
+
+                                <input class="form-control text-center" name="quantity" type="number" value="1" min="1"
+                                       max="@Model.Product.Stock" style="width: 85px;" />
+
+                            </div>
+
+
+                            <!-- Sepete Ekle -->
+
+                            <div class="pt-4">
+
+                                <button class="btn btn-dark px-4" type="submit">
+
+                                    <i class="fa-solid fa-cart-shopping me-2"></i>
+
+                                    Sepete Ekle
+
+                                </button>
+
+                            </div>
+
                         </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-                    </div>
-                </div>
+
+                    </form>
+                }
+                else
+                {
+                    <button class="btn btn-secondary px-4" type="button" disabled>
+
+                        <i class="fa-solid fa-ban me-2"></i>
+
+                        Stokta Yok
+
+                    </button>
+                }
+
             </div>
-            @foreach (var item in Model.RelatedProducts)
-            {
-                <partial name="_ProductView" model="item" />
-            }
+
         </div>
+
     </div>
+
 </section>
+
+
+
+<!-- =====================================================
+     İLİŞKİLİ ÜRÜNLER
+     ===================================================== -->
+
+@if (Model.RelatedProducts is not null &&
+     Model.RelatedProducts.Any())
+{
+    <section class="py-5 bg-light">
+
+        <div class="container px-4 px-lg-5 mt-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h2 class="fw-bolder mb-1">
+                        İlişkili Ürünler
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Aynı kategoride bulunan diğer ürünler
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="row gx-4 gx-lg-5
+                row-cols-1
+                row-cols-sm-2
+                row-cols-md-3
+                row-cols-xl-4
+                justify-content-center">
+
+                @foreach (var item in Model.RelatedProducts)
+                {
+                    <partial name="_ProductView" model="item" />
+                }
+
+            </div>
+
+        </div>
+
+    </section>
+}
+
+
+
+<!-- =====================================================
+     RESİM GALERİSİ CSS
+     ===================================================== -->
+
+<style>
+    /* Büyük resmin bulunduğu alan */
+    .product-main-image-container {
+        width: 100%;
+        height: 500px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background-color: #fff;
+
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+
+        padding: 20px;
+        margin-bottom: 15px;
+
+        overflow: hidden;
+    }
+
+
+    /* Büyük ürün resmi */
+    .product-main-image {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition: opacity .2s ease;
+    }
+
+
+    /* Resim yoksa gösterilecek alan */
+    .product-no-image {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        color: #adb5bd;
+    }
+
+
+    /* Küçük resimlerin bulunduğu alan */
+    .product-thumbnails {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 10px;
+
+        margin-top: 15px;
+    }
+
+
+    /* Küçük resim kutusu */
+    .product-thumbnail {
+        width: 85px;
+        height: 85px;
+
+        padding: 5px;
+
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+
+        background-color: #fff;
+
+        cursor: pointer;
+
+        transition: all .2s ease;
+    }
+
+
+    /* Küçük resim */
+    .product-thumbnail img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+
+    /* Mouse üzerine gelince */
+    .product-thumbnail:hover {
+        border-color: #212529;
+
+        transform: translateY(-2px);
+    }
+
+
+    /* Seçili resim */
+    .product-thumbnail.active {
+        border-color: #212529;
+
+        box-shadow:
+            0 0 0 2px rgba(33, 37, 41, .15);
+    }
+
+
+    /* Mobil */
+    @@media (max-width: 767px) {
+
+        .product-main-image-container {
+            height: 350px;
+        }
+
+        .product-thumbnail {
+            width: 70px;
+            height: 70px;
+        }
+
+    }
+</style>
+
+
+
+<!-- =====================================================
+     RESİM GALERİSİ JAVASCRIPT
+     ===================================================== -->
+
+@section Scripts
+{
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                // Büyük resmi bul
+                const mainImage =
+                    document.getElementById(
+                        "mainProductImage"
+                    );
+
+
+                // Bütün küçük resimleri bul
+                const thumbnails =
+                    document.querySelectorAll(
+                        ".product-thumbnail"
+                    );
+
+
+                // Büyük resim yoksa işlem yapma
+                if (!mainImage) {
+                    return;
+                }
+
+
+                thumbnails.forEach(
+                    function (thumbnail) {
+
+                        thumbnail.addEventListener(
+                            "click",
+                            function () {
+
+                                // Tıklanan küçük resmin
+                                // data-image değerini al
+                                const imagePath =
+                                    this.dataset.image;
+
+
+                                if (!imagePath) {
+                                    return;
+                                }
+
+
+                                // Büyük resmi değiştir
+                                mainImage.src =
+                                    imagePath;
+
+
+                                // Önce bütün active
+                                // class'larını kaldır
+                                thumbnails.forEach(
+                                    function (item) {
+
+                                        item.classList.remove(
+                                            "active"
+                                        );
+
+                                    }
+                                );
+
+
+                                // Tıklanan küçük resmi
+                                // seçili hale getir
+                                this.classList.add(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+}

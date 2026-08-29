@@ -1,0 +1,258 @@
+@model List<Address>
+
+@{
+    ViewData["Title"] = "Adreslerim";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+
+            <h1 class="fw-bold mb-1">
+                Adreslerim
+            </h1>
+
+            <p class="text-muted mb-0">
+                Teslimat adreslerinizi buradan yönetebilirsiniz.
+            </p>
+
+        </div>
+
+
+        <a asp-controller="Addresses" asp-action="Create" class="btn btn-dark">
+
+            <i class="fa-solid fa-plus me-2"></i>
+
+            Yeni Adres Ekle
+
+        </a>
+
+    </div>
+
+
+    @if (TempData["SuccessMessage"] is not null)
+    {
+        <div class="alert alert-success">
+
+            @TempData["SuccessMessage"]
+
+        </div>
+    }
+
+
+    @if (!Model.Any())
+    {
+        <div class="empty-address">
+
+            <div class="empty-address-icon">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+            </div>
+
+            <h2 class="h4 fw-bold">
+                Henüz adresiniz yok
+            </h2>
+
+            <p class="text-muted">
+                Sipariş verebilmek için bir teslimat adresi ekleyin.
+            </p>
+
+
+            <a asp-action="Create" class="btn btn-dark">
+
+                İlk Adresimi Ekle
+
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+
+            @foreach (var address in Model)
+            {
+                <div class="col-md-6">
+
+                    <div class="address-card h-100">
+
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+
+                            <div>
+
+                                <div class="d-flex align-items-center gap-2 mb-2">
+
+                                    <h2 class="h5 fw-bold mb-0">
+
+                                        @address.Title
+
+                                    </h2>
+
+
+                                    @if (address.IsDefault)
+                                    {
+                                        <span class="badge bg-dark">
+
+                                            Varsayılan
+
+                                        </span>
+                                    }
+
+                                </div>
+
+
+                                <div class="fw-semibold mb-2">
+
+                                    @address.Name
+                                    @address.Surname
+
+                                </div>
+
+                            </div>
+
+
+                            <i class="fa-solid fa-location-dot text-primary fs-4"></i>
+
+                        </div>
+
+
+                        <div class="address-content">
+
+                            <div>
+
+                                @address.FullAddress
+
+                            </div>
+
+
+                            <div>
+
+                                @address.District /
+                                @address.City
+
+                            </div>
+
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                address.PostalCode))
+                            {
+                                <div>
+
+                                    Posta Kodu:
+                                    @address.PostalCode
+
+                                </div>
+                            }
+
+
+                            <div class="mt-2">
+
+                                <i class="fa-solid fa-phone me-1"></i>
+
+                                @address.Phone
+
+                            </div>
+
+                        </div>
+
+
+                        <hr />
+
+
+                        <div class="d-flex gap-2">
+
+                            <a asp-action="Edit" asp-route-id="@address.Id" class="btn btn-outline-dark btn-sm">
+
+                                <i class="fa-solid fa-pen me-1"></i>
+
+                                Düzenle
+
+                            </a>
+
+
+                            <form asp-action="Delete" method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@address.Id" />
+
+
+                                <button type="submit" class="btn btn-outline-danger btn-sm"
+                                        onclick="return confirm('Bu adresi silmek istediğinize emin misiniz?');">
+
+                                    <i class="fa-solid fa-trash me-1"></i>
+
+                                    Sil
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+    .address-card {
+        padding: 25px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 5px 20px rgba(0, 0, 0, 0.04);
+    }
+
+
+    .address-content {
+        min-height: 120px;
+
+        color: #6c757d;
+
+        line-height: 1.7;
+    }
+
+
+    .empty-address {
+        padding: 60px 30px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 20px;
+
+        text-align: center;
+
+        background-color: #ffffff;
+    }
+
+
+    .empty-address-icon {
+        width: 80px;
+        height: 80px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 20px;
+
+        border-radius: 50%;
+
+        background-color: #f1f3f5;
+
+        font-size: 2rem;
+    }
+</style>

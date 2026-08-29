@@ -1,0 +1,166 @@
+@model IEnumerable<Eticaret.Core.Entities.ProductImage>
+
+@{
+    ViewData["Title"] = "Ürün Resimleri";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Ürün Resimleri</h2>
+            <p class="text-muted mb-0">
+                Ürünlere ait resimleri yönetin.
+            </p>
+        </div>
+
+        <a asp-action="Create" asp-route-productId="@ViewBag.SelectedProductId" class="btn btn-primary">
+
+            Yeni Resim Ekle
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] is not null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <form asp-action="Index" method="get" class="row g-3">
+
+                <div class="col-md-8">
+
+                    <label class="form-label">
+                        Ürüne Göre Filtrele
+                    </label>
+
+                    <select name="productId" asp-items="ViewBag.Products" class="form-select">
+
+                        <option value="">
+                            Tüm Ürünler
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end gap-2">
+
+                    <button type="submit" class="btn btn-primary">
+                        Filtrele
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Temizle
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info mb-0">
+                    Henüz ürün resmi bulunmuyor.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Resim</th>
+                                <th>Ürün</th>
+                                <th>Ana Resim</th>
+                                <th>Sıra</th>
+                                <th class="text-end">
+                                    İşlemler
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        <img src="@item.ImagePath" alt="@item.Product?.Name" style="
+                                        width: 90px;
+                                        height: 90px;
+                                        object-fit: cover;
+                                        border-radius: 8px;
+                                        " />
+                                    </td>
+
+                                    <td>
+                                        @item.Product?.Name
+                                    </td>
+
+                                    <td>
+
+                                        @if (item.IsMain)
+                                        {
+                                            <span class="badge bg-success">
+                                                Ana Resim
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Normal
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        @item.OrderNo
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                            Detay
+                                        </a>
+
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                            Güncelle
+                                        </a>
+
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                            Sil
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

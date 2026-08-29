@@ -1,0 +1,86 @@
+@model Eticaret.Core.Entities.ProductImage
+
+@{
+    ViewData["Title"] = "Ürün Resmi Detayı";
+}
+
+<div class="container">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h4 class="mb-0">
+                Ürün Resmi Detayı
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="text-center mb-4">
+
+                <img src="@Model.ImagePath" alt="@Model.Product?.Name" class="img-fluid rounded" style="
+                max-width: 500px;
+                max-height: 500px;
+                object-fit: contain;
+                " />
+
+            </div>
+
+            <table class="table">
+
+                <tr>
+                    <th>Ürün</th>
+                    <td>
+                        @Model.Product?.Name
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Resim Yolu</th>
+                    <td>
+                        @Model.ImagePath
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Ana Resim</th>
+                    <td>
+
+                        @if (Model.IsMain)
+                        {
+                            <span class="badge bg-success">
+                                Evet
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                Hayır
+                            </span>
+                        }
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Sıra No</th>
+                    <td>
+                        @Model.OrderNo
+                    </td>
+                </tr>
+
+            </table>
+
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                Güncelle
+            </a>
+
+            <a asp-action="Index" asp-route-productId="@Model.ProductId" class="btn btn-secondary">
+                Geri Dön
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

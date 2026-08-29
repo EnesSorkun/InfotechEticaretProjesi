@@ -1,13 +1,42 @@
-@using Eticaret.Core.Entities
+@using Eticaret.Service.Concrete
 @using Eticaret.WebUI.ExtensionMethods
+@using Eticaret.WebUI.Models
 
 @{
-    var favoriteProducts =
-        Context.Session.GetJson<List<Product>>("Favorites")
-        ?? new List<Product>();
+    // =====================================================
+    // FAVORİ SAYISI
+    // =====================================================
 
-    var favoriteCount = favoriteProducts.Count;
+    var favoriteProducts =
+        Context.Session
+            .GetJson<List<FavoriteProductViewModel>>(
+                "Favorites")
+        ?? new List<FavoriteProductViewModel>();
+
+    var favoriteCount =
+     User.Identity?.IsAuthenticated == true
+         ? favoriteProducts.Count
+         : 0;
+
+
+    // =====================================================
+    // SEPET SAYISI
+    // =====================================================
+
+    var cart =
+        Context.Session
+            .GetJson<CartService>(
+                "Cart")
+        ?? new CartService();
+
+    // Sepette kaç FARKLI ürün olduğunu gösteriyoruz.
+    // Aynı üründen 3 tane alınsa bile burada 1 olarak sayılır.
+    var cartCount =
+    User.Identity?.IsAuthenticated == true
+        ? cart.CartLines.Count
+        : 0;
 }
+
 
 <header class="site-header">
 
@@ -15,13 +44,20 @@
 
         <div class="d-flex align-items-center justify-content-between gap-3">
 
+
             <!-- =====================================================
                  LOGO
                  ===================================================== -->
+
             <a class="site-logo text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
 
-                <span class="logo-main">Tekno</span>
-                <span class="logo-sub">Grit</span>
+                <span class="logo-main">
+                    Tekno
+                </span>
+
+                <span class="logo-sub">
+                    Grit
+                </span>
 
             </a>
 
@@ -29,6 +65,7 @@
             <!-- =====================================================
                  ARAMA
                  ===================================================== -->
+
             <form asp-area="" asp-controller="Products" asp-action="Index" method="get"
                   class="header-search d-none d-md-flex flex-grow-1">
 
@@ -40,8 +77,10 @@
 
                     </span>
 
+
                     <input type="text" name="search" class="form-control"
                            placeholder="Ürün, marka veya kategori ara..." />
+
 
                     <button class="btn search-button" type="submit">
 
@@ -57,12 +96,14 @@
             <!-- =====================================================
                  SAĞ ALAN
                  ===================================================== -->
+
             <div class="header-actions">
 
 
                 <!-- =================================================
                      HESABIM
                      ================================================= -->
+
                 <div class="dropdown">
 
                     <button class="header-action border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -91,6 +132,7 @@
 
 
                             <!-- Kullanıcı Bilgisi -->
+
                             <li class="account-user-header">
 
                                 <div class="account-avatar">
@@ -106,6 +148,7 @@
                                         Hoş geldiniz
                                     </small>
 
+
                                     <strong>
                                         @User.Identity.Name
                                     </strong>
@@ -114,13 +157,17 @@
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <span class="account-role admin-role">
+
                                             Yönetici
+
                                         </span>
                                     }
                                     else if (User.IsInRole("Customer"))
                                     {
                                         <span class="account-role customer-role">
+
                                             Müşteri
+
                                         </span>
                                     }
 
@@ -130,13 +177,16 @@
 
 
                             <li>
+
                                 <hr class="dropdown-divider" />
+
                             </li>
 
 
                             <!-- =====================================
                                  KULLANICI BİLGİLERİM
                                  ===================================== -->
+
                             <li>
 
                                 <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Account"
@@ -148,8 +198,11 @@
 
                                     </span>
 
+
                                     <span>
+
                                         Kullanıcı Bilgilerim
+
                                     </span>
 
                                 </a>
@@ -160,6 +213,7 @@
                             <!-- =====================================
                                  SİPARİŞLERİM
                                  ===================================== -->
+
                             <li>
 
                                 <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Orders"
@@ -171,8 +225,11 @@
 
                                     </span>
 
+
                                     <span>
+
                                         Siparişlerim
+
                                     </span>
 
                                 </a>
@@ -183,6 +240,7 @@
                             <!-- =====================================
                                  DEĞERLENDİRMELERİM
                                  ===================================== -->
+
                             <li>
 
                                 <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Reviews"
@@ -194,8 +252,34 @@
 
                                     </span>
 
+
                                     <span>
+
                                         Değerlendirmelerim
+
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+                            <!-- =====================================
+                                 ADRESLERİM
+                            ===================================== -->
+
+                            <li>
+
+                                <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Addresses"
+                                   asp-action="Index">
+
+                                    <span class="account-menu-icon">
+
+                                        <i class="fa-solid fa-location-dot"></i>
+
+                                    </span>
+
+                                    <span>
+                                        Adreslerim
                                     </span>
 
                                 </a>
@@ -206,10 +290,13 @@
                             <!-- =====================================
                                  SADECE ADMIN
                                  ===================================== -->
+
                             @if (User.IsInRole("Admin"))
                             {
                                 <li>
+
                                     <hr class="dropdown-divider" />
+
                                 </li>
 
 
@@ -224,8 +311,11 @@
 
                                         </span>
 
+
                                         <span>
+
                                             Admin Paneli
+
                                         </span>
 
                                     </a>
@@ -235,13 +325,16 @@
 
 
                             <li>
+
                                 <hr class="dropdown-divider" />
+
                             </li>
 
 
                             <!-- =====================================
                                  OTURUMU KAPAT
                                  ===================================== -->
+
                             <li>
 
                                 <form asp-area="" asp-controller="Account" asp-action="SignOut" method="post">
@@ -257,8 +350,11 @@
 
                                         </span>
 
+
                                         <span>
+
                                             Oturumu Kapat
+
                                         </span>
 
                                     </button>
@@ -276,8 +372,11 @@
                             <li class="account-guest-header">
 
                                 <div class="fw-bold">
+
                                     Hesabım
+
                                 </div>
+
 
                                 <small class="text-muted">
 
@@ -289,11 +388,14 @@
 
 
                             <li>
+
                                 <hr class="dropdown-divider" />
+
                             </li>
 
 
                             <!-- Giriş Yap -->
+
                             <li class="px-2">
 
                                 <a asp-area="" asp-controller="Account" asp-action="SignIn" class="btn btn-dark w-100 mb-2">
@@ -308,6 +410,7 @@
 
 
                             <!-- Kayıt Ol -->
+
                             <li class="px-2 pb-2">
 
                                 <a asp-area="" asp-controller="Account" asp-action="SignUp"
@@ -330,12 +433,24 @@
                 <!-- =================================================
                      FAVORİLER
                      ================================================= -->
-                <a href="/Favorites" class="header-action position-relative" title="Favorilerim">
 
-                    <i class="fa-regular fa-heart"></i>
+                <a asp-area="" asp-controller="Favorites" asp-action="Index" class="header-action position-relative"
+                   title="Favorilerim">
+
+                    @if (favoriteCount > 0)
+                    {
+                        <i class="fa-solid fa-heart text-danger"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-regular fa-heart"></i>
+                    }
+
 
                     <span class="action-badge">
-                        0
+
+                        @favoriteCount
+
                     </span>
 
                 </a>
@@ -344,12 +459,17 @@
                 <!-- =================================================
                      SEPET
                      ================================================= -->
-                <a href="#" class="header-action position-relative" title="Sepetim">
+
+                <a asp-area="" asp-controller="Cart" asp-action="Index" class="header-action position-relative"
+                   title="Sepetim">
 
                     <i class="fa-solid fa-cart-shopping"></i>
 
+
                     <span class="action-badge">
-                        0
+
+                        @cartCount
+
                     </span>
 
                 </a>
@@ -362,6 +482,7 @@
         <!-- =====================================================
              MOBİL ARAMA
              ===================================================== -->
+
         <form asp-area="" asp-controller="Products" asp-action="Index" method="get"
               class="header-search d-flex d-md-none mt-3">
 
@@ -373,7 +494,9 @@
 
                 </span>
 
+
                 <input type="text" name="search" class="form-control" placeholder="Ürün ara..." />
+
 
                 <button class="btn search-button" type="submit">
 
@@ -391,9 +514,11 @@
     <!-- =========================================================
          ALT MENÜ
          ========================================================= -->
+
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-top border-bottom">
 
         <div class="container">
+
 
             <button class="navbar-toggler my-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                     aria-controls="mainNavbar" aria-expanded="false" aria-label="Menüyü Aç">
@@ -409,6 +534,7 @@
 
 
                     <!-- ANASAYFA -->
+
                     <li class="nav-item">
 
                         <a class="nav-link header-nav-link" asp-area="" asp-controller="Home" asp-action="Index">
@@ -421,10 +547,12 @@
 
 
                     <!-- KATEGORİLER -->
+
                     @await Component.InvokeAsync("Categories")
 
 
                     <!-- İLETİŞİM -->
+
                     <li class="nav-item">
 
                         <a class="nav-link header-nav-link" asp-area="" asp-controller="Home" asp-action="ContactUs">
@@ -436,7 +564,8 @@
                     </li>
 
 
-                    <!-- Sadece admin için isteğe bağlı Admin linki -->
+                    <!-- Sadece Admin -->
+
                     @if (User.Identity?.IsAuthenticated == true &&
                          User.IsInRole("Admin"))
                     {
@@ -669,8 +798,6 @@
             0 14px 40px rgba(0, 0, 0, 0.13) !important;
     }
 
-
-    /* Kullanıcı üst alanı */
 
     .account-user-header {
         display: flex;
@@ -945,7 +1072,6 @@
         .account-dropdown {
             width: 270px;
         }
-
     }
 
 
@@ -965,6 +1091,5 @@
         .account-dropdown {
             width: 260px;
         }
-
     }
 </style>

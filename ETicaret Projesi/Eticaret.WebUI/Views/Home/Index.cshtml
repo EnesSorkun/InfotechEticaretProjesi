@@ -7,22 +7,51 @@
 <partial name="_Slider" model="Model.Sliders" />
 
 
-<div>
-    <h1>Ürünlerimiz</h1>
-    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        @foreach (var item in Model.Products)
-        {
-            <partial name="_ProductView" model="item" />
-        }
-    </div>
-</div>
+<!-- =====================================================
+     ÜRÜNLERİMİZ
+     Ürün varsa bölüm gösterilir.
+     Ürün yoksa bölüm hiç oluşturulmaz.
+     ===================================================== -->
 
-<div>
-    <h1>Kampanyalarımız</h1>
-    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        @foreach (var item in Model.News)
-        {
-            <partial name="_NewsView" model="item" />
-        }
+@if (Model.Products is not null && Model.Products.Any())
+{
+    <div>
+
+        <h1>Ürünlerimiz</h1>
+
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+            @foreach (var item in Model.Products)
+            {
+                <partial name="_ProductView" model="item" />
+            }
+
+        </div>
+
     </div>
-</div>
+}
+
+
+<!-- =====================================================
+     KAMPANYALARIMIZ
+     Kampanya varsa bölüm gösterilir.
+     Kampanya yoksa bölüm hiç oluşturulmaz.
+     ===================================================== -->
+
+@if (Model.News is not null && Model.News.Any())
+{
+    <div>
+
+        <h1>Kampanyalarımız</h1>
+
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+            @foreach (var item in Model.News)
+            {
+                <partial name="_NewsView" model="item" />
+            }
+
+        </div>
+
+    </div>
+}

@@ -1,4 +1,4 @@
-@model List<Product>
+@model List<FavoriteProductViewModel>
 
 @{
     ViewData["Title"] = "Favorilerim";
@@ -132,10 +132,10 @@
                             <!-- Ürün Bilgileri -->
                             <div class="favorite-content">
 
-                                @if (item.Brand is not null)
+                                @if (item.BrandName is not null)
                                 {
                                     <span class="brand-name">
-                                        @item.Brand.Name
+                                        @item.BrandName
                                     </span>
                                 }
 

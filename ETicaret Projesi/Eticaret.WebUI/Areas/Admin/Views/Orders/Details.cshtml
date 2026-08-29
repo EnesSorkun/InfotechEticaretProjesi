@@ -1,0 +1,417 @@
+@using Eticaret.Core.Enums
+@model Order
+
+@{
+    ViewData["Title"] = "Sipariş Detayı";
+}
+
+<div class="container-fluid py-4">
+
+
+    @if (TempData["SuccessMessage"] is not null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <small class="text-muted">
+                Sipariş Detayı
+            </small>
+
+            <h2 class="mb-1">
+                @Model.OrderNumber
+            </h2>
+
+            <span class="text-muted">
+
+                @(Model.OrderDate
+                    .ToLocalTime()
+                    .ToString("dd.MM.yyyy HH:mm"))
+
+            </span>
+
+        </div>
+
+
+        <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary">
+
+            <i class="fa-solid fa-arrow-left me-1"></i>
+
+            Siparişlere Dön
+
+        </a>
+
+    </div>
+
+
+    <div class="row g-4">
+
+
+        <!-- SOL TARAF -->
+        <div class="col-lg-8">
+
+
+            <!-- MÜŞTERİ BİLGİSİ -->
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">
+
+                        <i class="fa-solid fa-user me-2"></i>
+
+                        Müşteri Bilgileri
+
+                    </h5>
+
+                    <strong>
+
+                        @Model.AppUser.Name
+                        @Model.AppUser.Surname
+
+                    </strong>
+
+                    <div class="text-muted">
+                        @Model.AppUser.Email
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ÜRÜNLER -->
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+
+                    <h5 class="mb-4">
+
+                        <i class="fa-solid fa-box me-2"></i>
+
+                        Siparişteki Ürünler
+
+                    </h5>
+
+
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <div class="d-flex align-items-center border-bottom py-3">
+
+                            @if (!string.IsNullOrWhiteSpace(item.Product.Image))
+                            {
+                                <img src="@item.Product.Image" alt="@item.Product.Name"
+                                     style="width:80px;height:80px;object-fit:cover;" class="rounded me-3" />
+                            }
+
+
+                            <div class="flex-grow-1">
+
+                                <strong>
+                                    @item.Product.Name
+                                </strong>
+
+                                <div class="text-muted">
+
+                                    @item.Quantity adet ×
+                                    @item.UnitPrice.ToString("N2") ₺
+
+                                </div>
+
+                            </div>
+
+
+                            <strong>
+
+                                @((item.UnitPrice * item.Quantity)
+                                    .ToString("N2")) ₺
+
+                            </strong>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TESLİMAT ADRESİ -->
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+
+                    <h5>
+
+                        <i class="fa-solid fa-location-dot me-2"></i>
+
+                        Teslimat Adresi
+
+                    </h5>
+
+                    <p class="mb-0 text-muted">
+                        @Model.DeliveryAddress
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FATURA ADRESİ -->
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5>
+
+                        <i class="fa-solid fa-file-invoice me-2"></i>
+
+                        Fatura Adresi
+
+                    </h5>
+
+                    <p class="mb-0 text-muted">
+                        @Model.BillingAddress
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SAĞ TARAF -->
+
+        <div class="col-lg-4">
+
+
+            <!-- DURUM YÖNETİMİ -->
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+
+                    <h5 class="mb-4">
+                        <i class="fa-solid fa-pen-to-square me-2"></i>
+                        Siparişi Güncelle
+                    </h5>
+
+
+                    <!-- MEVCUT DURUM -->
+                    <div class="mb-4">
+
+                        <label class="form-label text-muted">
+                            Mevcut Durum
+                        </label>
+
+                        <div>
+
+                            @switch (Model.Status)
+                            {
+                                case OrderStatus.PendingApproval:
+
+                                    <span class="badge bg-warning text-dark fs-6">
+                                        Onay Bekliyor
+                                    </span>
+
+                                    break;
+
+
+                                case OrderStatus.Approved:
+
+                                    <span class="badge bg-primary fs-6">
+                                        Onaylandı
+                                    </span>
+
+                                    break;
+
+
+                                case OrderStatus.Preparing:
+
+                                    <span class="badge bg-info text-dark fs-6">
+                                        Hazırlanıyor
+                                    </span>
+
+                                    break;
+
+
+                                case OrderStatus.Shipped:
+
+                                    <span class="badge bg-secondary fs-6">
+                                        Kargoya Verildi
+                                    </span>
+
+                                    break;
+
+
+                                case OrderStatus.Delivered:
+
+                                    <span class="badge bg-success fs-6">
+                                        Teslim Edildi
+                                    </span>
+
+                                    break;
+
+
+                                case OrderStatus.Cancelled:
+
+                                    <span class="badge bg-danger fs-6">
+                                        İptal Edildi
+                                    </span>
+
+                                    break;
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <hr />
+
+
+                    <!-- GÜNCELLEME FORMU -->
+                    <form asp-area="Admin" asp-controller="Orders" asp-action="UpdateStatus" method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Yeni Sipariş Durumu
+                            </label>
+
+
+                            <select name="status" class="form-select">
+
+                                <option value="@OrderStatus.PendingApproval"
+                                        selected="@(Model.Status == OrderStatus.PendingApproval)">
+                                    Onay Bekliyor
+                                </option>
+
+                                <option value="@OrderStatus.Approved"
+                                        selected="@(Model.Status == OrderStatus.Approved)">
+                                    Onaylandı
+                                </option>
+
+                                <option value="@OrderStatus.Preparing"
+                                        selected="@(Model.Status == OrderStatus.Preparing)">
+                                    Hazırlanıyor
+                                </option>
+
+                                <option value="@OrderStatus.Shipped" selected="@(Model.Status == OrderStatus.Shipped)">
+                                    Kargoya Verildi
+                                </option>
+
+                                <option value="@OrderStatus.Delivered"
+                                        selected="@(Model.Status == OrderStatus.Delivered)">
+                                    Teslim Edildi
+                                </option>
+
+                                <option value="@OrderStatus.Cancelled"
+                                        selected="@(Model.Status == OrderStatus.Cancelled)">
+                                    İptal Edildi
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary w-100">
+
+                            <i class="fa-solid fa-floppy-disk me-1"></i>
+
+                            Siparişi Güncelle
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SİPARİŞ ÖZETİ -->
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="mb-4">
+                        Sipariş Özeti
+                    </h5>
+
+
+                    <div class="d-flex justify-content-between mb-2">
+
+                        <span>
+                            Farklı Ürün
+                        </span>
+
+                        <strong>
+                            @Model.OrderDetails.Count
+                        </strong>
+
+                    </div>
+
+
+                    <div class="d-flex justify-content-between mb-2">
+
+                        <span>
+                            Toplam Adet
+                        </span>
+
+                        <strong>
+                            @Model.OrderDetails.Sum(x => x.Quantity)
+                        </strong>
+
+                    </div>
+
+
+                    <hr />
+
+
+                    <div class="d-flex justify-content-between">
+
+                        <strong>
+                            Toplam
+                        </strong>
+
+                        <strong class="fs-5">
+
+                            @Model.TotalPrice.ToString("N2") ₺
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

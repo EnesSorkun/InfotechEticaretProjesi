@@ -1,0 +1,103 @@
+@model Eticaret.WebUI.Areas.Admin.Models.ProductImageFormViewModel
+
+@{
+    ViewData["Title"] = "Ürün Resmini Güncelle";
+}
+
+<div class="container">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h4 class="mb-0">
+                Ürün Resmini Güncelle
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="Id" type="hidden" />
+
+                <input asp-for="ExistingImagePath" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Mevcut Resim
+                    </label>
+
+                    <div>
+                        <img src="@Model.ExistingImagePath" alt="Ürün Resmi" style="
+                        width: 200px;
+                        height: 200px;
+                        object-fit: cover;
+                        border-radius: 10px;
+                        " />
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="ProductId" class="form-label">
+                    </label>
+
+                    <select asp-for="ProductId" asp-items="ViewBag.Products" class="form-select">
+                    </select>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="ImageFile" class="form-label">
+                        Yeni Resim
+                    </label>
+
+                    <input asp-for="ImageFile" type="file" accept=".jpg,.jpeg,.png,.webp" class="form-control" />
+
+                    <small class="text-muted">
+                        Resmi değiştirmek istemiyorsanız boş bırakın.
+                    </small>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label asp-for="OrderNo" class="form-label">
+                    </label>
+
+                    <input asp-for="OrderNo" class="form-control" />
+
+                </div>
+
+                <div class="form-check mb-4">
+
+                    <input asp-for="IsMain" class="form-check-input" />
+
+                    <label asp-for="IsMain" class="form-check-label">
+                    </label>
+
+                </div>
+
+                <button type="submit" class="btn btn-warning">
+                    Güncelle
+                </button>
+
+                <a asp-action="Index" asp-route-productId="@Model.ProductId" class="btn btn-secondary">
+                    Geri Dön
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,27 +1,61 @@
 @model IEnumerable<Category>
 
-@foreach (var anaKategori in Model.Where(c => c.ParentId == 0))
+@{
+    var anaKategoriler = Model
+        .Where(c =>
+            c.IsActive &&
+            c.IsTopMenu &&
+            c.ParentId == 0)
+        .OrderBy(c => c.OrderNo)
+        .ToList();
+}
+
+
+@foreach (var anaKategori in anaKategoriler)
 {
     var altKategoriler = Model
-        .Where(c => c.ParentId == anaKategori.Id)
+        .Where(c =>
+            c.IsActive &&
+            c.ParentId == anaKategori.Id)
+        .OrderBy(c => c.OrderNo)
         .ToList();
 
-    <div class="dropdown">
 
-        <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <div class="dropdown d-flex align-items-center">
+
+        <!-- Ana kategoriye tıklanınca kategori sayfasına gider -->
+        <a class="btn" asp-controller="Categories" asp-action="Index" asp-route-id="@anaKategori.Id">
+
             @anaKategori.Name
+
         </a>
+
 
         @if (altKategoriler.Any())
         {
+            <!-- Sadece bu buton dropdown açar -->
+            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+
+                <span class="visually-hidden">
+                    Alt kategorileri aç
+                </span>
+
+            </button>
+
+
             <ul class="dropdown-menu">
 
                 @foreach (var altKategori in altKategoriler)
                 {
                     <li>
+
                         <a class="dropdown-item" asp-controller="Categories" asp-action="Index" asp-route-id="@altKategori.Id">
+
                             @altKategori.Name
+
                         </a>
+
                     </li>
                 }
 

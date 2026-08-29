@@ -1,0 +1,153 @@
+@model Order
+
+@{
+    ViewData["Title"] = "Sipariş Tamamlandı";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow-sm text-center">
+
+                <div class="card-body p-5">
+
+                    <!-- Başarı İkonu -->
+
+                    <div class="success-icon mb-4">
+
+                        <i class="fa-solid fa-check"></i>
+
+                    </div>
+
+
+                    <!-- Başlık -->
+
+                    <h1 class="h2 fw-bold mb-3">
+
+                        Siparişiniz Alındı!
+
+                    </h1>
+
+
+                    <p class="text-muted mb-4">
+
+                        Siparişiniz başarıyla oluşturuldu.
+                        Siparişinizi hesabınız üzerinden takip edebilirsiniz.
+
+                    </p>
+
+
+                    <!-- Sipariş Bilgileri -->
+
+                    <div class="order-info mb-4">
+
+                        <div class="mb-3">
+
+                            <small class="text-muted d-block">
+                                Sipariş Numaranız
+                            </small>
+
+                            <strong class="fs-5">
+                                @Model.OrderNumber
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <small class="text-muted d-block">
+                                Sipariş Toplamı
+                            </small>
+
+                            <strong class="fs-5">
+                                @Model.TotalPrice.ToString("N2") ₺
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Butonlar -->
+
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                        <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.Id"
+                           class="btn btn-dark px-4">
+
+                            <i class="fa-solid fa-box me-2"></i>
+
+                            Sipariş Detayı
+
+                        </a>
+
+
+                        <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-dark px-4">
+
+                            <i class="fa-solid fa-list me-2"></i>
+
+                            Siparişlerim
+
+                        </a>
+
+
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary px-4">
+
+                            <i class="fa-solid fa-house me-2"></i>
+
+                            Alışverişe Devam Et
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+    .success-icon {
+        width: 90px;
+        height: 90px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-left: auto;
+        margin-right: auto;
+
+        border-radius: 50%;
+
+        color: #198754;
+
+        background-color: #d1e7dd;
+
+        font-size: 2.2rem;
+    }
+
+
+    .order-info {
+        max-width: 400px;
+
+        margin-left: auto;
+        margin-right: auto;
+
+        padding: 20px;
+
+        border-radius: 12px;
+
+        background-color: #f8f9fa;
+    }
+</style>

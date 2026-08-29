@@ -350,6 +350,27 @@
 
                                         <div class="btn-group" role="group">
 
+                                            <!-- Ürünün resimlerini görüntüle -->
+                                            <a asp-area="Admin" asp-controller="ProductImages" asp-action="Index"
+                                               asp-route-productId="@item.Id" class="btn btn-md btn-outline-info"
+                                               title="Ürün Resimleri">
+
+                                                <i class="fa-solid fa-images"></i>
+
+                                            </a>
+
+
+                                            <!-- Ürüne yeni resim ekle -->
+                                            <a asp-area="Admin" asp-controller="ProductImages" asp-action="Create"
+                                               asp-route-productId="@item.Id" class="btn btn-md btn-outline-success"
+                                               title="Resim Ekle">
+
+                                                <i class="fa-solid fa-image"></i>
+
+                                            </a>
+
+
+                                            <!-- Ürün detay -->
                                             <a asp-action="Details" asp-route-id="@item.Id"
                                                class="btn btn-md btn-outline-primary" title="Detaylar">
 
@@ -357,6 +378,8 @@
 
                                             </a>
 
+
+                                            <!-- Ürün düzenle -->
                                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-md btn-outline-warning"
                                                title="Düzenle">
 
@@ -364,6 +387,8 @@
 
                                             </a>
 
+
+                                            <!-- Ürün sil -->
                                             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-md btn-outline-danger"
                                                title="Sil">
 

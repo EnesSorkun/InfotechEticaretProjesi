@@ -1,0 +1,408 @@
+@model Address
+
+@{
+    ViewData["Title"] = "Adres Düzenle";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+                <div>
+
+                    <h1 class="fw-bold mb-1">
+                        Adres Düzenle
+                    </h1>
+
+                    <p class="text-muted mb-0">
+                        Kayıtlı teslimat adresinizi güncelleyebilirsiniz.
+                    </p>
+
+                </div>
+
+
+                <a asp-controller="Addresses" asp-action="Index" class="btn btn-outline-secondary">
+
+                    <i class="fa-solid fa-arrow-left me-2"></i>
+
+                    Adreslerime Dön
+
+                </a>
+
+            </div>
+
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <form asp-controller="Addresses" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <!-- =================================================
+                             ID
+                             ================================================= -->
+
+                        <input type="hidden" asp-for="Id" />
+
+
+                        <!-- AppUserId formdan değiştirilmemeli.
+                             Controller zaten giriş yapan kullanıcıyı
+                             Claim üzerinden kontrol ediyor. -->
+
+
+                        <!-- =================================================
+                             VALIDATION
+                             ================================================= -->
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                        </div>
+
+
+                        <div class="row g-3">
+
+
+                            <!-- =================================================
+                                 ADRES BAŞLIĞI
+                                 ================================================= -->
+
+                            <div class="col-12">
+
+                                <label asp-for="Title" class="form-label fw-semibold">
+                                </label>
+
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="fa-solid fa-tag"></i>
+
+                                    </span>
+
+
+                                    <input asp-for="Title" class="form-control" placeholder="Ev, İş, Ailem..." />
+
+                                </div>
+
+
+                                <span asp-validation-for="Title" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 AD
+                                 ================================================= -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="Name" class="form-label fw-semibold">
+                                </label>
+
+
+                                <input asp-for="Name" class="form-control" placeholder="Adınızı giriniz" />
+
+
+                                <span asp-validation-for="Name" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 SOYAD
+                                 ================================================= -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="Surname" class="form-label fw-semibold">
+                                </label>
+
+
+                                <input asp-for="Surname" class="form-control" placeholder="Soyadınızı giriniz" />
+
+
+                                <span asp-validation-for="Surname" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 TELEFON
+                                 ================================================= -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="Phone" class="form-label fw-semibold">
+                                </label>
+
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="fa-solid fa-phone"></i>
+
+                                    </span>
+
+
+                                    <input asp-for="Phone" type="tel" class="form-control"
+                                           placeholder="05xx xxx xx xx" />
+
+                                </div>
+
+
+                                <span asp-validation-for="Phone" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 POSTA KODU
+                                 ================================================= -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="PostalCode" class="form-label fw-semibold">
+                                </label>
+
+
+                                <input asp-for="PostalCode" class="form-control" placeholder="34000" />
+
+
+                                <span asp-validation-for="PostalCode" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 ŞEHİR
+                                 ================================================= -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="City" class="form-label fw-semibold">
+                                </label>
+
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+
+                                        <i class="fa-solid fa-city"></i>
+
+                                    </span>
+
+
+                                    <input asp-for="City" class="form-control" placeholder="İstanbul" />
+
+                                </div>
+
+
+                                <span asp-validation-for="City" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 İLÇE
+                                 ================================================= -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="District" class="form-label fw-semibold">
+                                </label>
+
+
+                                <input asp-for="District" class="form-control" placeholder="Kadıköy" />
+
+
+                                <span asp-validation-for="District" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 TAM ADRES
+                                 ================================================= -->
+
+                            <div class="col-12">
+
+                                <label asp-for="FullAddress" class="form-label fw-semibold">
+                                </label>
+
+
+                                <textarea asp-for="FullAddress" class="form-control" rows="5"
+                                          placeholder="Mahalle, cadde, sokak, bina, daire ve diğer adres bilgilerini giriniz."></textarea>
+
+
+                                <span asp-validation-for="FullAddress" class="text-danger small">
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 VARSAYILAN ADRES
+                                 ================================================= -->
+
+                            <div class="col-12">
+
+                                <div class="default-address-box">
+
+                                    <div class="form-check form-switch mb-0">
+
+                                        <input asp-for="IsDefault" class="form-check-input" role="switch" />
+
+
+                                        <label asp-for="IsDefault" class="form-check-label fw-semibold">
+
+                                            Varsayılan teslimat adresim yap
+
+                                        </label>
+
+                                    </div>
+
+
+                                    <p class="text-muted small mb-0 mt-2">
+
+                                        Varsayılan adresiniz, ödeme ekranında öncelikli olarak seçilecektir.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             BUTONLAR
+                             ================================================= -->
+
+                        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+
+                            <a asp-controller="Addresses" asp-action="Index" class="btn btn-outline-secondary px-4">
+
+                                İptal
+
+                            </a>
+
+
+                            <button type="submit" class="btn btn-dark px-4">
+
+                                <i class="fa-solid fa-floppy-disk me-2"></i>
+
+                                Değişiklikleri Kaydet
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+    .card {
+        border-radius: 18px;
+    }
+
+
+    .form-control,
+    .input-group-text {
+        min-height: 48px;
+    }
+
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+
+    .input-group .form-control {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+
+    .input-group-text {
+        min-width: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+
+        background-color: #f8f9fa;
+
+        color: #6c757d;
+    }
+
+
+    textarea.form-control {
+        min-height: 125px;
+
+        resize: vertical;
+    }
+
+
+    .default-address-box {
+        padding: 18px;
+
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+
+        background-color: #f8f9fa;
+    }
+
+
+    .form-check-input:checked {
+        background-color: #212529;
+
+        border-color: #212529;
+    }
+
+
+    @@media (max-width: 575.98px) {
+
+        .card-body {
+            padding: 24px !important;
+        }
+
+    }
+</style>
+
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

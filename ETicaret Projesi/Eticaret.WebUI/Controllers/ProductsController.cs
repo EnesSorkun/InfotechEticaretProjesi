@@ -30,26 +30,24 @@ namespace Eticaret.WebUI.Controllers
                 .Where(x => x.IsActive)
                 .AsQueryable();
 
-
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
 
                 query = query.Where(x =>
                     x.Name.Contains(search) ||
-                    x.ProductCode.Contains(search) ||
+                    (x.ProductCode != null &&
+                     x.ProductCode.Contains(search)) ||
                     (x.Brand != null &&
                      x.Brand.Name.Contains(search)) ||
                     (x.Category != null &&
                      x.Category.Name.Contains(search)));
             }
 
-
             var products = await query
                 .OrderBy(x => x.OrderNo)
                 .AsNoTracking()
                 .ToListAsync();
-
 
             return View(products);
         }
@@ -66,21 +64,23 @@ namespace Eticaret.WebUI.Controllers
                 return NotFound();
             }
 
-
             var product = await _productService
                 .GetQueryable()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
+
+                // Ürüne ait bütün resimleri getir
+                .Include(x => x.Images)
+
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x =>
-                    x.Id == id.Value);
-
+                    x.Id == id.Value &&
+                    x.IsActive);
 
             if (product is null)
             {
                 return NotFound();
             }
-
 
             var relatedProducts = await _productService
                 .GetQueryable()
@@ -92,13 +92,11 @@ namespace Eticaret.WebUI.Controllers
                 .AsNoTracking()
                 .ToListAsync();
 
-
             var model = new ProductDetailViewModel
             {
                 Product = product,
                 RelatedProducts = relatedProducts
             };
-
 
             return View(model);
         }

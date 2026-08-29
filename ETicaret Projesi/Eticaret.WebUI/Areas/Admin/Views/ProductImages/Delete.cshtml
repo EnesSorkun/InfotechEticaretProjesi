@@ -1,0 +1,66 @@
+@model Eticaret.Core.Entities.ProductImage
+
+@{
+    ViewData["Title"] = "Ürün Resmini Sil";
+}
+
+<div class="container">
+
+    <div class="card shadow-sm border-danger">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4 class="mb-0">
+                Ürün Resmini Sil
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-warning">
+
+                Bu resmi silmek istediğinize emin misiniz?
+
+            </div>
+
+            <div class="text-center mb-4">
+
+                <img src="@Model.ImagePath" alt="@Model.Product?.Name" style="
+                width: 300px;
+                height: 300px;
+                object-fit: contain;
+                " />
+
+            </div>
+
+            <p>
+                <strong>Ürün:</strong>
+                @Model.Product?.Name
+            </p>
+
+            <p>
+                <strong>Ana Resim:</strong>
+
+                @(Model.IsMain ? "Evet" : "Hayır")
+            </p>
+
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit" class="btn btn-danger">
+                    Sil
+                </button>
+
+                <a asp-action="Index" asp-route-productId="@Model.ProductId" class="btn btn-secondary">
+                    Vazgeç
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

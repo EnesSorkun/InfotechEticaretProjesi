@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
+
+
 
 namespace Eticaret.Core.Entities
 {
@@ -51,5 +49,7 @@ namespace Eticaret.Core.Entities
 
         [DisplayName("Kayıt Tarihi")]
         public DateTime CreateDate { get; set; }
+
+        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
     }
 }
