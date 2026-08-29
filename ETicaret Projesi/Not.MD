@@ -38,7 +38,7 @@
 
 29.08.2026
 
-1. Bu hafta bitirdiklerim ; Sepet İşlemleri - Satın Alma İşlemleri ve Code Review(Site Düzeltmeleri) yapıldı.
+1. Bu hafta bitirdiklerim ; Sepet İşlemleri - Satın Alma İşlemleri - Sipariş Yönetimi ve Code Review(Site Düzeltmeleri) yapıldı.
 
 2. Code Review kısmında Şifremi Unuttum Kısmı , Admin Paneli Anasayfasının DataTable'ı Dinamik Hale Getirdim, Ürünlere 1'den fazla resim ekleme işlemlerini gerçekleştirdim.
 
