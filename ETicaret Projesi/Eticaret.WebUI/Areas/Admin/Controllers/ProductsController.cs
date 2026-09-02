@@ -14,17 +14,24 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         private readonly IService<Product> _productService;
         private readonly IService<Brand> _brandService;
         private readonly IService<Category> _categoryService;
+        private readonly IService<ProductImage> _productImageService;
+        private readonly IService<OrderDetail> _orderDetailService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+
 
         public ProductsController(
             IService<Product> productService,
             IService<Brand> brandService,
             IService<Category> categoryService,
+            IService<ProductImage> productImageService,
+            IService<OrderDetail> orderDetailService,
             IWebHostEnvironment webHostEnvironment)
         {
             _productService = productService;
             _brandService = brandService;
             _categoryService = categoryService;
+            _productImageService = productImageService;
+            _orderDetailService = orderDetailService;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -58,6 +65,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var product = await _productService
                 .GetQueryable()
                 .Include(x => x.Brand)
@@ -66,10 +74,12 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 .FirstOrDefaultAsync(x =>
                     x.Id == id.Value);
 
+
             if (product is null)
             {
                 return NotFound();
             }
+
 
             return View(product);
         }
@@ -99,6 +109,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         {
             ValidateImageFile(imageFile);
 
+
             if (!ModelState.IsValid)
             {
                 await FillSelectListsAsync(
@@ -108,6 +119,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return View(product);
             }
 
+
             if (imageFile is not null &&
                 imageFile.Length > 0)
             {
@@ -116,17 +128,22 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                         imageFile);
             }
 
+
             product.CreateDate =
                 DateTime.UtcNow;
+
 
             await _productService
                 .AddAsync(product);
 
+
             await _productService
                 .SaveChangesAsync();
 
+
             TempData["SuccessMessage"] =
                 "Ürün başarıyla oluşturuldu.";
+
 
             return RedirectToAction(
                 nameof(Index));
@@ -144,18 +161,22 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var product =
                 await _productService.FindAsync(
                     id.Value);
+
 
             if (product is null)
             {
                 return NotFound();
             }
 
+
             await FillSelectListsAsync(
                 product.BrandId,
                 product.CategoryId);
+
 
             return View(product);
         }
@@ -177,16 +198,20 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var existingProduct =
                 await _productService.FindAsync(
                     id);
+
 
             if (existingProduct is null)
             {
                 return NotFound();
             }
 
+
             ValidateImageFile(imageFile);
+
 
             if (!ModelState.IsValid)
             {
@@ -196,16 +221,20 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 product.CreateDate =
                     existingProduct.CreateDate;
 
+
                 await FillSelectListsAsync(
                     product.BrandId,
                     product.CategoryId);
+
 
                 return View(product);
             }
 
 
-            // Sadece düzenlenmesine izin verilen
-            // alanları güncelliyoruz.
+            // =====================================================
+            // DÜZENLENEBİLİR ALANLARI GÜNCELLE
+            // =====================================================
+
             existingProduct.Name =
                 product.Name;
 
@@ -237,13 +266,16 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 product.OrderNo;
 
 
-            // Yeni görsel seçildiyse eski görseli
-            // sunucudan silip yeni görseli kaydediyoruz.
+            // =====================================================
+            // YENİ GÖRSEL YÜKLENDİYSE DEĞİŞTİR
+            // =====================================================
+
             if (imageFile is not null &&
                 imageFile.Length > 0)
             {
                 DeleteImageFile(
                     existingProduct.Image);
+
 
                 existingProduct.Image =
                     await SaveImageFileAsync(
@@ -275,6 +307,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var product = await _productService
                 .GetQueryable()
                 .Include(x => x.Brand)
@@ -283,10 +316,12 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 .FirstOrDefaultAsync(x =>
                     x.Id == id.Value);
 
+
             if (product is null)
             {
                 return NotFound();
             }
+
 
             return View(product);
         }
@@ -305,25 +340,104 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 await _productService.FindAsync(
                     id);
 
+
             if (product is null)
             {
                 return NotFound();
             }
 
 
-            // Ürüne ait görsel varsa
-            // fiziksel dosyayı siliyoruz.
-            DeleteImageFile(
-                product.Image);
+            // =====================================================
+            // ÜRÜN DAHA ÖNCE SİPARİŞ EDİLMİŞ Mİ?
+            // =====================================================
+
+            var hasOrderHistory =
+                await _orderDetailService
+                    .GetQueryable()
+                    .AnyAsync(x =>
+                        x.ProductId == id);
 
 
-            // Ardından veritabanındaki ürünü siliyoruz.
+            // =====================================================
+            // SİPARİŞ GEÇMİŞİ VARSA ÜRÜNÜ KALICI SİLME
+            // =====================================================
+
+            if (hasOrderHistory)
+            {
+                TempData["ErrorMessage"] =
+                    "Bu ürün daha önce bir siparişte kullanıldığı için kalıcı olarak silinemez. Ürünü pasif duruma getirebilirsiniz.";
+
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+
+            // =====================================================
+            // ÜRÜNE AİT EK RESİMLERİ BUL
+            // =====================================================
+
+            var productImages =
+                await _productImageService
+                    .GetQueryable()
+                    .Where(x =>
+                        x.ProductId == id)
+                    .ToListAsync();
+
+
+            // =====================================================
+            // FİZİKSEL DOSYA YOLLARINI SAKLA
+            // =====================================================
+
+            var additionalImagePaths =
+                productImages
+                    .Select(x => x.ImagePath)
+                    .Where(x =>
+                        !string.IsNullOrWhiteSpace(x))
+                    .ToList();
+
+
+            // =====================================================
+            // PRODUCTIMAGE KAYITLARINI SİL
+            // =====================================================
+
+            foreach (var productImage in productImages)
+            {
+                _productImageService.Delete(
+                    productImage);
+            }
+
+
+            await _productImageService
+                .SaveChangesAsync();
+
+
+            // =====================================================
+            // ÜRÜNÜ VERİTABANINDAN SİL
+            // =====================================================
+
             _productService.Delete(
                 product);
 
 
             await _productService
                 .SaveChangesAsync();
+
+
+            // =====================================================
+            // DB İŞLEMLERİ BAŞARILI OLDUKTAN SONRA
+            // FİZİKSEL DOSYALARI SİL
+            // =====================================================
+
+            DeleteImageFile(
+                product.Image);
+
+
+            foreach (var imagePath in additionalImagePaths)
+            {
+                DeleteImageFile(
+                    imagePath);
+            }
 
 
             TempData["SuccessMessage"] =
@@ -390,6 +504,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return;
             }
 
+
             var allowedExtensions =
                 new[]
                 {
@@ -399,10 +514,12 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                     ".webp"
                 };
 
+
             var extension =
                 Path.GetExtension(
                         imageFile.FileName)
                     .ToLowerInvariant();
+
 
             if (!allowedExtensions.Contains(
                     extension))
@@ -412,8 +529,10 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                     "Sadece JPG, JPEG, PNG veya WEBP dosyası yükleyebilirsiniz.");
             }
 
+
             const long maxFileSize =
                 2 * 1024 * 1024;
+
 
             if (imageFile.Length >
                 maxFileSize)
@@ -437,30 +556,37 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                         imageFile.FileName)
                     .ToLowerInvariant();
 
+
             var uploadDirectory =
                 Path.Combine(
                     _webHostEnvironment.WebRootPath,
                     "uploads",
                     "products");
 
+
             Directory.CreateDirectory(
                 uploadDirectory);
 
+
             var fileName =
                 $"{Guid.NewGuid()}{extension}";
+
 
             var physicalPath =
                 Path.Combine(
                     uploadDirectory,
                     fileName);
 
+
             await using var stream =
                 new FileStream(
                     physicalPath,
                     FileMode.Create);
 
+
             await imageFile.CopyToAsync(
                 stream);
+
 
             return
                 $"/uploads/products/{fileName}";
@@ -480,13 +606,16 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return;
             }
 
+
             var relativePath =
                 imagePath.TrimStart('/');
+
 
             var physicalPath =
                 Path.Combine(
                     _webHostEnvironment.WebRootPath,
                     relativePath);
+
 
             if (System.IO.File.Exists(
                     physicalPath))

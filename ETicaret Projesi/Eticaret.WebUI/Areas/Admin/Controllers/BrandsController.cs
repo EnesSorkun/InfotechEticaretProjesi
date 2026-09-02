@@ -2,6 +2,7 @@ using Eticaret.Core.Entities;
 using Eticaret.Service.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Eticaret.WebUI.Areas.Admin.Controllers
 {
@@ -10,13 +11,17 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
     public class BrandsController : Controller
     {
         private readonly IService<Brand> _brandService;
+        private readonly IService<Product> _productService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+
 
         public BrandsController(
             IService<Brand> brandService,
+            IService<Product> productService,
             IWebHostEnvironment webHostEnvironment)
         {
             _brandService = brandService;
+            _productService = productService;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -30,9 +35,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             var brands = await _brandService
                 .GetAllAsync();
 
+
             brands = brands
                 .OrderBy(x => x.OrderNo)
                 .ToList();
+
 
             return View(brands);
         }
@@ -49,14 +56,17 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var brand =
                 await _brandService.FindAsync(
                     id.Value);
+
 
             if (brand is null)
             {
                 return NotFound();
             }
+
 
             return View(brand);
         }
@@ -82,12 +92,16 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             Brand brand,
             IFormFile? logoFile)
         {
-            ValidateLogoFile(logoFile);
+            ValidateLogoFile(
+                logoFile);
+
 
             if (!ModelState.IsValid)
             {
-                return View(brand);
+                return View(
+                    brand);
             }
+
 
             if (logoFile is not null &&
                 logoFile.Length > 0)
@@ -97,17 +111,23 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                         logoFile);
             }
 
+
             brand.CreateDate =
                 DateTime.UtcNow;
 
+
             await _brandService
-                .AddAsync(brand);
+                .AddAsync(
+                    brand);
+
 
             await _brandService
                 .SaveChangesAsync();
 
+
             TempData["SuccessMessage"] =
                 "Marka başarıyla oluşturuldu.";
+
 
             return RedirectToAction(
                 nameof(Index));
@@ -125,16 +145,20 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var brand =
                 await _brandService.FindAsync(
                     id.Value);
+
 
             if (brand is null)
             {
                 return NotFound();
             }
 
-            return View(brand);
+
+            return View(
+                brand);
         }
 
 
@@ -154,16 +178,21 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var existingBrand =
                 await _brandService.FindAsync(
                     id);
+
 
             if (existingBrand is null)
             {
                 return NotFound();
             }
 
-            ValidateLogoFile(logoFile);
+
+            ValidateLogoFile(
+                logoFile);
+
 
             if (!ModelState.IsValid)
             {
@@ -173,10 +202,16 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 brand.CreateDate =
                     existingBrand.CreateDate;
 
-                return View(brand);
+
+                return View(
+                    brand);
             }
 
-            // Sadece düzenlenebilir alanları değiştiriyoruz.
+
+            // =====================================================
+            // DÜZENLENEBİLİR ALANLARI GÜNCELLE
+            // =====================================================
+
             existingBrand.Name =
                 brand.Name;
 
@@ -187,22 +222,34 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 brand.OrderNo;
 
 
-            // Yeni logo yüklendiyse eski logoyu sil,
-            // yeni dosyayı kaydet.
+            // =====================================================
+            // YENİ LOGO YÜKLENDİYSE DEĞİŞTİR
+            // =====================================================
+
             if (logoFile is not null &&
                 logoFile.Length > 0)
             {
-                DeleteLogoFile(
-                    existingBrand.Logo);
+                var oldLogo =
+                    existingBrand.Logo;
+
 
                 existingBrand.Logo =
                     await SaveLogoFileAsync(
                         logoFile);
+
+
+                await _brandService
+                    .SaveChangesAsync();
+
+
+                DeleteLogoFile(
+                    oldLogo);
             }
-
-
-            await _brandService
-                .SaveChangesAsync();
+            else
+            {
+                await _brandService
+                    .SaveChangesAsync();
+            }
 
 
             TempData["SuccessMessage"] =
@@ -225,16 +272,20 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 return NotFound();
             }
 
+
             var brand =
                 await _brandService.FindAsync(
                     id.Value);
+
 
             if (brand is null)
             {
                 return NotFound();
             }
 
-            return View(brand);
+
+            return View(
+                brand);
         }
 
 
@@ -251,15 +302,42 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
                 await _brandService.FindAsync(
                     id);
 
+
             if (brand is null)
             {
                 return NotFound();
             }
 
 
-            DeleteLogoFile(
-                brand.Logo);
+            // =====================================================
+            // MARKAYA BAĞLI ÜRÜN VAR MI?
+            // =====================================================
 
+            var hasProducts =
+                await _productService
+                    .GetQueryable()
+                    .AnyAsync(x =>
+                        x.BrandId == id);
+
+
+            // =====================================================
+            // ÜRÜN VARSA MARKAYI KALICI SİLME
+            // =====================================================
+
+            if (hasProducts)
+            {
+                TempData["ErrorMessage"] =
+                    "Bu markaya bağlı ürünler bulunduğu için marka kalıcı olarak silinemez. Önce ürünleri başka bir markaya taşıyınız veya ilgili ürünleri kaldırınız.";
+
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+
+            // =====================================================
+            // MARKAYI VERİTABANINDAN SİL
+            // =====================================================
 
             _brandService.Delete(
                 brand);
@@ -267,6 +345,14 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
 
             await _brandService
                 .SaveChangesAsync();
+
+
+            // =====================================================
+            // DB İŞLEMİ BAŞARILI OLDUKTAN SONRA LOGOYU SİL
+            // =====================================================
+
+            DeleteLogoFile(
+                brand.Logo);
 
 
             TempData["SuccessMessage"] =
