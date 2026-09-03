@@ -8,61 +8,88 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
-// Add services to the container.
+// =====================================================
+// MVC + API CONTROLLER SERVİSLERİ
+// =====================================================
+
 builder.Services.AddControllersWithViews();
+
+
+// Swagger / OpenAPI
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
+// =====================================================
+// SESSION
+// =====================================================
 
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".TeknoGrit.Session";
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+
     options.IdleTimeout = TimeSpan.FromDays(1);
     options.IOTimeout = TimeSpan.FromMinutes(10);
 });
 
 
-// Database
+// =====================================================
+// DATABASE
+// =====================================================
+
 builder.Services.AddDbContext<DatabaseContext>(options =>
+{
     options.UseNpgsql(
         builder.Configuration.GetConnectionString(
-            "DefaultConnection")));
+            "DefaultConnection"));
+});
 
-builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
+
+// =====================================================
+// GENERIC SERVICE
+// =====================================================
+
+builder.Services.AddScoped(
+    typeof(IService<>),
+    typeof(Service<>));
 
 
-// Authentication
+// =====================================================
+// AUTHENTICATION
+// =====================================================
+
 builder.Services
     .AddAuthentication(
         CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(x =>
+    .AddCookie(options =>
     {
-        x.LoginPath = "/Account/SignIn";
+        options.LoginPath = "/Account/SignIn";
+        options.AccessDeniedPath = "/Account/AccessDenied";
 
-        x.AccessDeniedPath = "/Account/AccessDenied";
-
-        x.Cookie.Name = "TeknoGritAccount";
-
-        x.Cookie.MaxAge =
-            TimeSpan.FromDays(7);
-
-        x.Cookie.IsEssential = true;
+        options.Cookie.Name = "TeknoGritAccount";
+        options.Cookie.MaxAge = TimeSpan.FromDays(7);
+        options.Cookie.IsEssential = true;
     });
 
 
-// Authorization
-builder.Services.AddAuthorization(x =>
+// =====================================================
+// AUTHORIZATION
+// =====================================================
+
+builder.Services.AddAuthorization(options =>
 {
     // Sadece Admin girebilir
-    x.AddPolicy(
+    options.AddPolicy(
         "AdminPolicy",
         policy =>
             policy.RequireClaim(
                 ClaimTypes.Role,
                 "Admin"));
 
-
     // Admin veya normal kullanıcı girebilir
-    x.AddPolicy(
+    options.AddPolicy(
         "UserPolicy",
         policy =>
             policy.RequireClaim(
@@ -75,41 +102,117 @@ builder.Services.AddAuthorization(x =>
 var app = builder.Build();
 
 
-// Configure the HTTP request pipeline.
+// =====================================================
+// SWAGGER
+// =====================================================
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+
+    app.UseSwaggerUI();
+}
+
+
+// =====================================================
+// HTTP REQUEST PIPELINE
+// =====================================================
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-
     app.UseHsts();
 }
 
 
+// =====================================================
+// HTTPS
+// =====================================================
+
 app.UseHttpsRedirection();
 
+
+// =====================================================
+// ROUTING
+// =====================================================
+
 app.UseRouting();
-app.UseSession(); // session kullan
 
 
-// Önce Authentication
+// =====================================================
+// SESSION
+// =====================================================
+
+app.UseSession();
+
+
+// =====================================================
+// AUTHENTICATION
+// =====================================================
+
 app.UseAuthentication();
 
 
-// Sonra Authorization
+// =====================================================
+// AUTHORIZATION
+// =====================================================
+
 app.UseAuthorization();
 
+
+// =====================================================
+// STATIC FILES
+// =====================================================
 
 app.MapStaticAssets();
 
 
+// =====================================================
+// ADMIN ROUTE
+// =====================================================
+
 app.MapControllerRoute(
     name: "admin",
-    pattern: "{area:exists}/{controller=Main}/{action=Index}/{id?}");
+    pattern:
+        "{area:exists}/{controller=Main}/{action=Index}/{id?}");
 
+
+// =====================================================
+// DEFAULT MVC ROUTE
+// =====================================================
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern:
+        "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+
+// =====================================================
+// WEB API ROUTES
+// =====================================================
+//
+// CategoriesApiController içerisinde:
+//
+// [ApiController]
+// [Route("api/categories")]
+//
+// kullandığımız için Attribute Routing
+// endpointlerini aktif eder.
+//
+// GET    /api/categories
+// GET    /api/categories/{id}
+// POST   /api/categories
+// PUT    /api/categories/{id}
+// DELETE /api/categories/{id}
+//
+// =====================================================
+
+app.MapControllers();
+
+
+// =====================================================
+// APPLICATION START
+// =====================================================
 
 app.Run();
