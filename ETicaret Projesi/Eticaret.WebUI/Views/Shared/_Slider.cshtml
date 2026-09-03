@@ -12,6 +12,10 @@
         <div id="homeSlider" class="carousel slide carousel-fade home-slider" data-bs-ride="carousel"
              data-bs-interval="5000">
 
+
+            <!-- =====================================================
+                 SLIDER GÖSTERGELERİ
+                 ===================================================== -->
             @if (sliders.Count > 1)
             {
                 <div class="carousel-indicators home-slider-indicators">
@@ -26,6 +30,10 @@
                 </div>
             }
 
+
+            <!-- =====================================================
+                 SLIDER İÇERİĞİ
+                 ===================================================== -->
             <div class="carousel-inner">
 
                 @for (int i = 0; i < sliders.Count; i++)
@@ -38,50 +46,73 @@
 
                             @if (!string.IsNullOrWhiteSpace(item.Link))
                             {
-                                <a href="@item.Link" class="d-block">
+                                <a href="@item.Link" class="slider-image-link">
 
-                                    <img src="@item.Image" class="d-block w-100 slider-image" alt="@item.Title" />
+                                    <img src="@item.Image" class="slider-image" alt="@item.Title" />
 
                                 </a>
                             }
                             else
                             {
-                                <img src="@item.Image" class="d-block w-100 slider-image" alt="@item.Title" />
+                                <img src="@item.Image" class="slider-image" alt="@item.Title" />
                             }
 
+
+                            <!-- Görsel üstü karartma -->
                             <div class="slider-overlay"></div>
+
+
+                            <!-- Kehribar sıcaklık efekti -->
+                            <div class="slider-warm-overlay"></div>
 
                         </div>
 
+
+                        <!-- =====================================================
+                             SLIDER YAZILARI
+                             ===================================================== -->
                         @if (!string.IsNullOrWhiteSpace(item.Title) ||
                              !string.IsNullOrWhiteSpace(item.Description))
                         {
                             <div class="carousel-caption slider-caption">
 
-                                @if (!string.IsNullOrWhiteSpace(item.Title))
-                                {
-                                    <h2 class="slider-title">
-                                        @item.Title
-                                    </h2>
-                                }
+                                <div class="slider-caption-content">
 
-                                @if (!string.IsNullOrWhiteSpace(item.Description))
-                                {
-                                    <p class="slider-description">
-                                        @item.Description
-                                    </p>
-                                }
+                                    <span class="slider-eyebrow">
+                                        Kehr-i Bar Koleksiyonu
+                                    </span>
 
-                                @if (!string.IsNullOrWhiteSpace(item.Link))
-                                {
-                                    <a href="@item.Link" class="btn btn-light slider-button">
 
-                                        İncele
+                                    @if (!string.IsNullOrWhiteSpace(item.Title))
+                                    {
+                                        <h2 class="slider-title">
+                                            @item.Title
+                                        </h2>
+                                    }
 
-                                        <i class="fa-solid fa-arrow-right ms-2"></i>
 
-                                    </a>
-                                }
+                                    @if (!string.IsNullOrWhiteSpace(item.Description))
+                                    {
+                                        <p class="slider-description">
+                                            @item.Description
+                                        </p>
+                                    }
+
+
+                                    @if (!string.IsNullOrWhiteSpace(item.Link))
+                                    {
+                                        <a href="@item.Link" class="slider-button">
+
+                                            <span>
+                                                Koleksiyonu İncele
+                                            </span>
+
+                                            <i class="fa-solid fa-arrow-right"></i>
+
+                                        </a>
+                                    }
+
+                                </div>
 
                             </div>
                         }
@@ -91,13 +122,19 @@
 
             </div>
 
+
+            <!-- =====================================================
+                 SLIDER OKLARI
+                 ===================================================== -->
             @if (sliders.Count > 1)
             {
                 <button class="carousel-control-prev slider-control" type="button" data-bs-target="#homeSlider"
                         data-bs-slide="prev">
 
                     <span class="slider-control-icon">
+
                         <i class="fa-solid fa-chevron-left"></i>
+
                     </span>
 
                     <span class="visually-hidden">
@@ -106,11 +143,14 @@
 
                 </button>
 
+
                 <button class="carousel-control-next slider-control" type="button" data-bs-target="#homeSlider"
                         data-bs-slide="next">
 
                     <span class="slider-control-icon">
+
                         <i class="fa-solid fa-chevron-right"></i>
+
                     </span>
 
                     <span class="visually-hidden">
@@ -125,137 +165,392 @@
     </section>
 }
 
+
 <style>
+    /* =========================================================
+       SLIDER GENEL
+       ========================================================= */
+
     .home-slider-wrapper {
         max-width: 1400px;
-        margin: 24px auto;
+
+        margin: 22px auto 34px;
+
         padding: 0 16px;
     }
 
+
     .home-slider {
+        position: relative;
+
         overflow: hidden;
+
+        border: 1px solid rgba(115, 79, 44, 0.14);
         border-radius: 24px;
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.10);
+
+        background-color: #2d241c;
+
+        box-shadow:
+            0 16px 45px rgba(68, 44, 25, 0.13);
     }
+
+
+    /* =========================================================
+       SLIDER GÖRSELİ
+       ========================================================= */
 
     .slider-image-wrapper {
         position: relative;
+
         overflow: hidden;
+
+        background-color: #33271e;
     }
 
+
+    .slider-image-link {
+        display: block;
+    }
+
+
     .slider-image {
-        height: 520px;
+        width: 100%;
+        height: 510px;
+
+        display: block;
+
         object-fit: cover;
         object-position: center;
+
+        transition:
+            transform 7s ease;
     }
+
+
+    .carousel-item.active .slider-image {
+        transform: scale(1.035);
+    }
+
+
+    /* =========================================================
+       GÖRSEL OVERLAY
+       ========================================================= */
 
     .slider-overlay {
         position: absolute;
+
         inset: 0;
-        background:
-            linear-gradient(90deg,
-                rgba(0, 0, 0, 0.55) 0%,
-                rgba(0, 0, 0, 0.25) 45%,
-                rgba(0, 0, 0, 0.05) 100%);
 
         pointer-events: none;
+
+        background:
+            linear-gradient(90deg,
+                rgba(28, 19, 13, 0.80) 0%,
+                rgba(39, 27, 18, 0.62) 30%,
+                rgba(53, 37, 24, 0.28) 58%,
+                rgba(0, 0, 0, 0.04) 100%);
     }
 
+
+    .slider-warm-overlay {
+        position: absolute;
+
+        inset: 0;
+
+        pointer-events: none;
+
+        background:
+            linear-gradient(135deg,
+                rgba(173, 110, 45, 0.08),
+                transparent 42%);
+    }
+
+
+    /* =========================================================
+       SLIDER YAZI ALANI
+       ========================================================= */
+
     .slider-caption {
+        top: 0;
+        bottom: 0;
+
         left: 7%;
         right: auto;
-        bottom: 70px;
 
-        width: min(560px, 80%);
+        width: min(580px, 72%);
+
+        display: flex !important;
+        align-items: center;
 
         padding: 0;
 
         text-align: left;
-        color: #fff;
     }
+
+
+    .slider-caption-content {
+        position: relative;
+
+        padding-left: 20px;
+    }
+
+
+    .slider-caption-content::before {
+        content: "";
+
+        position: absolute;
+
+        top: 5px;
+        bottom: 5px;
+        left: 0;
+
+        width: 2px;
+
+        border-radius: 10px;
+
+        background:
+            linear-gradient(180deg,
+                #d8aa6c,
+                rgba(216, 170, 108, 0.15));
+    }
+
+
+    /* =========================================================
+       KÜÇÜK ÜST BAŞLIK
+       ========================================================= */
+
+    .slider-eyebrow {
+        display: inline-block;
+
+        margin-bottom: 12px;
+
+        color: #ddb47e;
+
+        font-size: 0.72rem;
+        font-weight: 700;
+
+        letter-spacing: 0.18em;
+
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       ANA BAŞLIK
+       ========================================================= */
 
     .slider-title {
-        font-size: clamp(2rem, 4vw, 3.5rem);
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 16px;
+        max-width: 560px;
 
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+        margin: 0 0 15px;
+
+        color: #ffffff;
+
+        font-size:
+            clamp(2rem,
+                4vw,
+                3.6rem);
+
+        font-weight: 700;
+        line-height: 1.08;
+
+        letter-spacing: -0.025em;
+
+        text-shadow:
+            0 4px 18px rgba(0, 0, 0, 0.25);
     }
+
+
+    /* =========================================================
+       AÇIKLAMA
+       ========================================================= */
 
     .slider-description {
         max-width: 500px;
 
-        font-size: 1.05rem;
+        margin: 0 0 24px;
+
+        color: rgba(255, 255, 255, 0.84);
+
+        font-size: 1rem;
         line-height: 1.7;
 
-        margin-bottom: 24px;
-
-        color: rgba(255, 255, 255, 0.92);
+        text-shadow:
+            0 2px 10px rgba(0, 0, 0, 0.15);
     }
+
+
+    /* =========================================================
+       BUTON
+       ========================================================= */
 
     .slider-button {
-        border: none;
+        width: fit-content;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 10px;
+
+        padding: 11px 20px;
+
+        border: 1px solid rgba(255, 255, 255, 0.22);
         border-radius: 10px;
 
-        padding: 11px 22px;
+        color: #2d2118;
 
-        font-weight: 600;
+        background:
+            linear-gradient(135deg,
+                #f6eadb,
+                #e6c697);
+
+        font-size: 0.88rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 6px 18px rgba(0, 0, 0, 0.15);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
     }
+
+
+    .slider-button i {
+        font-size: 0.78rem;
+
+        transition:
+            transform 0.2s ease;
+    }
+
+
+    .slider-button:hover {
+        color: #24190f;
+
+        background:
+            linear-gradient(135deg,
+                #ffffff,
+                #ebcfaa);
+
+        box-shadow:
+            0 9px 24px rgba(0, 0, 0, 0.2);
+
+        transform: translateY(-2px);
+    }
+
+
+    .slider-button:hover i {
+        transform: translateX(3px);
+    }
+
+
+    /* =========================================================
+       SLIDER OKLARI
+       ========================================================= */
 
     .slider-control {
         width: auto;
+
         opacity: 1;
     }
 
+
     .carousel-control-prev.slider-control {
-        left: 18px;
+        left: 20px;
     }
+
 
     .carousel-control-next.slider-control {
-        right: 18px;
+        right: 20px;
     }
 
+
     .slider-control-icon {
-        width: 34px;
-        height: 34px;
+        width: 42px;
+        height: 42px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
-        /* Ok koyu renk */
-        color: #212529;
-        /* Buton açık renk */
-        background: rgba(255, 255, 255, 0.10);
-        /* Görsel üzerinde daha belirgin olması için */
-        border: 1px solid rgba(255, 255, 255, 0.60);
 
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        border-radius: 50%;
+
+        color: #ffffff;
+
+        background-color: rgba(42, 29, 20, 0.42);
+
+        font-size: 0.8rem;
+
+        box-shadow:
+            0 5px 18px rgba(0, 0, 0, 0.15);
+
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        transition: 0.2s ease;
+
+        transition:
+            color 0.2s ease,
+            background-color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
     }
+
 
     .slider-control:hover .slider-control-icon {
-        color: #000;
-        background: #ffffff;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-        transform: scale(1.08);
+        color: #4b3423;
+
+        border-color: #ffffff;
+
+        background-color: #ffffff;
+
+        transform: scale(1.07);
     }
 
+
+    /* =========================================================
+       SLIDER GÖSTERGELERİ
+       ========================================================= */
+
     .home-slider-indicators {
+        z-index: 5;
+
         margin-bottom: 18px;
     }
 
+
     .home-slider-indicators [data-bs-target] {
-        width: 28px;
-        height: 4px;
+        width: 22px;
+        height: 3px;
+
+        margin: 0 4px;
 
         border: 0;
         border-radius: 20px;
 
-        margin: 0 4px;
+        background-color: rgba(255, 255, 255, 0.55);
+
+        opacity: 1;
+
+        transition:
+            width 0.25s ease,
+            background-color 0.25s ease;
     }
+
+
+    .home-slider-indicators .active {
+        width: 38px;
+
+        background-color: #e4bb85;
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
 
     @@media (max-width: 991.98px) {
 
@@ -263,133 +558,212 @@
             margin-top: 16px;
         }
 
+
         .home-slider {
-            border-radius: 18px;
+            border-radius: 20px;
         }
 
+
         .slider-image {
-            height: 400px;
+            height: 410px;
         }
+
 
         .slider-caption {
             left: 6%;
-            bottom: 45px;
 
-            width: 75%;
+            width: 70%;
         }
 
+
+        .slider-title {
+            font-size: 2.4rem;
+        }
+
+
         .slider-description {
-            font-size: 0.95rem;
+            max-width: 450px;
+
+            font-size: 0.92rem;
+        }
+
+
+        .carousel-control-prev.slider-control {
+            left: 12px;
+        }
+
+
+        .carousel-control-next.slider-control {
+            right: 12px;
         }
 
     }
 
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
     @@media (max-width: 767.98px) {
 
         .home-slider-wrapper {
+            margin: 12px auto 24px;
+
             padding: 0 12px;
-            margin: 12px auto 20px;
         }
+
 
         .home-slider {
             border-radius: 16px;
         }
 
+
         .slider-image {
-            height: 280px;
+            height: 310px;
         }
+
 
         .slider-overlay {
             background:
                 linear-gradient(0deg,
-                    rgba(0, 0, 0, 0.65) 0%,
-                    rgba(0, 0, 0, 0.10) 70%);
+                    rgba(26, 18, 12, 0.88) 0%,
+                    rgba(36, 25, 17, 0.64) 38%,
+                    rgba(0, 0, 0, 0.08) 82%);
         }
 
-        .slider-caption {
-            display: block !important;
 
-            left: 20px;
-            right: 20px;
-            bottom: 28px;
+        .slider-caption {
+            top: auto;
+            bottom: 30px;
+
+            left: 22px;
+            right: 22px;
 
             width: auto;
 
-            text-align: left;
+            display: block !important;
         }
 
-        .slider-title {
-            font-size: 1.55rem;
-            margin-bottom: 8px;
+
+        .slider-caption-content {
+            padding-left: 14px;
         }
+
+
+        .slider-eyebrow {
+            margin-bottom: 7px;
+
+            font-size: 0.6rem;
+
+            letter-spacing: 0.13em;
+        }
+
+
+        .slider-title {
+            margin-bottom: 8px;
+
+            font-size: 1.55rem;
+            line-height: 1.15;
+        }
+
 
         .slider-description {
             display: -webkit-box;
 
             overflow: hidden;
 
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            margin-bottom: 14px;
 
-            font-size: 0.85rem;
+            font-size: 0.79rem;
             line-height: 1.45;
 
-            margin-bottom: 14px;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
+
 
         .slider-button {
-            padding: 8px 16px;
-            font-size: 0.85rem;
+            gap: 7px;
+
+            padding: 8px 13px;
+
+            border-radius: 8px;
+
+            font-size: 0.76rem;
         }
+
 
         .slider-control-icon {
-            width: 36px;
-            height: 36px;
-            font-size: 0.85rem;
+            width: 34px;
+            height: 34px;
+
+            font-size: 0.7rem;
         }
+
 
         .carousel-control-prev.slider-control {
-            left: 8px;
+            left: 7px;
         }
+
 
         .carousel-control-next.slider-control {
-            right: 8px;
+            right: 7px;
         }
+
 
         .home-slider-indicators {
-            margin-bottom: 8px;
+            margin-bottom: 9px;
         }
 
+
         .home-slider-indicators [data-bs-target] {
-            width: 20px;
+            width: 17px;
             height: 3px;
+        }
+
+
+        .home-slider-indicators .active {
+            width: 28px;
         }
 
     }
 
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
     @@media (max-width: 480px) {
 
         .slider-image {
-            height: 235px;
+            height: 270px;
         }
+
 
         .slider-caption {
-            left: 16px;
-            right: 16px;
-            bottom: 20px;
+            bottom: 24px;
+
+            left: 18px;
+            right: 18px;
         }
+
 
         .slider-title {
-            font-size: 1.3rem;
+            font-size: 1.35rem;
         }
+
 
         .slider-description {
-            font-size: 0.8rem;
             margin-bottom: 10px;
+
+            font-size: 0.75rem;
         }
 
+
         .slider-button {
-            padding: 7px 13px;
+            padding: 7px 12px;
+
+            font-size: 0.72rem;
         }
 
     }

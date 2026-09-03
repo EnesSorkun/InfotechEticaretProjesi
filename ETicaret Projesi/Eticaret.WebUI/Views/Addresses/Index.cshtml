@@ -4,255 +4,1049 @@
     ViewData["Title"] = "Adreslerim";
 }
 
-<div class="container py-5">
+<section class="addresses-section">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div class="container">
 
-        <div>
+        <!-- =====================================================
+             SAYFA BAŞLIĞI
+             ===================================================== -->
+        <div class="addresses-header">
 
-            <h1 class="fw-bold mb-1">
-                Adreslerim
-            </h1>
+            <div>
 
-            <p class="text-muted mb-0">
-                Teslimat adreslerinizi buradan yönetebilirsiniz.
-            </p>
+                <span class="addresses-label">
+                    HESABIM
+                </span>
 
-        </div>
+                <h1>
+                    Adreslerim
+                </h1>
 
-
-        <a asp-controller="Addresses" asp-action="Create" class="btn btn-dark">
-
-            <i class="fa-solid fa-plus me-2"></i>
-
-            Yeni Adres Ekle
-
-        </a>
-
-    </div>
-
-
-    @if (TempData["SuccessMessage"] is not null)
-    {
-        <div class="alert alert-success">
-
-            @TempData["SuccessMessage"]
-
-        </div>
-    }
-
-
-    @if (!Model.Any())
-    {
-        <div class="empty-address">
-
-            <div class="empty-address-icon">
-
-                <i class="fa-solid fa-location-dot"></i>
+                <p>
+                    Teslimat adreslerinizi buradan görüntüleyebilir,
+                    düzenleyebilir ve yönetebilirsiniz.
+                </p>
 
             </div>
 
-            <h2 class="h4 fw-bold">
-                Henüz adresiniz yok
-            </h2>
 
-            <p class="text-muted">
-                Sipariş verebilmek için bir teslimat adresi ekleyin.
-            </p>
+            <a asp-controller="Addresses" asp-action="Create" class="add-address-button">
 
+                <i class="fa-solid fa-plus"></i>
 
-            <a asp-action="Create" class="btn btn-dark">
-
-                İlk Adresimi Ekle
+                <span>
+                    Yeni Adres Ekle
+                </span>
 
             </a>
 
         </div>
-    }
-    else
-    {
-        <div class="row g-4">
-
-            @foreach (var address in Model)
-            {
-                <div class="col-md-6">
-
-                    <div class="address-card h-100">
-
-                        <div class="d-flex justify-content-between align-items-start gap-3">
-
-                            <div>
-
-                                <div class="d-flex align-items-center gap-2 mb-2">
-
-                                    <h2 class="h5 fw-bold mb-0">
-
-                                        @address.Title
-
-                                    </h2>
 
 
-                                    @if (address.IsDefault)
-                                    {
-                                        <span class="badge bg-dark">
+        <!-- =====================================================
+             BAŞARILI MESAJ
+             ===================================================== -->
+        @if (TempData["SuccessMessage"] is not null)
+        {
+            <div class="address-success-message">
 
-                                            Varsayılan
+                <div class="success-message-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
 
+                <span>
+                    @TempData["SuccessMessage"]
+                </span>
+
+            </div>
+        }
+
+
+        @if (!Model.Any())
+        {
+            <!-- =================================================
+                 ADRES YOK
+                 ================================================= -->
+            <div class="empty-address">
+
+                <div class="empty-address-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+
+                <span class="empty-address-label">
+                    ADRESLERİM
+                </span>
+
+                <h2>
+                    Henüz adresiniz yok
+                </h2>
+
+                <p>
+                    Siparişlerinizi teslim alabilmek için hesabınıza
+                    bir teslimat adresi ekleyin.
+                </p>
+
+
+                <a asp-controller="Addresses" asp-action="Create" class="empty-address-button">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    <span>
+                        İlk Adresimi Ekle
+                    </span>
+
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <!-- =================================================
+                 ADRES LİSTESİ
+                 ================================================= -->
+            <div class="row g-4">
+
+                @foreach (var address in Model)
+                {
+                    <div class="col-lg-6">
+
+                        <div class="address-card">
+
+                            <!-- =================================================
+                                 KART ÜST ALAN
+                                 ================================================= -->
+                            <div class="address-card-header">
+
+                                <div class="address-title-area">
+
+                                    <div class="address-location-icon">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                    </div>
+
+
+                                    <div>
+
+                                        <div class="address-title-row">
+
+                                            <h2>
+                                                @address.Title
+                                            </h2>
+
+
+                                            @if (address.IsDefault)
+                                            {
+                                                <span class="default-address-badge">
+
+                                                    <i class="fa-solid fa-check"></i>
+
+                                                    Varsayılan
+
+                                                </span>
+                                            }
+
+                                        </div>
+
+
+                                        <span class="address-owner">
+                                            @address.Name @address.Surname
                                         </span>
-                                    }
 
-                                </div>
-
-
-                                <div class="fw-semibold mb-2">
-
-                                    @address.Name
-                                    @address.Surname
+                                    </div>
 
                                 </div>
 
                             </div>
 
 
-                            <i class="fa-solid fa-location-dot text-primary fs-4"></i>
+                            <!-- =================================================
+                                 ADRES BİLGİLERİ
+                                 ================================================= -->
+                            <div class="address-card-body">
 
-                        </div>
+                                <!-- Açık Adres -->
+                                <div class="address-info-row">
 
+                                    <div class="address-info-icon">
+                                        <i class="fa-regular fa-map"></i>
+                                    </div>
 
-                        <div class="address-content">
+                                    <div>
 
-                            <div>
+                                        <span class="address-info-label">
+                                            Açık Adres
+                                        </span>
 
-                                @address.FullAddress
+                                        <div class="address-info-value">
+                                            @address.FullAddress
+                                        </div>
 
-                            </div>
-
-
-                            <div>
-
-                                @address.District /
-                                @address.City
-
-                            </div>
-
-
-                            @if (!string.IsNullOrWhiteSpace(
-                                address.PostalCode))
-                            {
-                                <div>
-
-                                    Posta Kodu:
-                                    @address.PostalCode
+                                    </div>
 
                                 </div>
-                            }
 
 
-                            <div class="mt-2">
+                                <!-- İlçe / Şehir -->
+                                <div class="address-info-row">
 
-                                <i class="fa-solid fa-phone me-1"></i>
+                                    <div class="address-info-icon">
+                                        <i class="fa-solid fa-city"></i>
+                                    </div>
 
-                                @address.Phone
+                                    <div>
+
+                                        <span class="address-info-label">
+                                            İlçe / Şehir
+                                        </span>
+
+                                        <div class="address-info-value">
+                                            @address.District / @address.City
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Posta Kodu -->
+                                @if (!string.IsNullOrWhiteSpace(address.PostalCode))
+                                {
+                                    <div class="address-info-row">
+
+                                        <div class="address-info-icon">
+                                            <i class="fa-solid fa-envelope-open-text"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <span class="address-info-label">
+                                                Posta Kodu
+                                            </span>
+
+                                            <div class="address-info-value">
+                                                @address.PostalCode
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                }
+
+
+                                <!-- Telefon -->
+                                <div class="address-info-row">
+
+                                    <div class="address-info-icon">
+                                        <i class="fa-solid fa-phone"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <span class="address-info-label">
+                                            Telefon
+                                        </span>
+
+                                        <div class="address-info-value">
+                                            @address.Phone
+                                        </div>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
-                        </div>
+
+                            <!-- =================================================
+                                 BUTONLAR
+                                 ================================================= -->
+                            <div class="address-card-actions">
+
+                                <a asp-controller="Addresses" asp-action="Edit" asp-route-id="@address.Id"
+                                   class="address-edit-button">
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                    <span>
+                                        Düzenle
+                                    </span>
+
+                                </a>
 
 
-                        <hr />
+                                <form asp-controller="Addresses" asp-action="Delete" method="post" class="address-delete-form">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden" name="id" value="@address.Id" />
 
 
-                        <div class="d-flex gap-2">
+                                    <button type="submit" class="address-delete-button"
+                                            onclick="return confirm('Bu adresi silmek istediğinize emin misiniz?');">
 
-                            <a asp-action="Edit" asp-route-id="@address.Id" class="btn btn-outline-dark btn-sm">
+                                        <i class="fa-regular fa-trash-can"></i>
 
-                                <i class="fa-solid fa-pen me-1"></i>
+                                        <span>
+                                            Sil
+                                        </span>
 
-                                Düzenle
+                                    </button>
 
-                            </a>
+                                </form>
 
-
-                            <form asp-action="Delete" method="post">
-
-                                @Html.AntiForgeryToken()
-
-                                <input type="hidden" name="id" value="@address.Id" />
-
-
-                                <button type="submit" class="btn btn-outline-danger btn-sm"
-                                        onclick="return confirm('Bu adresi silmek istediğinize emin misiniz?');">
-
-                                    <i class="fa-solid fa-trash me-1"></i>
-
-                                    Sil
-
-                                </button>
-
-                            </form>
+                            </div>
 
                         </div>
 
                     </div>
+                }
 
-                </div>
-            }
+            </div>
+        }
 
-        </div>
-    }
+    </div>
 
-</div>
+</section>
 
 
 <style>
-    .address-card {
-        padding: 25px;
+    /* =========================================================
+       SAYFA
+       ========================================================= */
 
-        border: 1px solid #e9ecef;
-        border-radius: 18px;
+    .addresses-section {
+        min-height: 72vh;
 
-        background-color: #ffffff;
+        padding: 55px 0 70px;
 
-        box-shadow:
-            0 5px 20px rgba(0, 0, 0, 0.04);
+        background:
+            radial-gradient(circle at top left,
+                rgba(190, 145, 91, 0.07),
+                transparent 32%),
+            linear-gradient(180deg,
+                #ffffff 0%,
+                #faf7f3 100%);
     }
 
 
-    .address-content {
-        min-height: 120px;
+    /* =========================================================
+       SAYFA BAŞLIĞI
+       ========================================================= */
 
-        color: #6c757d;
+    .addresses-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
 
-        line-height: 1.7;
+        gap: 25px;
+
+        margin-bottom: 30px;
     }
 
 
-    .empty-address {
-        padding: 60px 30px;
+    .addresses-label {
+        display: inline-block;
 
-        border: 1px solid #e9ecef;
+        margin-bottom: 6px;
+
+        color: #9a7042;
+
+        font-size: 0.67rem;
+        font-weight: 800;
+
+        letter-spacing: 0.15em;
+    }
+
+
+    .addresses-header h1 {
+        position: relative;
+
+        margin: 0 0 10px;
+        padding-bottom: 12px;
+
+        color: #30251d;
+
+        font-size: 2rem;
+        font-weight: 800;
+
+        letter-spacing: -0.02em;
+    }
+
+
+    .addresses-header h1::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 42px;
+        height: 3px;
+
         border-radius: 20px;
 
-        text-align: center;
-
-        background-color: #ffffff;
+        background:
+            linear-gradient(90deg,
+                #895b2e,
+                #d0a16a);
     }
 
 
-    .empty-address-icon {
-        width: 80px;
-        height: 80px;
+    .addresses-header p {
+        max-width: 620px;
+
+        margin: 0;
+
+        color: #887b70;
+
+        font-size: 0.84rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       YENİ ADRES EKLE
+       ========================================================= */
+
+    .add-address-button {
+        min-height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        flex-shrink: 0;
+
+        padding: 9px 17px;
+
+        border: 1px solid #493225;
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        font-size: 0.77rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 5px 15px rgba(73, 50, 37, 0.16);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+
+    .add-address-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(73, 50, 37, 0.21);
+    }
+
+
+    /* =========================================================
+       BAŞARI MESAJI
+       ========================================================= */
+
+    .address-success-message {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        margin-bottom: 24px;
+        padding: 12px 15px;
+
+        border: 1px solid #d7e6d2;
+        border-radius: 11px;
+
+        color: #526c4b;
+
+        background-color: #f1f7ef;
+
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+
+    .success-message-icon {
+        width: 28px;
+        height: 28px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        margin: 0 auto 20px;
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        color: #54764c;
+
+        background-color: #e1efdd;
+
+        font-size: 0.75rem;
+    }
+
+
+    /* =========================================================
+       ADRES KARTI
+       ========================================================= */
+
+    .address-card {
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        border: 1px solid #e8ded3;
+        border-radius: 17px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 8px 24px rgba(70, 47, 30, 0.06);
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .address-card:hover {
+        border-color: #d8c0a5;
+
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 12px 28px rgba(70, 47, 30, 0.09);
+    }
+
+
+    /* =========================================================
+       KART HEADER
+       ========================================================= */
+
+    .address-card-header {
+        padding: 18px 20px;
+
+        border-bottom: 1px solid #eee5dc;
+
+        background:
+            linear-gradient(90deg,
+                #fcfaf7,
+                #ffffff);
+    }
+
+
+    .address-title-area {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+    }
+
+
+    .address-location-icon {
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 11px;
+
+        color: #8c6035;
+
+        background:
+            linear-gradient(145deg,
+                #f7eee4,
+                #efdecb);
+
+        font-size: 0.95rem;
+    }
+
+
+    .address-title-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        gap: 8px;
+
+        margin-bottom: 3px;
+    }
+
+
+    .address-title-row h2 {
+        margin: 0;
+
+        color: #3d3027;
+
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+
+    .address-owner {
+        display: block;
+
+        color: #887a6e;
+
+        font-size: 0.74rem;
+        font-weight: 600;
+    }
+
+
+    /* =========================================================
+       VARSAYILAN ADRES
+       ========================================================= */
+
+    .default-address-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 4px;
+
+        padding: 4px 7px;
+
+        border: 1px solid #dec5a7;
+        border-radius: 20px;
+
+        color: #80572f;
+
+        background-color: #f8eee2;
+
+        font-size: 0.59rem;
+        font-weight: 800;
+    }
+
+
+    .default-address-badge i {
+        font-size: 0.52rem;
+    }
+
+
+    /* =========================================================
+       ADRES BİLGİLERİ
+       ========================================================= */
+
+    .address-card-body {
+        display: flex;
+        flex-direction: column;
+
+        gap: 13px;
+
+        flex: 1;
+
+        padding: 20px;
+    }
+
+
+    .address-info-row {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 10px;
+    }
+
+
+    .address-info-icon {
+        width: 32px;
+        height: 32px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        color: #99724b;
+
+        background-color: #f8f1e9;
+
+        font-size: 0.68rem;
+    }
+
+
+    .address-info-label {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #9b8e82;
+
+        font-size: 0.64rem;
+        font-weight: 600;
+    }
+
+
+    .address-info-value {
+        color: #4b3c31;
+
+        font-size: 0.78rem;
+        font-weight: 650;
+
+        line-height: 1.55;
+
+        word-break: break-word;
+    }
+
+
+    /* =========================================================
+       KART BUTONLARI
+       ========================================================= */
+
+    .address-card-actions {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 14px 20px;
+
+        border-top: 1px solid #eee5dc;
+
+        background-color: #fdfbf9;
+    }
+
+
+    .address-delete-form {
+        margin: 0;
+    }
+
+
+    .address-edit-button,
+    .address-delete-button {
+        min-height: 36px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 6px;
+
+        padding: 7px 11px;
+
+        border-radius: 8px;
+
+        font-size: 0.69rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    /* =========================================================
+       DÜZENLE
+       ========================================================= */
+
+    .address-edit-button {
+        border: 1px solid #d7c6b5;
+
+        color: #684f3c;
+
+        background-color: #ffffff;
+    }
+
+
+    .address-edit-button:hover {
+        color: #ffffff;
+
+        border-color: #80562f;
+
+        background-color: #80562f;
+
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+       SİL
+       ========================================================= */
+
+    .address-delete-button {
+        border: 1px solid #e7cccc;
+
+        color: #a35454;
+
+        background-color: #fffafa;
+    }
+
+
+    .address-delete-button:hover {
+        color: #ffffff;
+
+        border-color: #a95353;
+
+        background-color: #a95353;
+
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+       BOŞ ADRES
+       ========================================================= */
+
+    .empty-address {
+        padding: 55px 25px;
+
+        border: 1px solid #e7ddd2;
+        border-radius: 20px;
+
+        background-color: #ffffff;
+
+        text-align: center;
+
+        box-shadow:
+            0 12px 34px rgba(70, 47, 30, 0.07);
+    }
+
+
+    .empty-address-icon {
+        width: 76px;
+        height: 76px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 17px;
 
         border-radius: 50%;
 
-        background-color: #f1f3f5;
+        color: #8b6038;
 
-        font-size: 2rem;
+        background:
+            linear-gradient(145deg,
+                #f8eee2,
+                #ebd3b5);
+
+        font-size: 1.7rem;
+    }
+
+
+    .empty-address-label {
+        display: inline-block;
+
+        margin-bottom: 5px;
+
+        color: #9a7042;
+
+        font-size: 0.65rem;
+        font-weight: 800;
+
+        letter-spacing: 0.14em;
+    }
+
+
+    .empty-address h2 {
+        margin: 0 0 8px;
+
+        color: #34281f;
+
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+
+    .empty-address p {
+        max-width: 470px;
+
+        margin: 0 auto 22px;
+
+        color: #897d72;
+
+        font-size: 0.82rem;
+        line-height: 1.6;
+    }
+
+
+    .empty-address-button {
+        min-height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 9px 18px;
+
+        border: 1px solid #493225;
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        font-size: 0.77rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 5px 15px rgba(73, 50, 37, 0.16);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+
+    .empty-address-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(73, 50, 37, 0.21);
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .addresses-section {
+            padding: 40px 0 55px;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .addresses-section {
+            padding: 30px 0 45px;
+        }
+
+
+        .addresses-header {
+            flex-direction: column;
+            align-items: flex-start;
+
+            gap: 18px;
+        }
+
+
+        .addresses-header h1 {
+            font-size: 1.65rem;
+        }
+
+
+        .add-address-button {
+            width: 100%;
+        }
+
+
+        .address-card {
+            border-radius: 15px;
+        }
+
+
+        .empty-address {
+            padding: 45px 20px;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .address-card-header {
+            padding: 16px;
+        }
+
+
+        .address-card-body {
+            padding: 17px 16px;
+        }
+
+
+        .address-card-actions {
+            padding: 13px 16px;
+        }
+
+
+        .address-title-area {
+            align-items: flex-start;
+        }
+
+
+        .address-card-actions {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+        }
+
+
+        .address-delete-form {
+            width: 100%;
+        }
+
+
+        .address-edit-button,
+        .address-delete-button {
+            width: 100%;
+        }
+
+
+        .empty-address h2 {
+            font-size: 1.2rem;
+        }
+
     }
 </style>

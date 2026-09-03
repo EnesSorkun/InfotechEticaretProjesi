@@ -9,7 +9,7 @@
         .ToList()
         ?? new List<Eticaret.Core.Entities.ProductImage>();
 
-    // Ürünün mevcut ana resmi her zaman büyük resim olarak başlasın
+    // Ana resim
     var mainImagePath = Model.Product.Image;
 }
 
@@ -17,256 +17,302 @@
 <!-- =====================================================
      ÜRÜN DETAY
      ===================================================== -->
+<section class="product-detail-section">
 
-<section class="py-5">
+    <div class="container">
 
-    <div class="container px-4 px-lg-5 my-5">
-
-        <div class="row gx-4 gx-lg-5 align-items-start">
-
+        <div class="row g-4 g-xl-5 align-items-start">
 
             <!-- =====================================================
-                 ÜRÜN RESİM GALERİSİ
+                 SOL TARAF - ÜRÜN GALERİSİ
                  ===================================================== -->
+            <div class="col-lg-6">
 
-            <div class="col-md-6">
+                <div class="product-gallery">
+
+                    <!-- Büyük Resim -->
+                    <div class="product-main-image-container">
+
+                        @if (!string.IsNullOrWhiteSpace(mainImagePath))
+                        {
+                            <img id="mainProductImage" src="@mainImagePath" alt="@Model.Product.Name"
+                                 class="product-main-image" />
+                        }
+                        else
+                        {
+                            <div class="product-no-image">
+
+                                <div class="product-no-image-icon">
+                                    <i class="fa-regular fa-image"></i>
+                                </div>
+
+                                <span>
+                                    Ürün resmi bulunmuyor.
+                                </span>
+
+                            </div>
+                        }
+
+                    </div>
 
 
-                <!-- BÜYÜK RESİM -->
-
-                <div class="product-main-image-container">
-
-                    @if (!string.IsNullOrWhiteSpace(mainImagePath))
+                    <!-- Küçük Resimler -->
+                    @if (!string.IsNullOrWhiteSpace(Model.Product.Image) ||
+                         productImages.Any())
                     {
-                        <img id="mainProductImage" src="@mainImagePath" alt="@Model.Product.Name"
-                             class="product-main-image" />
-                    }
-                    else
-                    {
-                        <div class="product-no-image">
+                        <div class="product-thumbnails">
 
-                            <i class="fa-solid fa-image fa-4x mb-3"></i>
+                            @if (!string.IsNullOrWhiteSpace(Model.Product.Image))
+                            {
+                                <button type="button" class="product-thumbnail active" data-image="@Model.Product.Image">
 
-                            <span>
-                                Ürün resmi bulunmuyor.
-                            </span>
+                                    <img src="@Model.Product.Image" alt="@Model.Product.Name" />
+
+                                </button>
+                            }
+
+
+                            @foreach (var image in productImages)
+                            {
+                                <button type="button" class="product-thumbnail" data-image="@image.ImagePath">
+
+                                    <img src="@image.ImagePath" alt="@Model.Product.Name" />
+
+                                </button>
+                            }
 
                         </div>
                     }
 
                 </div>
-
-
-                <!-- =================================================
-                     KÜÇÜK RESİMLER / THUMBNAIL
-                     ================================================= -->
-
-                @if (!string.IsNullOrWhiteSpace(Model.Product.Image) ||
-     productImages.Any())
-                {
-                    <div class="product-thumbnails">
-
-                        <!-- Ürünün eski / ana resmi -->
-                        @if (!string.IsNullOrWhiteSpace(Model.Product.Image))
-                        {
-                            <button type="button" class="product-thumbnail active" data-image="@Model.Product.Image">
-
-                                <img src="@Model.Product.Image" alt="@Model.Product.Name" />
-
-                            </button>
-                        }
-
-
-                        <!-- ProductImages tablosundaki ek resimler -->
-                        @foreach (var image in productImages)
-                        {
-                            <button type="button" class="product-thumbnail" data-image="@image.ImagePath">
-
-                                <img src="@image.ImagePath" alt="@Model.Product.Name" />
-
-                            </button>
-                        }
-
-                    </div>
-                }
 
             </div>
 
 
-
             <!-- =====================================================
-                 ÜRÜN BİLGİLERİ
+                 SAĞ TARAF - ÜRÜN BİLGİLERİ
                  ===================================================== -->
+            <div class="col-lg-6">
 
-            <div class="col-md-6">
+                <div class="product-detail-content">
+
+                    <!-- ÜST BİLGİ -->
+                    <div class="product-meta-top">
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Product.ProductCode))
+                        {
+                            <span class="product-sku">
+
+                                <i class="fa-solid fa-barcode"></i>
+
+                                SKU:
+                                @Model.Product.ProductCode
+
+                            </span>
+                        }
+
+                        @if (Model.Product.Stock > 0)
+                        {
+                            <span class="product-stock product-stock-available">
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                                Stokta
+
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="product-stock product-stock-empty">
+
+                                <i class="fa-solid fa-circle-xmark"></i>
+
+                                Stokta Yok
+
+                            </span>
+                        }
+
+                    </div>
 
 
-                <!-- Ürün Kodu -->
-
-                <div class="small text-muted mb-2">
-
-                    SKU:
-
-                    @Model.Product.ProductCode
-
-                </div>
+                    <!-- ÜRÜN ADI -->
+                    <h1 class="product-detail-title">
+                        @Model.Product.Name
+                    </h1>
 
 
-                <!-- Ürün Adı -->
+                    <!-- MARKA / KATEGORİ -->
+                    <div class="product-detail-meta">
 
-                <h1 class="display-5 fw-bolder mb-3">
+                        @if (Model.Product.Brand is not null)
+                        {
+                            <div class="product-meta-item">
 
-                    @Model.Product.Name
+                                <span>
+                                    Marka
+                                </span>
 
-                </h1>
+                                <strong>
+                                    @Model.Product.Brand.Name
+                                </strong>
+
+                            </div>
+                        }
 
 
-                <!-- Marka -->
+                        @if (Model.Product.Category is not null)
+                        {
+                            <div class="product-meta-item">
 
-                @if (Model.Product.Brand is not null)
-                {
-                    <div class="mb-2">
+                                <span>
+                                    Kategori
+                                </span>
 
-                        <span class="text-muted">
-                            Marka:
-                        </span>
+                                <strong>
+                                    @Model.Product.Category.Name
+                                </strong>
 
-                        <span class="fw-semibold">
-                            @Model.Product.Brand.Name
+                            </div>
+                        }
+
+                    </div>
+
+
+                    <!-- FİYAT -->
+                    <div class="product-price-area">
+
+                        <span class="product-price">
+                            @Model.Product.Price.ToString("N2") ₺
                         </span>
 
                     </div>
-                }
 
 
-                <!-- Kategori -->
-
-                @if (Model.Product.Category is not null)
-                {
-                    <div class="mb-3">
-
-                        <span class="text-muted">
-                            Kategori:
-                        </span>
-
-                        <span class="fw-semibold">
-                            @Model.Product.Category.Name
-                        </span>
-
-                    </div>
-                }
+                    <!-- AYIRICI -->
+                    <div class="product-divider"></div>
 
 
-                <!-- Fiyat -->
-
-                <div class="fs-4 fw-bold mb-4">
-
-                    @Model.Product.Price.ToString("N2") ₺
-
-                </div>
-
-
-                <!-- Açıklama -->
-
-                <p class="lead">
-
-                    @Model.Product.Description
-
-                </p>
-
-
-                <!-- Stok -->
-
-                <div class="mb-4">
-
-                    @if (Model.Product.Stock > 0)
+                    <!-- AÇIKLAMA -->
+                    @if (!string.IsNullOrWhiteSpace(Model.Product.Description))
                     {
-                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                        <div class="product-description-area">
 
-                            <i class="fa-solid fa-circle-check me-1"></i>
+                            <h2>
+                                Ürün Açıklaması
+                            </h2>
 
-                            Stokta
+                            <p>
+                                @Model.Product.Description
+                            </p>
 
-                            (@Model.Product.Stock adet)
-
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
-
-                            <i class="fa-solid fa-circle-xmark me-1"></i>
-
-                            Stokta Yok
-
-                        </span>
+                        </div>
                     }
 
-                </div>
 
+                    <!-- STOK DETAYI -->
+                    <div class="product-stock-detail">
 
+                        <div class="product-stock-icon">
 
-                <!-- =================================================
-                     SEPETE EKLE
-                     ================================================= -->
-
-                @if (Model.Product.Stock > 0)
-                {
-                    <form asp-controller="Cart" asp-action="Add" method="post">
-
-                        @Html.AntiForgeryToken()
-
-
-                        <!-- Product Id -->
-
-                        <input type="hidden" name="productId" value="@Model.Product.Id" />
-
-
-                        <div class="d-flex flex-wrap align-items-center gap-3">
-
-
-                            <!-- Adet -->
-
-                            <div>
-
-                                <label class="form-label small text-muted mb-1">
-                                    Adet
-                                </label>
-
-                                <input class="form-control text-center" name="quantity" type="number" value="1" min="1"
-                                       max="@Model.Product.Stock" style="width: 85px;" />
-
-                            </div>
-
-
-                            <!-- Sepete Ekle -->
-
-                            <div class="pt-4">
-
-                                <button class="btn btn-dark px-4" type="submit">
-
-                                    <i class="fa-solid fa-cart-shopping me-2"></i>
-
-                                    Sepete Ekle
-
-                                </button>
-
-                            </div>
+                            @if (Model.Product.Stock > 0)
+                            {
+                                <i class="fa-solid fa-box-open"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-ban"></i>
+                            }
 
                         </div>
 
-                    </form>
-                }
-                else
-                {
-                    <button class="btn btn-secondary px-4" type="button" disabled>
+                        <div>
 
-                        <i class="fa-solid fa-ban me-2"></i>
+                            @if (Model.Product.Stock > 0)
+                            {
+                                <strong>
+                                    Ürün stokta mevcut
+                                </strong>
 
-                        Stokta Yok
+                                <span>
+                                    @Model.Product.Stock adet ürün bulunmaktadır.
+                                </span>
+                            }
+                            else
+                            {
+                                <strong>
+                                    Ürün şu anda stokta yok
+                                </strong>
 
-                    </button>
-                }
+                                <span>
+                                    Bu ürün şu anda sipariş verilemiyor.
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SEPETE EKLE
+                         ================================================= -->
+                    <div class="product-purchase-area">
+
+                        @if (Model.Product.Stock > 0)
+                        {
+                            <form asp-controller="Cart" asp-action="Add" method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="productId" value="@Model.Product.Id" />
+
+
+                                <div class="product-purchase-row">
+
+                                    <!-- Adet -->
+                                    <div class="quantity-area">
+
+                                        <label for="quantity">
+                                            Adet
+                                        </label>
+
+                                        <input id="quantity" class="form-control quantity-input" name="quantity"
+                                               type="number" value="1" min="1" max="@Model.Product.Stock" />
+
+                                    </div>
+
+
+                                    <!-- Sepete Ekle -->
+                                    <button class="product-add-cart-button" type="submit">
+
+                                        <i class="fa-solid fa-cart-shopping"></i>
+
+                                        <span>
+                                            Sepete Ekle
+                                        </span>
+
+                                    </button>
+
+                                </div>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="product-out-of-stock-button" type="button" disabled>
+
+                                <i class="fa-solid fa-ban"></i>
+
+                                <span>
+                                    Stokta Yok
+                                </span>
+
+                            </button>
+                        }
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -277,41 +323,52 @@
 </section>
 
 
-
 <!-- =====================================================
      İLİŞKİLİ ÜRÜNLER
      ===================================================== -->
-
 @if (Model.RelatedProducts is not null &&
      Model.RelatedProducts.Any())
 {
-    <section class="py-5 bg-light">
+    <section class="related-products-section">
 
-        <div class="container px-4 px-lg-5 mt-4">
+        <div class="container">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="related-products-header">
 
                 <div>
 
-                    <h2 class="fw-bolder mb-1">
+                    <span class="related-products-label">
+                        BUNLARA DA GÖZ ATIN
+                    </span>
+
+                    <h2>
                         İlişkili Ürünler
                     </h2>
 
-                    <p class="text-muted mb-0">
-                        Aynı kategoride bulunan diğer ürünler
+                    <p>
+                        Aynı kategoride bulunan diğer tesbih modellerini inceleyin.
                     </p>
 
                 </div>
 
+                @if (Model.Product.Category is not null)
+                {
+                    <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@Model.Product.CategoryId"
+                       class="related-products-link">
+
+                        <span>
+                            Kategoriyi Gör
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+                }
+
             </div>
 
 
-            <div class="row gx-4 gx-lg-5
-                row-cols-1
-                row-cols-sm-2
-                row-cols-md-3
-                row-cols-xl-4
-                justify-content-center">
+            <div class="row g-4 row-cols-2 row-cols-md-3 row-cols-xl-4">
 
                 @foreach (var item in Model.RelatedProducts)
                 {
@@ -326,89 +383,157 @@
 }
 
 
-
-<!-- =====================================================
-     RESİM GALERİSİ CSS
-     ===================================================== -->
-
 <style>
-    /* Büyük resmin bulunduğu alan */
+    /* =========================================================
+       ÜRÜN DETAY SAYFASI
+       ========================================================= */
+
+    .product-detail-section {
+        padding: 50px 0 65px;
+
+        background:
+            linear-gradient(180deg,
+                #ffffff 0%,
+                #fbf8f4 100%);
+    }
+
+
+    /* =========================================================
+       GALERİ
+       ========================================================= */
+
+    .product-gallery {
+        position: sticky;
+
+        top: 95px;
+    }
+
+
     .product-main-image-container {
         width: 100%;
-        height: 500px;
+        height: 550px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        background-color: #fff;
-
-        border: 1px solid #dee2e6;
-        border-radius: 12px;
-
-        padding: 20px;
-        margin-bottom: 15px;
-
         overflow: hidden;
+
+        margin-bottom: 14px;
+        padding: 28px;
+
+        border: 1px solid #e8dfd4;
+        border-radius: 20px;
+
+        background:
+            linear-gradient(145deg,
+                #ffffff,
+                #faf6f1);
+
+        box-shadow:
+            0 12px 30px rgba(73, 50, 37, 0.07);
     }
 
 
-    /* Büyük ürün resmi */
     .product-main-image {
         width: 100%;
         height: 100%;
 
         object-fit: contain;
+        object-position: center;
 
-        transition: opacity .2s ease;
+        transition:
+            opacity 0.2s ease,
+            transform 0.35s ease;
     }
 
 
-    /* Resim yoksa gösterilecek alan */
+    .product-main-image-container:hover .product-main-image {
+        transform: scale(1.02);
+    }
+
+
+    /* =========================================================
+       RESİM YOK
+       ========================================================= */
+
     .product-no-image {
         width: 100%;
         height: 100%;
 
         display: flex;
         flex-direction: column;
-
         align-items: center;
         justify-content: center;
 
-        color: #adb5bd;
+        gap: 10px;
+
+        color: #9f9388;
+
+        font-size: 0.85rem;
     }
 
 
-    /* Küçük resimlerin bulunduğu alan */
+    .product-no-image-icon {
+        width: 65px;
+        height: 65px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 18px;
+
+        color: #a2774c;
+
+        background-color: #f3e8dc;
+
+        font-size: 1.5rem;
+    }
+
+
+    /* =========================================================
+       THUMBNAIL
+       ========================================================= */
+
     .product-thumbnails {
         display: flex;
         flex-wrap: wrap;
 
         gap: 10px;
-
-        margin-top: 15px;
     }
 
 
-    /* Küçük resim kutusu */
     .product-thumbnail {
-        width: 85px;
-        height: 85px;
+        width: 82px;
+        height: 82px;
 
-        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        border: 2px solid #dee2e6;
-        border-radius: 10px;
+        padding: 6px;
 
-        background-color: #fff;
+        overflow: hidden;
+
+        border: 1px solid #e4dbd1;
+        border-radius: 11px;
+
+        background-color: #ffffff;
 
         cursor: pointer;
 
-        transition: all .2s ease;
+        box-shadow:
+            0 3px 10px rgba(73, 50, 37, 0.04);
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background-color 0.2s ease;
     }
 
 
-    /* Küçük resim */
     .product-thumbnail img {
         width: 100%;
         height: 100%;
@@ -417,44 +542,711 @@
     }
 
 
-    /* Mouse üzerine gelince */
     .product-thumbnail:hover {
-        border-color: #212529;
+        border-color: #bd9469;
+
+        background-color: #fffdfa;
 
         transform: translateY(-2px);
     }
 
 
-    /* Seçili resim */
     .product-thumbnail.active {
-        border-color: #212529;
+        border-color: #8a5d2d;
+
+        background-color: #fffaf5;
 
         box-shadow:
-            0 0 0 2px rgba(33, 37, 41, .15);
+            0 0 0 2px rgba(138, 93, 45, 0.10),
+            0 5px 15px rgba(73, 50, 37, 0.08);
     }
 
 
-    /* Mobil */
-    @@media (max-width: 767px) {
+    /* =========================================================
+       ÜRÜN BİLGİ KARTI
+       ========================================================= */
 
-        .product-main-image-container {
-            height: 350px;
+    .product-detail-content {
+        padding: 30px;
+
+        border: 1px solid #e9e0d6;
+        border-radius: 20px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 10px 30px rgba(70, 48, 31, 0.06);
+    }
+
+
+    /* =========================================================
+       ÜST META
+       ========================================================= */
+
+    .product-meta-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        flex-wrap: wrap;
+
+        gap: 10px;
+
+        margin-bottom: 14px;
+    }
+
+
+    .product-sku {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 6px;
+
+        color: #998a7c;
+
+        font-size: 0.72rem;
+        font-weight: 600;
+    }
+
+
+    .product-sku i {
+        color: #a47749;
+    }
+
+
+    .product-stock {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 6px;
+
+        padding: 6px 10px;
+
+        border-radius: 20px;
+
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+
+
+    .product-stock-available {
+        color: #4c6b44;
+
+        background-color: #edf5ea;
+    }
+
+
+    .product-stock-empty {
+        color: #a24f4f;
+
+        background-color: #f9ecec;
+    }
+
+
+    /* =========================================================
+       ÜRÜN ADI
+       ========================================================= */
+
+    .product-detail-title {
+        margin: 0 0 18px;
+
+        color: #2d241c;
+
+        font-size:
+            clamp(2rem,
+                4vw,
+                3rem);
+
+        font-weight: 800;
+        line-height: 1.13;
+
+        letter-spacing: -0.025em;
+    }
+
+
+    /* =========================================================
+       MARKA / KATEGORİ
+       ========================================================= */
+
+    .product-detail-meta {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 10px 26px;
+
+        margin-bottom: 24px;
+    }
+
+
+    .product-meta-item {
+        display: flex;
+        align-items: center;
+
+        gap: 7px;
+    }
+
+
+    .product-meta-item span {
+        color: #9a8c7f;
+
+        font-size: 0.75rem;
+    }
+
+
+    .product-meta-item strong {
+        color: #513e30;
+
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       FİYAT
+       ========================================================= */
+
+    .product-price-area {
+        margin-bottom: 22px;
+    }
+
+
+    .product-price {
+        color: #7f552d;
+
+        font-size: 1.8rem;
+        font-weight: 800;
+    }
+
+
+    /* =========================================================
+       AYIRICI
+       ========================================================= */
+
+    .product-divider {
+        height: 1px;
+
+        margin-bottom: 24px;
+
+        background-color: #eee6dd;
+    }
+
+
+    /* =========================================================
+       AÇIKLAMA
+       ========================================================= */
+
+    .product-description-area {
+        margin-bottom: 24px;
+    }
+
+
+    .product-description-area h2 {
+        margin: 0 0 9px;
+
+        color: #3d3026;
+
+        font-size: 0.9rem;
+        font-weight: 800;
+    }
+
+
+    .product-description-area p {
+        margin: 0;
+
+        color: #766b61;
+
+        font-size: 0.9rem;
+        line-height: 1.75;
+
+        white-space: pre-line;
+    }
+
+
+    /* =========================================================
+       STOK DETAY
+       ========================================================= */
+
+    .product-stock-detail {
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        margin-bottom: 25px;
+        padding: 13px;
+
+        border: 1px solid #eee5da;
+        border-radius: 12px;
+
+        background-color: #faf8f5;
+    }
+
+
+    .product-stock-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #8b6137;
+
+        background-color: #f0e4d6;
+
+        font-size: 0.85rem;
+    }
+
+
+    .product-stock-detail strong {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #44352a;
+
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+
+    .product-stock-detail span {
+        color: #8c7f73;
+
+        font-size: 0.72rem;
+    }
+
+
+    /* =========================================================
+       SATIN ALMA ALANI
+       ========================================================= */
+
+    .product-purchase-area {
+        padding-top: 22px;
+
+        border-top: 1px solid #eee6dd;
+    }
+
+
+    .product-purchase-row {
+        display: flex;
+        align-items: flex-end;
+
+        gap: 12px;
+    }
+
+
+    .quantity-area {
+        flex-shrink: 0;
+    }
+
+
+    .quantity-area label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #5a493c;
+
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+
+    .quantity-input {
+        width: 85px;
+        min-height: 47px;
+
+        border: 1px solid #ded4c9;
+        border-radius: 10px;
+
+        color: #3c3028;
+
+        background-color: #fbf9f6;
+
+        text-align: center;
+
+        font-size: 0.88rem;
+        font-weight: 700;
+
+        box-shadow: none !important;
+    }
+
+
+    .quantity-input:focus {
+        border-color: #b48759;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 0 0 0.15rem rgba(180, 135, 89, 0.10) !important;
+    }
+
+
+    /* =========================================================
+       SEPET BUTONU
+       ========================================================= */
+
+    .product-add-cart-button {
+        min-height: 47px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 9px;
+
+        flex: 1;
+
+        padding: 10px 20px;
+
+        border: 1px solid #493225;
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8c5e34);
+
+        font-size: 0.85rem;
+        font-weight: 700;
+
+        box-shadow:
+            0 6px 17px rgba(73, 50, 37, 0.17);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+
+    .product-add-cart-button:hover {
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 9px 22px rgba(73, 50, 37, 0.22);
+    }
+
+
+    /* =========================================================
+       STOKTA YOK BUTONU
+       ========================================================= */
+
+    .product-out-of-stock-button {
+        width: 100%;
+        min-height: 47px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        border: 1px solid #ded6cf;
+        border-radius: 10px;
+
+        color: #9d9187;
+
+        background-color: #f5f3f1;
+
+        font-size: 0.84rem;
+        font-weight: 700;
+
+        cursor: not-allowed;
+    }
+
+
+    /* =========================================================
+       İLİŞKİLİ ÜRÜNLER
+       ========================================================= */
+
+    .related-products-section {
+        padding: 55px 0 70px;
+
+        border-top: 1px solid #ede4da;
+
+        background:
+            linear-gradient(180deg,
+                #fbf8f4,
+                #f6f0e8);
+    }
+
+
+    .related-products-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        margin-bottom: 28px;
+    }
+
+
+    .related-products-label {
+        display: inline-block;
+
+        margin-bottom: 6px;
+
+        color: #9a7042;
+
+        font-size: 0.68rem;
+        font-weight: 800;
+
+        letter-spacing: 0.15em;
+    }
+
+
+    .related-products-header h2 {
+        position: relative;
+
+        margin: 0 0 9px;
+        padding-bottom: 11px;
+
+        color: #2d241c;
+
+        font-size: 1.8rem;
+        font-weight: 800;
+    }
+
+
+    .related-products-header h2::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 42px;
+        height: 3px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #8a5d2d,
+                #d1a36e);
+    }
+
+
+    .related-products-header p {
+        margin: 0;
+
+        color: #82766b;
+
+        font-size: 0.84rem;
+    }
+
+
+    .related-products-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 9px 14px;
+
+        border: 1px solid #ddd2c5;
+        border-radius: 10px;
+
+        color: #654e3c;
+
+        background-color: #ffffff;
+
+        font-size: 0.76rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .related-products-link:hover {
+        color: #ffffff;
+
+        border-color: #7f552d;
+
+        background-color: #7f552d;
+
+        transform: translateY(-2px);
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .product-detail-section {
+            padding: 35px 0 50px;
         }
 
+
+        .product-gallery {
+            position: static;
+        }
+
+
+        .product-main-image-container {
+            height: 470px;
+        }
+
+
+        .product-detail-content {
+            padding: 25px;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .product-detail-section {
+            padding: 25px 0 40px;
+        }
+
+
+        .product-main-image-container {
+            height: 360px;
+
+            padding: 18px;
+
+            border-radius: 16px;
+        }
+
+
         .product-thumbnail {
-            width: 70px;
-            height: 70px;
+            width: 68px;
+            height: 68px;
+        }
+
+
+        .product-detail-content {
+            padding: 20px;
+
+            border-radius: 16px;
+        }
+
+
+        .product-detail-title {
+            font-size: 1.75rem;
+        }
+
+
+        .product-price {
+            font-size: 1.55rem;
+        }
+
+
+        .product-purchase-row {
+            align-items: stretch;
+        }
+
+
+        .quantity-input {
+            height: 100%;
+        }
+
+
+        .related-products-section {
+            padding: 40px 0 50px;
+        }
+
+
+        .related-products-header {
+            flex-direction: column;
+            align-items: flex-start;
+
+            gap: 14px;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .product-main-image-container {
+            height: 310px;
+        }
+
+
+        .product-thumbnail {
+            width: 62px;
+            height: 62px;
+        }
+
+
+        .product-detail-content {
+            padding: 18px;
+        }
+
+
+        .product-detail-title {
+            font-size: 1.55rem;
+        }
+
+
+        .product-detail-meta {
+            flex-direction: column;
+
+            gap: 6px;
+        }
+
+
+        .product-purchase-row {
+            flex-direction: column;
+        }
+
+
+        .quantity-area {
+            width: 100%;
+        }
+
+
+        .quantity-input {
+            width: 100%;
+        }
+
+
+        .product-add-cart-button {
+            width: 100%;
         }
 
     }
 </style>
 
 
-
 <!-- =====================================================
      RESİM GALERİSİ JAVASCRIPT
      ===================================================== -->
-
 @section Scripts
 {
     <script>
@@ -463,21 +1255,17 @@
             "DOMContentLoaded",
             function () {
 
-                // Büyük resmi bul
                 const mainImage =
                     document.getElementById(
                         "mainProductImage"
                     );
 
-
-                // Bütün küçük resimleri bul
                 const thumbnails =
                     document.querySelectorAll(
                         ".product-thumbnail"
                     );
 
 
-                // Büyük resim yoksa işlem yapma
                 if (!mainImage) {
                     return;
                 }
@@ -490,8 +1278,6 @@
                             "click",
                             function () {
 
-                                // Tıklanan küçük resmin
-                                // data-image değerini al
                                 const imagePath =
                                     this.dataset.image;
 
@@ -501,13 +1287,31 @@
                                 }
 
 
-                                // Büyük resmi değiştir
-                                mainImage.src =
-                                    imagePath;
+                                /*
+                                 * Resim değişirken küçük bir
+                                 * geçiş efekti oluşturuyoruz.
+                                 */
+                                mainImage.style.opacity = "0";
 
 
-                                // Önce bütün active
-                                // class'larını kaldır
+                                setTimeout(
+                                    function () {
+
+                                        mainImage.src =
+                                            imagePath;
+
+                                        mainImage.style.opacity =
+                                            "1";
+
+                                    },
+                                    120
+                                );
+
+
+                                /*
+                                 * Önce bütün thumbnail'ların
+                                 * active class'ını kaldır.
+                                 */
                                 thumbnails.forEach(
                                     function (item) {
 
@@ -519,8 +1323,9 @@
                                 );
 
 
-                                // Tıklanan küçük resmi
-                                // seçili hale getir
+                                /*
+                                 * Tıklanan resmi aktif yap.
+                                 */
                                 this.classList.add(
                                     "active"
                                 );

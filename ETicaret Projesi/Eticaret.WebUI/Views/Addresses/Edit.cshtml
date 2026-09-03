@@ -4,316 +4,377 @@
     ViewData["Title"] = "Adres Düzenle";
 }
 
-<div class="container py-5">
+<section class="address-form-section">
 
-    <div class="row justify-content-center">
+    <div class="container">
 
-        <div class="col-lg-8">
+        <div class="row justify-content-center">
 
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div class="col-xl-8 col-lg-9">
 
-                <div>
+                <!-- =====================================================
+                     SAYFA BAŞLIĞI
+                     ===================================================== -->
+                <div class="address-form-page-header">
 
-                    <h1 class="fw-bold mb-1">
+                    <span class="address-form-page-label">
+                        HESABIM
+                    </span>
+
+                    <h1>
                         Adres Düzenle
                     </h1>
 
-                    <p class="text-muted mb-0">
-                        Kayıtlı teslimat adresinizi güncelleyebilirsiniz.
+                    <p>
+                        Kayıtlı teslimat adresinizi güncelleyebilir
+                        ve varsayılan adres tercihinizi değiştirebilirsiniz.
                     </p>
 
                 </div>
 
 
-                <a asp-controller="Addresses" asp-action="Index" class="btn btn-outline-secondary">
+                <!-- =====================================================
+                     FORM KARTI
+                     ===================================================== -->
+                <div class="address-form-card">
 
-                    <i class="fa-solid fa-arrow-left me-2"></i>
+                    <!-- =================================================
+                         KART HEADER
+                         ================================================= -->
+                    <div class="address-form-card-header">
 
-                    Adreslerime Dön
+                        <div class="address-form-header-icon">
 
-                </a>
+                            <i class="fa-solid fa-location-dot"></i>
 
-            </div>
-
-
-            <div class="card border-0 shadow-sm">
-
-                <div class="card-body p-4 p-md-5">
-
-                    <form asp-controller="Addresses" asp-action="Edit" asp-route-id="@Model.Id" method="post">
-
-                        @Html.AntiForgeryToken()
-
-
-                        <!-- =================================================
-                             ID
-                             ================================================= -->
-
-                        <input type="hidden" asp-for="Id" />
-
-
-                        <!-- AppUserId formdan değiştirilmemeli.
-                             Controller zaten giriş yapan kullanıcıyı
-                             Claim üzerinden kontrol ediyor. -->
-
-
-                        <!-- =================================================
-                             VALIDATION
-                             ================================================= -->
-
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
                         </div>
 
 
-                        <div class="row g-3">
+                        <div>
+
+                            <span>
+                                TESLİMAT BİLGİLERİ
+                            </span>
+
+                            <h2>
+                                Adres Bilgilerini Güncelle
+                            </h2>
+
+                            <p>
+                                Kayıtlı adresinizde gerekli değişiklikleri yapın.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         FORM BODY
+                         ================================================= -->
+                    <div class="address-form-body">
+
+                        <form asp-controller="Addresses" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+
+                            @Html.AntiForgeryToken()
+
+
+                            <!-- ID -->
+                            <input type="hidden" asp-for="Id" />
 
 
                             <!-- =================================================
-                                 ADRES BAŞLIĞI
+                                 VALIDATION
                                  ================================================= -->
-
-                            <div class="col-12">
-
-                                <label asp-for="Title" class="form-label fw-semibold">
-                                </label>
-
-
-                                <div class="input-group">
-
-                                    <span class="input-group-text">
-
-                                        <i class="fa-solid fa-tag"></i>
-
-                                    </span>
-
-
-                                    <input asp-for="Title" class="form-control" placeholder="Ev, İş, Ailem..." />
-
-                                </div>
-
-
-                                <span asp-validation-for="Title" class="text-danger small">
-                                </span>
-
+                            <div asp-validation-summary="ModelOnly" class="address-validation-summary">
                             </div>
 
 
-                            <!-- =================================================
-                                 AD
-                                 ================================================= -->
+                            <div class="row g-3">
 
-                            <div class="col-md-6">
 
-                                <label asp-for="Name" class="form-label fw-semibold">
-                                </label>
+                                <!-- =================================================
+                                     ADRES BAŞLIĞI
+                                     ================================================= -->
+                                <div class="col-12">
 
+                                    <label asp-for="Title" class="address-form-label">
+                                    </label>
 
-                                <input asp-for="Name" class="form-control" placeholder="Adınızı giriniz" />
+                                    <div class="address-input">
 
+                                        <span class="address-input-icon">
+                                            <i class="fa-solid fa-tag"></i>
+                                        </span>
 
-                                <span asp-validation-for="Name" class="text-danger small">
-                                </span>
-
-                            </div>
-
-
-                            <!-- =================================================
-                                 SOYAD
-                                 ================================================= -->
-
-                            <div class="col-md-6">
-
-                                <label asp-for="Surname" class="form-label fw-semibold">
-                                </label>
-
-
-                                <input asp-for="Surname" class="form-control" placeholder="Soyadınızı giriniz" />
-
-
-                                <span asp-validation-for="Surname" class="text-danger small">
-                                </span>
-
-                            </div>
-
-
-                            <!-- =================================================
-                                 TELEFON
-                                 ================================================= -->
-
-                            <div class="col-md-6">
-
-                                <label asp-for="Phone" class="form-label fw-semibold">
-                                </label>
-
-
-                                <div class="input-group">
-
-                                    <span class="input-group-text">
-
-                                        <i class="fa-solid fa-phone"></i>
-
-                                    </span>
-
-
-                                    <input asp-for="Phone" type="tel" class="form-control"
-                                           placeholder="05xx xxx xx xx" />
-
-                                </div>
-
-
-                                <span asp-validation-for="Phone" class="text-danger small">
-                                </span>
-
-                            </div>
-
-
-                            <!-- =================================================
-                                 POSTA KODU
-                                 ================================================= -->
-
-                            <div class="col-md-6">
-
-                                <label asp-for="PostalCode" class="form-label fw-semibold">
-                                </label>
-
-
-                                <input asp-for="PostalCode" class="form-control" placeholder="34000" />
-
-
-                                <span asp-validation-for="PostalCode" class="text-danger small">
-                                </span>
-
-                            </div>
-
-
-                            <!-- =================================================
-                                 ŞEHİR
-                                 ================================================= -->
-
-                            <div class="col-md-6">
-
-                                <label asp-for="City" class="form-label fw-semibold">
-                                </label>
-
-
-                                <div class="input-group">
-
-                                    <span class="input-group-text">
-
-                                        <i class="fa-solid fa-city"></i>
-
-                                    </span>
-
-
-                                    <input asp-for="City" class="form-control" placeholder="İstanbul" />
-
-                                </div>
-
-
-                                <span asp-validation-for="City" class="text-danger small">
-                                </span>
-
-                            </div>
-
-
-                            <!-- =================================================
-                                 İLÇE
-                                 ================================================= -->
-
-                            <div class="col-md-6">
-
-                                <label asp-for="District" class="form-label fw-semibold">
-                                </label>
-
-
-                                <input asp-for="District" class="form-control" placeholder="Kadıköy" />
-
-
-                                <span asp-validation-for="District" class="text-danger small">
-                                </span>
-
-                            </div>
-
-
-                            <!-- =================================================
-                                 TAM ADRES
-                                 ================================================= -->
-
-                            <div class="col-12">
-
-                                <label asp-for="FullAddress" class="form-label fw-semibold">
-                                </label>
-
-
-                                <textarea asp-for="FullAddress" class="form-control" rows="5"
-                                          placeholder="Mahalle, cadde, sokak, bina, daire ve diğer adres bilgilerini giriniz."></textarea>
-
-
-                                <span asp-validation-for="FullAddress" class="text-danger small">
-                                </span>
-
-                            </div>
-
-
-                            <!-- =================================================
-                                 VARSAYILAN ADRES
-                                 ================================================= -->
-
-                            <div class="col-12">
-
-                                <div class="default-address-box">
-
-                                    <div class="form-check form-switch mb-0">
-
-                                        <input asp-for="IsDefault" class="form-check-input" role="switch" />
-
-
-                                        <label asp-for="IsDefault" class="form-check-label fw-semibold">
-
-                                            Varsayılan teslimat adresim yap
-
-                                        </label>
+                                        <input asp-for="Title" class="form-control" placeholder="Ev, İş, Ailem..."
+                                               autocomplete="off" />
 
                                     </div>
 
+                                    <span asp-validation-for="Title" class="text-danger address-validation-message">
+                                    </span>
 
-                                    <p class="text-muted small mb-0 mt-2">
+                                </div>
 
-                                        Varsayılan adresiniz, ödeme ekranında öncelikli olarak seçilecektir.
 
-                                    </p>
+                                <!-- =================================================
+                                     AD
+                                     ================================================= -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="Name" class="address-form-label">
+                                    </label>
+
+                                    <div class="address-input">
+
+                                        <span class="address-input-icon">
+                                            <i class="fa-regular fa-user"></i>
+                                        </span>
+
+                                        <input asp-for="Name" class="form-control" placeholder="Adınızı giriniz"
+                                               autocomplete="given-name" />
+
+                                    </div>
+
+                                    <span asp-validation-for="Name" class="text-danger address-validation-message">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     SOYAD
+                                     ================================================= -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="Surname" class="address-form-label">
+                                    </label>
+
+                                    <div class="address-input">
+
+                                        <span class="address-input-icon">
+                                            <i class="fa-regular fa-id-card"></i>
+                                        </span>
+
+                                        <input asp-for="Surname" class="form-control" placeholder="Soyadınızı giriniz"
+                                               autocomplete="family-name" />
+
+                                    </div>
+
+                                    <span asp-validation-for="Surname" class="text-danger address-validation-message">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     TELEFON
+                                     ================================================= -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="Phone" class="address-form-label">
+                                    </label>
+
+                                    <div class="address-input">
+
+                                        <span class="address-input-icon">
+                                            <i class="fa-solid fa-phone"></i>
+                                        </span>
+
+                                        <input asp-for="Phone" type="tel" class="form-control"
+                                               placeholder="05xx xxx xx xx" autocomplete="tel" />
+
+                                    </div>
+
+                                    <span asp-validation-for="Phone" class="text-danger address-validation-message">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     POSTA KODU
+                                     ================================================= -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="PostalCode" class="address-form-label">
+                                    </label>
+
+                                    <div class="address-input">
+
+                                        <span class="address-input-icon">
+                                            <i class="fa-solid fa-envelope-open-text"></i>
+                                        </span>
+
+                                        <input asp-for="PostalCode" class="form-control" placeholder="34000"
+                                               autocomplete="postal-code" />
+
+                                    </div>
+
+                                    <span asp-validation-for="PostalCode"
+                                          class="text-danger address-validation-message">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     ŞEHİR
+                                     ================================================= -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="City" class="address-form-label">
+                                    </label>
+
+                                    <div class="address-input">
+
+                                        <span class="address-input-icon">
+                                            <i class="fa-solid fa-city"></i>
+                                        </span>
+
+                                        <input asp-for="City" class="form-control" placeholder="İstanbul"
+                                               autocomplete="address-level1" />
+
+                                    </div>
+
+                                    <span asp-validation-for="City" class="text-danger address-validation-message">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     İLÇE
+                                     ================================================= -->
+                                <div class="col-md-6">
+
+                                    <label asp-for="District" class="address-form-label">
+                                    </label>
+
+                                    <div class="address-input">
+
+                                        <span class="address-input-icon">
+                                            <i class="fa-solid fa-location-crosshairs"></i>
+                                        </span>
+
+                                        <input asp-for="District" class="form-control" placeholder="Kadıköy"
+                                               autocomplete="address-level2" />
+
+                                    </div>
+
+                                    <span asp-validation-for="District" class="text-danger address-validation-message">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     TAM ADRES
+                                     ================================================= -->
+                                <div class="col-12">
+
+                                    <label asp-for="FullAddress" class="address-form-label">
+                                    </label>
+
+                                    <div class="address-textarea">
+
+                                        <span class="address-textarea-icon">
+                                            <i class="fa-regular fa-map"></i>
+                                        </span>
+
+                                        <textarea asp-for="FullAddress" class="form-control" rows="5"
+                                                  placeholder="Mahalle, cadde, sokak, bina, daire ve diğer adres bilgilerini giriniz."
+                                                  autocomplete="street-address"></textarea>
+
+                                    </div>
+
+                                    <span asp-validation-for="FullAddress"
+                                          class="text-danger address-validation-message">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     VARSAYILAN ADRES
+                                     ================================================= -->
+                                <div class="col-12">
+
+                                    <div class="default-address-option">
+
+                                        <div class="default-address-option-content">
+
+                                            <div class="default-address-icon">
+
+                                                <i class="fa-solid fa-house-circle-check"></i>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label asp-for="IsDefault" class="default-address-title">
+
+                                                    Varsayılan teslimat adresim yap
+
+                                                </label>
+
+                                                <p>
+                                                    Varsayılan adresiniz ödeme
+                                                    ekranında öncelikli olarak seçilecektir.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="form-check form-switch m-0">
+
+                                            <input asp-for="IsDefault" class="form-check-input address-switch"
+                                                   role="switch" />
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
                             </div>
 
-                        </div>
+
+                            <!-- =================================================
+                                 ALT BUTONLAR
+                                 ================================================= -->
+                            <div class="address-form-actions">
+
+                                <a asp-controller="Addresses" asp-action="Index" class="address-cancel-button">
+
+                                    <i class="fa-solid fa-arrow-left"></i>
+
+                                    <span>
+                                        İptal
+                                    </span>
+
+                                </a>
 
 
-                        <!-- =================================================
-                             BUTONLAR
-                             ================================================= -->
+                                <button type="submit" class="address-save-button">
 
-                        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+                                    <i class="fa-solid fa-floppy-disk"></i>
 
-                            <a asp-controller="Addresses" asp-action="Index" class="btn btn-outline-secondary px-4">
+                                    <span>
+                                        Değişiklikleri Kaydet
+                                    </span>
 
-                                İptal
+                                </button>
 
-                            </a>
+                            </div>
 
+                        </form>
 
-                            <button type="submit" class="btn btn-dark px-4">
-
-                                <i class="fa-solid fa-floppy-disk me-2"></i>
-
-                                Değişiklikleri Kaydet
-
-                            </button>
-
-                        </div>
-
-                    </form>
+                    </div>
 
                 </div>
 
@@ -323,76 +384,698 @@
 
     </div>
 
-</div>
+</section>
 
 
 <style>
-    .card {
-        border-radius: 18px;
+    /* =========================================================
+       SAYFA
+       ========================================================= */
+
+    .address-form-section {
+        min-height: 75vh;
+
+        padding: 55px 0 70px;
+
+        background:
+            radial-gradient(circle at top left,
+                rgba(190, 145, 91, 0.07),
+                transparent 32%),
+            linear-gradient(180deg,
+                #ffffff 0%,
+                #faf7f3 100%);
     }
 
 
-    .form-control,
-    .input-group-text {
-        min-height: 48px;
+    /* =========================================================
+       SAYFA BAŞLIĞI
+       ========================================================= */
+
+    .address-form-page-header {
+        margin-bottom: 27px;
     }
 
 
-    .form-control {
-        border-radius: 10px;
+    .address-form-page-label {
+        display: inline-block;
+
+        margin-bottom: 6px;
+
+        color: #9a7042;
+
+        font-size: 0.67rem;
+        font-weight: 800;
+
+        letter-spacing: 0.15em;
     }
 
 
-    .input-group .form-control {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
+    .address-form-page-header h1 {
+        position: relative;
+
+        margin: 0 0 10px;
+        padding-bottom: 12px;
+
+        color: #30251d;
+
+        font-size: 2rem;
+        font-weight: 800;
+
+        letter-spacing: -0.02em;
     }
 
 
-    .input-group-text {
-        min-width: 48px;
+    .address-form-page-header h1::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 42px;
+        height: 3px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #895b2e,
+                #d0a16a);
+    }
+
+
+    .address-form-page-header p {
+        max-width: 650px;
+
+        margin: 0;
+
+        color: #887b70;
+
+        font-size: 0.84rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       FORM KARTI
+       ========================================================= */
+
+    .address-form-card {
+        overflow: hidden;
+
+        border: 1px solid #e7ddd2;
+        border-radius: 20px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 14px 38px rgba(70, 47, 30, 0.08);
+    }
+
+
+    /* =========================================================
+       KART HEADER
+       ========================================================= */
+
+    .address-form-card-header {
+        display: flex;
+        align-items: center;
+
+        gap: 14px;
+
+        padding: 21px 26px;
+
+        border-bottom: 1px solid #eee5dc;
+
+        background:
+            linear-gradient(90deg,
+                #fcf8f3,
+                #ffffff);
+    }
+
+
+    .address-form-header-icon {
+        width: 46px;
+        height: 46px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
+        flex-shrink: 0;
 
-        background-color: #f8f9fa;
-
-        color: #6c757d;
-    }
-
-
-    textarea.form-control {
-        min-height: 125px;
-
-        resize: vertical;
-    }
-
-
-    .default-address-box {
-        padding: 18px;
-
-        border: 1px solid #e9ecef;
         border-radius: 12px;
 
-        background-color: #f8f9fa;
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #5a3c27,
+                #a06d3b);
+
+        font-size: 1rem;
+
+        box-shadow:
+            0 5px 14px rgba(73, 50, 37, 0.15);
     }
 
 
-    .form-check-input:checked {
-        background-color: #212529;
+    .address-form-card-header span {
+        display: block;
 
-        border-color: #212529;
+        margin-bottom: 2px;
+
+        color: #9a7042;
+
+        font-size: 0.6rem;
+        font-weight: 800;
+
+        letter-spacing: 0.13em;
     }
 
 
-    @@media (max-width: 575.98px) {
+    .address-form-card-header h2 {
+        margin: 0 0 2px;
 
-        .card-body {
-            padding: 24px !important;
+        color: #3b2d24;
+
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+
+    .address-form-card-header p {
+        margin: 0;
+
+        color: #928579;
+
+        font-size: 0.72rem;
+    }
+
+
+    /* =========================================================
+       FORM BODY
+       ========================================================= */
+
+    .address-form-body {
+        padding: 30px 32px 32px;
+    }
+
+
+    /* =========================================================
+       LABEL
+       ========================================================= */
+
+    .address-form-label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #49392e;
+
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       INPUT
+       ========================================================= */
+
+    .address-input {
+        height: 51px;
+
+        display: flex;
+        align-items: center;
+
+        overflow: hidden;
+
+        border: 1px solid #e0d6cb;
+        border-radius: 11px;
+
+        background-color: #fbf9f6;
+
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .address-input:focus-within {
+        border-color: #b7895a;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 0 0 0.15rem rgba(183, 137, 90, 0.10);
+    }
+
+
+    .address-input-icon {
+        width: 44px;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        color: #a58c73;
+
+        font-size: 0.82rem;
+    }
+
+
+    .address-input .form-control {
+        height: 100%;
+
+        padding: 0 12px 0 0;
+
+        border: 0;
+
+        color: #3d3128;
+
+        background-color: transparent;
+
+        font-size: 0.84rem;
+
+        box-shadow: none !important;
+    }
+
+
+    .address-input .form-control::placeholder {
+        color: #b5aaa0;
+    }
+
+
+    /* =========================================================
+       TEXTAREA
+       ========================================================= */
+
+    .address-textarea {
+        display: flex;
+        align-items: flex-start;
+
+        min-height: 128px;
+
+        overflow: hidden;
+
+        border: 1px solid #e0d6cb;
+        border-radius: 11px;
+
+        background-color: #fbf9f6;
+
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .address-textarea:focus-within {
+        border-color: #b7895a;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 0 0 0.15rem rgba(183, 137, 90, 0.10);
+    }
+
+
+    .address-textarea-icon {
+        width: 44px;
+
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        padding-top: 15px;
+
+        color: #a58c73;
+
+        font-size: 0.82rem;
+    }
+
+
+    .address-textarea .form-control {
+        min-height: 128px;
+
+        padding: 13px 12px 13px 0;
+
+        resize: vertical;
+
+        border: 0;
+
+        color: #3d3128;
+
+        background-color: transparent;
+
+        font-size: 0.84rem;
+        line-height: 1.6;
+
+        box-shadow: none !important;
+    }
+
+
+    .address-textarea .form-control::placeholder {
+        color: #b5aaa0;
+    }
+
+
+    /* =========================================================
+       VALIDATION
+       ========================================================= */
+
+    .address-validation-summary {
+        margin-bottom: 20px;
+        padding: 11px 14px;
+
+        border: 1px solid #edd0d0;
+        border-radius: 10px;
+
+        color: #a54d4d;
+
+        background-color: #fcf2f2;
+
+        font-size: 0.75rem;
+    }
+
+
+    .address-validation-summary:empty {
+        display: none;
+    }
+
+
+    .address-validation-message {
+        display: block;
+
+        margin-top: 5px;
+
+        font-size: 0.7rem;
+    }
+
+
+    /* =========================================================
+       VARSAYILAN ADRES
+       ========================================================= */
+
+    .default-address-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        margin-top: 4px;
+        padding: 14px 16px;
+
+        border: 1px solid #e6dbcf;
+        border-radius: 12px;
+
+        background:
+            linear-gradient(90deg,
+                #fbf7f2,
+                #ffffff);
+    }
+
+
+    .default-address-option-content {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+    }
+
+
+    .default-address-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #8c6035;
+
+        background-color: #f2e5d6;
+
+        font-size: 0.82rem;
+    }
+
+
+    .default-address-title {
+        display: block;
+
+        margin: 0 0 2px;
+
+        color: #49382c;
+
+        font-size: 0.78rem;
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+
+    .default-address-option p {
+        margin: 0;
+
+        color: #978a7e;
+
+        font-size: 0.67rem;
+    }
+
+
+    /* =========================================================
+       SWITCH
+       ========================================================= */
+
+    .address-switch {
+        width: 2.4em !important;
+        height: 1.25em;
+
+        border-color: #cbb8a4;
+
+        cursor: pointer;
+
+        box-shadow: none !important;
+    }
+
+
+    .address-switch:checked {
+        border-color: #84592f;
+
+        background-color: #84592f;
+    }
+
+
+    .address-switch:focus {
+        border-color: #a67b50;
+
+        box-shadow:
+            0 0 0 0.15rem rgba(166, 123, 80, 0.10) !important;
+    }
+
+
+    /* =========================================================
+       ALT BUTONLAR
+       ========================================================= */
+
+    .address-form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        gap: 10px;
+
+        margin-top: 28px;
+        padding-top: 22px;
+
+        border-top: 1px solid #eee6dd;
+    }
+
+
+    .address-cancel-button,
+    .address-save-button {
+        min-height: 43px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 9px 17px;
+
+        border-radius: 10px;
+
+        font-size: 0.76rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    /* =========================================================
+       İPTAL
+       ========================================================= */
+
+    .address-cancel-button {
+        border: 1px solid #ddd2c5;
+
+        color: #685343;
+
+        background-color: #ffffff;
+    }
+
+
+    .address-cancel-button:hover {
+        color: #443226;
+
+        border-color: #c7aa88;
+
+        background-color: #fbf8f4;
+
+        transform: translateX(-2px);
+    }
+
+
+    /* =========================================================
+       KAYDET
+       ========================================================= */
+
+    .address-save-button {
+        border: 1px solid #493225;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        box-shadow:
+            0 5px 15px rgba(73, 50, 37, 0.16);
+    }
+
+
+    .address-save-button:hover {
+        color: #ffffff;
+
+        border-color: #9b6a3a;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(73, 50, 37, 0.21);
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .address-form-section {
+            padding: 40px 0 55px;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .address-form-section {
+            padding: 30px 0 45px;
+        }
+
+
+        .address-form-page-header h1 {
+            font-size: 1.65rem;
+        }
+
+
+        .address-form-card {
+            border-radius: 16px;
+        }
+
+
+        .address-form-card-header {
+            padding: 18px 20px;
+        }
+
+
+        .address-form-body {
+            padding: 23px 20px;
+        }
+
+
+        .address-form-actions {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+
+
+        .address-cancel-button,
+        .address-save-button {
+            width: 100%;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .address-form-card-header {
+            align-items: flex-start;
+        }
+
+
+        .address-form-header-icon {
+            width: 41px;
+            height: 41px;
+        }
+
+
+        .default-address-option {
+            align-items: flex-start;
+
+            gap: 12px;
+        }
+
+
+        .default-address-option p {
+            line-height: 1.45;
         }
 
     }
@@ -403,6 +1086,7 @@
 {
     @{
         await Html.RenderPartialAsync(
-            "_ValidationScriptsPartial");
+            "_ValidationScriptsPartial"
+        );
     }
 }

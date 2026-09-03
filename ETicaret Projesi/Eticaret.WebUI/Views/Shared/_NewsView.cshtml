@@ -4,22 +4,46 @@
 
     <a asp-area="" asp-controller="News" asp-action="Details" asp-route-id="@Model.Id" class="campaign-card">
 
+        <!-- =====================================================
+             KAMPANYA GÖRSELİ
+             ===================================================== -->
         <div class="campaign-image-wrapper">
 
             <img src="@Model.Image" alt="@Model.Name" class="campaign-image" />
 
+
+            <!-- Hafif görsel overlay -->
+            <div class="campaign-image-overlay"></div>
+
+
+            <!-- Kampanya Etiketi -->
             <span class="campaign-badge">
-                <i class="fa-solid fa-bolt me-1"></i>
+
+                <span class="campaign-badge-icon">
+                    <i class="fa-solid fa-bolt"></i>
+                </span>
+
                 Kampanya
+
             </span>
 
         </div>
 
+
+        <!-- =====================================================
+             KAMPANYA İÇERİĞİ
+             ===================================================== -->
         <div class="campaign-body">
+
+            <span class="campaign-category">
+                KEHR-İ BAR
+            </span>
+
 
             <h2 class="campaign-title">
                 @Model.Name
             </h2>
+
 
             @if (!string.IsNullOrWhiteSpace(Model.Description))
             {
@@ -28,14 +52,23 @@
                 </p>
             }
 
+
+            <!-- =================================================
+                 ALT ALAN
+                 ================================================= -->
             <div class="campaign-footer">
 
                 <span class="campaign-link">
+
                     Kampanyayı İncele
+
                 </span>
 
+
                 <span class="campaign-arrow">
+
                     <i class="fa-solid fa-arrow-right"></i>
+
                 </span>
 
             </div>
@@ -46,8 +79,15 @@
 
 </div>
 
+
 <style>
+    /* =========================================================
+       KAMPANYA KARTI
+       ========================================================= */
+
     .campaign-card {
+        position: relative;
+
         display: flex;
         flex-direction: column;
 
@@ -55,15 +95,17 @@
 
         overflow: hidden;
 
-        border: 1px solid #eceff1;
-        border-radius: 22px;
+        border: 1px solid #e7ddd2;
+        border-radius: 19px;
+
+        color: inherit;
 
         background-color: #ffffff;
 
         text-decoration: none;
 
         box-shadow:
-            0 8px 24px rgba(0, 0, 0, 0.07);
+            0 8px 24px rgba(70, 47, 30, 0.06);
 
         transition:
             transform 0.3s ease,
@@ -72,17 +114,22 @@
     }
 
 
-    /* Görsel Alanı */
+    /* =========================================================
+       GÖRSEL
+       ========================================================= */
 
     .campaign-image-wrapper {
         position: relative;
 
         width: 100%;
-        height: 285px;
+        height: 255px;
 
         overflow: hidden;
 
-        background-color: #f5f5f5;
+        background:
+            linear-gradient(145deg,
+                #faf6f1,
+                #f2e9df);
     }
 
 
@@ -90,109 +137,73 @@
         width: 100%;
         height: 100%;
 
+        display: block;
+
         object-fit: cover;
         object-position: center;
 
-        transition: transform 0.5s ease;
+        transition:
+            transform 0.55s ease;
     }
 
 
-    /* Kampanya Etiketi */
+    /* Görselin alt tarafına hafif geçiş */
+
+    .campaign-image-overlay {
+        position: absolute;
+
+        inset: 0;
+
+        pointer-events: none;
+
+        background:
+            linear-gradient(180deg,
+                transparent 55%,
+                rgba(48, 37, 29, 0.13) 100%);
+    }
+
+
+    /* =========================================================
+       KAMPANYA ETİKETİ
+       ========================================================= */
 
     .campaign-badge {
         position: absolute;
 
-        top: 16px;
-        left: 16px;
+        top: 14px;
+        left: 14px;
 
         display: inline-flex;
         align-items: center;
 
-        padding: 7px 12px;
+        gap: 6px;
 
-        border-radius: 50px;
+        padding: 6px 10px;
 
-        color: #212529;
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 30px;
 
-        background-color: rgba(255, 255, 255, 0.94);
+        color: #5c412d;
 
-        font-size: 0.75rem;
-        font-weight: 700;
+        background-color: rgba(255, 250, 244, 0.93);
+
+        font-size: 0.62rem;
+        font-weight: 800;
+
+        letter-spacing: 0.03em;
 
         box-shadow:
-            0 4px 14px rgba(0, 0, 0, 0.12);
+            0 4px 14px rgba(56, 38, 25, 0.10);
 
-        backdrop-filter: blur(7px);
+        backdrop-filter: blur(8px);
     }
 
 
-    /* İçerik Alanı */
+    .campaign-badge-icon {
+        width: 20px;
+        height: 20px;
 
-    .campaign-body {
-        display: flex;
-        flex-direction: column;
-
-        flex: 1;
-
-        padding: 22px;
-    }
-
-
-    .campaign-title {
-        margin-bottom: 10px;
-
-        font-size: 1.35rem;
-        font-weight: 800;
-        line-height: 1.3;
-
-        color: #212529;
-    }
-
-
-    .campaign-description {
-        display: -webkit-box;
-
-        margin-bottom: 20px;
-
-        overflow: hidden;
-
-        color: #6c757d;
-
-        font-size: 0.9rem;
-        line-height: 1.6;
-
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-    }
-
-
-    /* Alt İncele Alanı */
-
-    .campaign-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        margin-top: auto;
-        padding-top: 16px;
-
-        border-top: 1px solid #f0f0f0;
-    }
-
-
-    .campaign-link {
-        color: #212529;
-
-        font-size: 0.9rem;
-        font-weight: 700;
-    }
-
-
-    .campaign-arrow {
-        width: 38px;
-        height: 38px;
-
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
 
@@ -200,58 +211,226 @@
 
         color: #ffffff;
 
-        background-color: #212529;
+        background:
+            linear-gradient(135deg,
+                #8b5e34,
+                #c28a51);
 
-        transition:
-            transform 0.25s ease,
-            background-color 0.25s ease;
+        font-size: 0.5rem;
     }
 
 
-    /* Hover */
+    /* =========================================================
+       İÇERİK
+       ========================================================= */
+
+    .campaign-body {
+        display: flex;
+        flex-direction: column;
+
+        flex: 1;
+
+        padding: 19px;
+    }
+
+
+    /* =========================================================
+       KÜÇÜK ÜST BAŞLIK
+       ========================================================= */
+
+    .campaign-category {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #a0764c;
+
+        font-size: 0.57rem;
+        font-weight: 800;
+
+        letter-spacing: 0.13em;
+    }
+
+
+    /* =========================================================
+       BAŞLIK
+       ========================================================= */
+
+    .campaign-title {
+        display: -webkit-box;
+
+        min-height: 44px;
+
+        margin: 0 0 8px;
+
+        overflow: hidden;
+
+        color: #382b22;
+
+        font-size: 1rem;
+        font-weight: 800;
+        line-height: 1.4;
+
+        letter-spacing: -0.01em;
+
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+
+        transition:
+            color 0.2s ease;
+    }
+
+
+    /* =========================================================
+       AÇIKLAMA
+       ========================================================= */
+
+    .campaign-description {
+        display: -webkit-box;
+
+        min-height: 41px;
+
+        margin: 0 0 17px;
+
+        overflow: hidden;
+
+        color: #897d72;
+
+        font-size: 0.72rem;
+        line-height: 1.65;
+
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+
+    /* =========================================================
+       ALT ALAN
+       ========================================================= */
+
+    .campaign-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-top: auto;
+        padding-top: 13px;
+
+        border-top: 1px solid #eee5dc;
+    }
+
+
+    .campaign-link {
+        color: #604630;
+
+        font-size: 0.68rem;
+        font-weight: 750;
+
+        transition:
+            color 0.2s ease;
+    }
+
+
+    /* =========================================================
+       OK
+       ========================================================= */
+
+    .campaign-arrow {
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border: 1px solid #dfcdb9;
+        border-radius: 50%;
+
+        color: #75502f;
+
+        background:
+            linear-gradient(145deg,
+                #fffdf9,
+                #f5e9dc);
+
+        font-size: 0.62rem;
+
+        transition:
+            color 0.25s ease,
+            border-color 0.25s ease,
+            background 0.25s ease,
+            transform 0.25s ease;
+    }
+
+
+    /* =========================================================
+       HOVER
+       ========================================================= */
 
     .campaign-card:hover {
-        transform: translateY(-6px);
+        border-color: #d5b99b;
 
-        border-color: #dfe3e6;
+        transform: translateY(-5px);
 
         box-shadow:
-            0 16px 36px rgba(0, 0, 0, 0.13);
+            0 15px 32px rgba(70, 47, 30, 0.11);
     }
 
 
     .campaign-card:hover .campaign-image {
-        transform: scale(1.05);
+        transform: scale(1.045);
+    }
+
+
+    .campaign-card:hover .campaign-title {
+        color: #8b5e34;
+    }
+
+
+    .campaign-card:hover .campaign-link {
+        color: #8b5e34;
     }
 
 
     .campaign-card:hover .campaign-arrow {
-        transform: translateX(4px);
+        color: #ffffff;
 
-        background-color: #000000;
+        border-color: #80562f;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        transform: translateX(3px);
     }
 
 
-    /* Tablet */
+    /* =========================================================
+       TABLET
+       ========================================================= */
 
     @@media (max-width: 991.98px) {
 
         .campaign-image-wrapper {
-            height: 240px;
+            height: 230px;
         }
+
 
         .campaign-body {
-            padding: 18px;
-        }
-
-        .campaign-title {
-            font-size: 1.2rem;
+            padding: 17px;
         }
 
     }
 
 
-    /* Telefon */
+    /* =========================================================
+       TELEFON
+       ========================================================= */
 
     @@media (max-width: 767.98px) {
 
@@ -259,69 +438,78 @@
             border-radius: 16px;
         }
 
+
         .campaign-image-wrapper {
-            height: 190px;
+            height: 205px;
         }
+
 
         .campaign-badge {
-            top: 10px;
-            left: 10px;
+            top: 11px;
+            left: 11px;
 
-            padding: 5px 9px;
+            padding: 5px 8px;
 
-            font-size: 0.65rem;
+            font-size: 0.58rem;
         }
+
+
+        .campaign-badge-icon {
+            width: 18px;
+            height: 18px;
+        }
+
 
         .campaign-body {
-            padding: 14px;
+            padding: 15px;
         }
+
 
         .campaign-title {
-            margin-bottom: 7px;
+            min-height: 40px;
 
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
+
 
         .campaign-description {
-            margin-bottom: 14px;
+            min-height: 38px;
 
-            font-size: 0.78rem;
-
-            -webkit-line-clamp: 2;
+            font-size: 0.68rem;
         }
+
 
         .campaign-footer {
-            padding-top: 12px;
+            padding-top: 11px;
         }
 
-        .campaign-link {
-            font-size: 0.78rem;
-        }
 
         .campaign-arrow {
-            width: 32px;
-            height: 32px;
-
-            font-size: 0.75rem;
+            width: 31px;
+            height: 31px;
         }
 
     }
 
 
-    /* Küçük Telefon */
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
 
     @@media (max-width: 480px) {
 
         .campaign-image-wrapper {
-            height: 160px;
+            height: 180px;
         }
+
 
         .campaign-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
+
         .campaign-description {
-            -webkit-line-clamp: 1;
+            -webkit-line-clamp: 2;
         }
 
     }

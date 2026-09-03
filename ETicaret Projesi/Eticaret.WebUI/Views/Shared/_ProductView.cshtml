@@ -6,180 +6,70 @@
 @{
     var favoriteProducts =
         Context.Session
-            .GetJson<List<FavoriteProductViewModel>>(
-                "Favorites")
+            .GetJson<List<FavoriteProductViewModel>>("Favorites")
         ?? new List<FavoriteProductViewModel>();
 
     var isFavorite =
-        favoriteProducts.Any(x =>
-            x.Id == Model.Id);
+        favoriteProducts.Any(x => x.Id == Model.Id);
 
     var returnUrl =
         $"{Context.Request.Path}{Context.Request.QueryString}";
 }
 
-<div class="col mb-5">
+<div class="col mb-4">
 
-    <div class="card h-100 position-relative">
-
-        <!-- =====================================================
-             İNDİRİM
-             ===================================================== -->
-
-        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; left: 0.5rem; z-index: 2;">
-
-            İndirim
-
-        </div>
-
+    <div class="product-card h-100">
 
         <!-- =====================================================
-             FAVORİ
+             GÖRSEL
              ===================================================== -->
+        <div class="product-image-wrapper">
 
-        @if (isFavorite)
-        {
-            <!-- Favorilerden Kaldır -->
+            <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id"
+               class="product-image-link">
 
-            <form asp-area="" asp-controller="Favorites" asp-action="Remove" method="post" class="position-absolute"
-                  style="top: 0.5rem; right: 0.5rem; z-index: 2;">
+                @if (!string.IsNullOrWhiteSpace(Model.Image))
+                {
+                    <img src="@Model.Image" alt="@Model.Name" class="product-image" loading="lazy" />
+                }
+                else
+                {
+                    <div class="product-no-image">
+                        <i class="fa-regular fa-image"></i>
+                    </div>
+                }
 
-                @Html.AntiForgeryToken()
-
-
-                <input type="hidden" name="id" value="@Model.Id" />
-
-
-                <input type="hidden" name="returnUrl" value="@returnUrl" />
-
-
-                <button type="submit" class="btn btn-light rounded-circle shadow-sm favorite-button"
-                        title="Favorilerden Kaldır">
-
-                    <i class="fa-solid fa-heart text-danger"></i>
-
-                </button>
-
-            </form>
-        }
-        else
-        {
-            <!-- Favorilere Ekle -->
-
-            <form asp-area="" asp-controller="Favorites" asp-action="Add" method="post" class="position-absolute"
-                  style="top: 0.5rem; right: 0.5rem; z-index: 2;">
-
-                @Html.AntiForgeryToken()
+            </a>
 
 
-                <input type="hidden" name="id" value="@Model.Id" />
+            <!-- =================================================
+                 ETİKET
+                 ================================================= -->
+            <span class="product-badge">
+
+                <i class="fa-solid fa-gem"></i>
+
+                Özel Ürün
+
+            </span>
 
 
-                <input type="hidden" name="returnUrl" value="@returnUrl" />
-
-
-                <button type="submit" class="btn btn-light rounded-circle shadow-sm favorite-button"
-                        title="Favorilere Ekle">
-
-                    <i class="fa-regular fa-heart text-danger"></i>
-
-                </button>
-
-            </form>
-        }
-
-
-        <!-- =====================================================
-             ÜRÜN GÖRSELİ
-             ===================================================== -->
-
-        <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id">
-
-            <img class="card-img-top" src="@Model.Image" alt="@Model.Name" />
-
-        </a>
-
-
-        <!-- =====================================================
-             ÜRÜN BİLGİLERİ
-             ===================================================== -->
-
-        <div class="card-body p-4">
-
-            <div class="text-center">
-
-                <!-- Ürün Adı -->
-
-                <h5 class="fw-bolder">
-                    @Model.Name
-                </h5>
-
-
-                <!-- Ürün Fiyatı -->
-
-                <div class="fw-semibold">
-
-                    @Model.Price.ToString("N2") ₺
-
-                </div>
-
-
-                <!-- Stok -->
-
-                <div class="mt-2">
-
-                    @if (Model.Stock > 0)
-                    {
-                        <span class="badge bg-success-subtle text-success">
-
-                            <i class="fa-solid fa-circle-check me-1"></i>
-
-                            Stokta
-
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger-subtle text-danger">
-
-                            <i class="fa-solid fa-circle-xmark me-1"></i>
-
-                            Stokta Yok
-
-                        </span>
-                    }
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =====================================================
-             ÜRÜN İŞLEMLERİ
-             ===================================================== -->
-
-        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-
-            @if (Model.Stock > 0)
+            <!-- =================================================
+                 FAVORİ
+                 ================================================= -->
+            @if (isFavorite)
             {
-                <form asp-area="" asp-controller="Cart" asp-action="Add" method="post">
+                <form asp-area="" asp-controller="Favorites" asp-action="Remove" method="post" class="favorite-form">
 
                     @Html.AntiForgeryToken()
 
+                    <input type="hidden" name="id" value="@Model.Id" />
 
-                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
 
+                    <button type="submit" class="favorite-button active" title="Favorilerden Kaldır">
 
-                    <input type="hidden" name="quantity" value="1" />
-
-
-                    <button type="submit" class="btn btn-outline-dark w-100">
-
-                        <i class="fa-solid fa-cart-shopping me-2"></i>
-
-                        Sepete Ekle
+                        <i class="fa-solid fa-heart"></i>
 
                     </button>
 
@@ -187,11 +77,128 @@
             }
             else
             {
-                <button type="button" class="btn btn-secondary w-100" disabled>
+                <form asp-area="" asp-controller="Favorites" asp-action="Add" method="post" class="favorite-form">
 
-                    <i class="fa-solid fa-ban me-2"></i>
+                    @Html.AntiForgeryToken()
 
-                    Stokta Yok
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+                    <button type="submit" class="favorite-button" title="Favorilere Ekle">
+
+                        <i class="fa-regular fa-heart"></i>
+
+                    </button>
+
+                </form>
+            }
+
+        </div>
+
+
+        <!-- =====================================================
+             ÜRÜN BİLGİLERİ
+             ===================================================== -->
+        <div class="product-body">
+
+            <span class="product-eyebrow">
+                KEHR-İ BAR
+            </span>
+
+
+            <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id"
+               class="product-title">
+
+                @Model.Name
+
+            </a>
+
+
+            <div class="product-title-line"></div>
+
+
+            <!-- =================================================
+                 FİYAT
+                 ================================================= -->
+            <div class="product-price">
+
+                @Model.Price.ToString("N2") ₺
+
+            </div>
+
+
+            <!-- =================================================
+                 STOK
+                 ================================================= -->
+            <div class="product-stock">
+
+                @if (Model.Stock > 0)
+                {
+                    <span class="stock-badge in-stock">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        Stokta
+
+                    </span>
+                }
+                else
+                {
+                    <span class="stock-badge out-of-stock">
+
+                        <i class="fa-solid fa-circle-xmark"></i>
+
+                        Stokta Yok
+
+                    </span>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             ALT İŞLEMLER
+             ===================================================== -->
+        <div class="product-footer">
+
+            @if (Model.Stock > 0)
+            {
+                <form asp-area="" asp-controller="Cart" asp-action="Add" method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="productId" value="@Model.Id" />
+
+                    <input type="hidden" name="quantity" value="1" />
+
+                    <button type="submit" class="add-cart-button">
+
+                        <span class="add-cart-icon">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </span>
+
+                        <span>
+                            Sepete Ekle
+                        </span>
+
+                    </button>
+
+                </form>
+            }
+            else
+            {
+                <button type="button" class="add-cart-button disabled" disabled>
+
+                    <span class="add-cart-icon">
+                        <i class="fa-solid fa-ban"></i>
+                    </span>
+
+                    <span>
+                        Stokta Yok
+                    </span>
 
                 </button>
             }
@@ -204,9 +211,173 @@
 
 
 <style>
+    /* =========================================================
+       PRODUCT CARD
+       ========================================================= */
+
+    .product-card {
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+
+        height: 100%;
+
+        overflow: hidden;
+
+        border: 1px solid #e7ddd2;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 7px 22px rgba(70, 47, 30, 0.055);
+
+        transition:
+            transform 0.28s ease,
+            box-shadow 0.28s ease,
+            border-color 0.28s ease;
+    }
+
+
+    .product-card:hover {
+        border-color: #d5b99b;
+
+        transform: translateY(-5px);
+
+        box-shadow:
+            0 16px 35px rgba(70, 47, 30, 0.11);
+    }
+
+
+    /* =========================================================
+       IMAGE AREA
+       ========================================================= */
+
+    .product-image-wrapper {
+        position: relative;
+
+        width: 100%;
+        height: 310px;
+
+        overflow: hidden;
+
+        background:
+            radial-gradient(circle at center,
+                #fffdf9,
+                #f7f0e8);
+    }
+
+
+    .product-image-link {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+
+        text-decoration: none;
+    }
+
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+
+        display: block;
+
+        object-fit: contain;
+        object-position: center;
+
+        transition:
+            transform 0.42s ease;
+    }
+
+
+    .product-card:hover .product-image {
+        transform: scale(1.035);
+    }
+
+
+    .product-no-image {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #b6a79a;
+
+        font-size: 1.5rem;
+    }
+
+
+    /* =========================================================
+       PRODUCT BADGE
+       ========================================================= */
+
+    .product-badge {
+        position: absolute;
+
+        top: 13px;
+        left: 13px;
+
+        z-index: 3;
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 6px 10px;
+
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 30px;
+
+        color: #65482f;
+
+        background-color: rgba(255, 249, 242, 0.94);
+
+        font-size: 0.58rem;
+        font-weight: 800;
+
+        letter-spacing: 0.04em;
+
+        box-shadow:
+            0 4px 13px rgba(70, 47, 30, 0.10);
+
+        backdrop-filter: blur(7px);
+    }
+
+
+    .product-badge i {
+        color: #a27145;
+
+        font-size: 0.52rem;
+    }
+
+
+    /* =========================================================
+       FAVORITE
+       ========================================================= */
+
+    .favorite-form {
+        position: absolute;
+
+        top: 12px;
+        right: 12px;
+
+        z-index: 4;
+    }
+
+
     .favorite-button {
-        width: 40px;
-        height: 40px;
+        width: 39px;
+        height: 39px;
 
         display: flex;
         align-items: center;
@@ -214,22 +385,363 @@
 
         padding: 0;
 
-        border: 0;
+        border: 1px solid #e7ddd2;
+        border-radius: 50%;
+
+        color: #806e60;
+
+        background-color: rgba(255, 255, 255, 0.95);
+
+        font-size: 0.85rem;
+
+        box-shadow:
+            0 5px 14px rgba(70, 47, 30, 0.09);
 
         transition:
             transform 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease,
             background-color 0.2s ease;
     }
 
 
     .favorite-button:hover {
-        transform: scale(1.08);
+        color: #a65353;
 
-        background-color: #f8f9fa;
+        border-color: #e1bcbc;
+
+        background-color: #fffafa;
+
+        transform: scale(1.07);
     }
 
 
-    .favorite-button i {
-        font-size: 1.05rem;
+    .favorite-button.active {
+        color: #a65353;
+
+        border-color: #e6c7c7;
+
+        background-color: #fffafa;
+    }
+
+
+    /* =========================================================
+       BODY
+       ========================================================= */
+
+    .product-body {
+        flex: 1;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        padding: 20px 19px 15px;
+
+        text-align: center;
+    }
+
+
+    /* =========================================================
+       EYEBROW
+       ========================================================= */
+
+    .product-eyebrow {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #a27850;
+
+        font-size: 0.5rem;
+        font-weight: 800;
+
+        letter-spacing: 0.13em;
+    }
+
+
+    /* =========================================================
+       TITLE
+       ========================================================= */
+
+    .product-title {
+        display: -webkit-box;
+
+        min-height: 43px;
+
+        overflow: hidden;
+
+        color: #382b22;
+
+        font-size: 0.93rem;
+        font-weight: 800;
+        line-height: 1.45;
+
+        text-decoration: none;
+
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+
+        transition:
+            color 0.2s ease;
+    }
+
+
+    .product-title:hover {
+        color: #956338;
+    }
+
+
+    .product-title-line {
+        width: 25px;
+        height: 2px;
+
+        margin: 10px 0 0;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #8b5e34,
+                #d0a16a);
+    }
+
+
+    /* =========================================================
+       PRICE
+       ========================================================= */
+
+    .product-price {
+        margin-top: 10px;
+
+        color: #80542d;
+
+        font-size: 1.13rem;
+        font-weight: 850;
+
+        letter-spacing: -0.02em;
+    }
+
+
+    /* =========================================================
+       STOCK
+       ========================================================= */
+
+    .product-stock {
+        margin-top: 9px;
+    }
+
+
+    .stock-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        border-radius: 20px;
+
+        font-size: 0.58rem;
+        font-weight: 750;
+    }
+
+
+    .stock-badge.in-stock {
+        color: #587451;
+
+        background-color: #edf4e9;
+    }
+
+
+    .stock-badge.out-of-stock {
+        color: #a65353;
+
+        background-color: #fbefef;
+    }
+
+
+    .stock-badge i {
+        font-size: 0.54rem;
+    }
+
+
+    /* =========================================================
+       FOOTER
+       ========================================================= */
+
+    .product-footer {
+        padding: 0 19px 19px;
+    }
+
+
+    .product-footer form {
+        margin: 0;
+    }
+
+
+    /* =========================================================
+       ADD CART BUTTON
+       ========================================================= */
+
+    .add-cart-button {
+        width: 100%;
+        min-height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 8px 14px;
+
+        border: 1px solid #493225;
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        font-size: 0.7rem;
+        font-weight: 750;
+
+        box-shadow:
+            0 5px 14px rgba(73, 50, 37, 0.15);
+
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .add-cart-icon {
+        width: 25px;
+        height: 25px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background-color: rgba(255, 255, 255, 0.11);
+
+        font-size: 0.58rem;
+    }
+
+
+    .add-cart-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 7px 18px rgba(73, 50, 37, 0.21);
+    }
+
+
+    .add-cart-button.disabled {
+        cursor: not-allowed;
+
+        border-color: #ddd4cb;
+
+        color: #9a9087;
+
+        background: #f1ece7;
+
+        box-shadow: none;
+
+        transform: none;
+    }
+
+
+    .add-cart-button.disabled .add-cart-icon {
+        background-color: #e5ddd5;
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .product-image-wrapper {
+            height: 280px;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .product-image-wrapper {
+            height: 260px;
+        }
+
+
+        .product-body {
+            padding: 17px 15px 13px;
+        }
+
+
+        .product-footer {
+            padding: 0 15px 15px;
+        }
+
+
+        .product-title {
+            font-size: 0.86rem;
+        }
+
+
+        .product-price {
+            font-size: 1.03rem;
+        }
+
+    }
+
+
+    /* =========================================================
+       SMALL MOBILE
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .product-image-wrapper {
+            height: 235px;
+        }
+
+
+        .product-image-link {
+            padding: 14px;
+        }
+
+
+        .favorite-button {
+            width: 36px;
+            height: 36px;
+        }
+
+
+        .product-badge {
+            top: 10px;
+            left: 10px;
+        }
+
     }
 </style>

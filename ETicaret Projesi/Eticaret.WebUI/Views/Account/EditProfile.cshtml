@@ -6,180 +6,269 @@
 
 <section class="edit-profile-section">
 
-    <div class="container py-5">
+    <div class="container">
 
         <div class="row justify-content-center">
 
             <div class="col-xl-8 col-lg-9">
 
+                <!-- =====================================================
+                     PROFİL DÜZENLEME KARTI
+                     ===================================================== -->
                 <div class="edit-profile-card">
 
+                    <!-- =================================================
+                         ÜST ALAN
+                         ================================================= -->
                     <div class="edit-profile-header">
 
-                        <div>
+                        <div class="edit-profile-header-decoration"></div>
 
-                            <span class="edit-profile-label">
-                                HESABIM
-                            </span>
+                        <div class="edit-profile-header-content">
 
-                            <h1>
-                                Bilgilerimi Düzenle
-                            </h1>
+                            <div>
 
-                            <p>
-                                Hesabınıza ait kişisel bilgileri güncelleyebilirsiniz.
-                            </p>
+                                <span class="edit-profile-label">
+                                    HESABIM
+                                </span>
 
-                        </div>
+                                <h1>
+                                    Bilgilerimi Düzenle
+                                </h1>
 
-                        <div class="edit-profile-avatar">
+                                <p>
+                                    Hesabınıza ait kişisel ve iletişim
+                                    bilgilerinizi güncelleyebilirsiniz.
+                                </p>
 
-                            @(string.IsNullOrWhiteSpace(Model.Name)
-                                ? "?"
-                                : Model.Name.Substring(0, 1).ToUpper())
+                            </div>
+
+
+                            <!-- Avatar -->
+                            <div class="edit-profile-avatar">
+
+                                @(string.IsNullOrWhiteSpace(Model.Name)
+                                    ? "?"
+                                    : Model.Name.Substring(0, 1).ToUpper())
+
+                            </div>
 
                         </div>
 
                     </div>
 
 
+                    <!-- =================================================
+                         FORM
+                         ================================================= -->
                     <div class="edit-profile-body">
+
+                        <div class="edit-profile-form-header">
+
+                            <span>
+                                HESAP DETAYLARI
+                            </span>
+
+                            <h2>
+                                Kişisel Bilgiler
+                            </h2>
+
+                            <p>
+                                Güncellemek istediğiniz bilgileri değiştirip
+                                kaydedebilirsiniz.
+                            </p>
+
+                        </div>
+
 
                         <form asp-controller="Account" asp-action="EditProfile" method="post">
 
                             @Html.AntiForgeryToken()
 
-                            <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+
+                            <!-- =================================================
+                                 GENEL VALIDATION
+                                 ================================================= -->
+                            <div asp-validation-summary="ModelOnly" class="edit-profile-validation">
                             </div>
 
 
-                            <div class="row g-4">
+                            <div class="row g-3">
 
-                                <!-- AD -->
+
+                                <!-- =================================================
+                                     AD
+                                     ================================================= -->
                                 <div class="col-md-6">
 
-                                    <label asp-for="Name" class="form-label fw-semibold">
+                                    <label asp-for="Name" class="profile-form-label">
                                     </label>
 
                                     <div class="profile-input">
 
-                                        <i class="fa-regular fa-user"></i>
+                                        <span class="profile-input-icon">
+                                            <i class="fa-regular fa-user"></i>
+                                        </span>
 
-                                        <input asp-for="Name" class="form-control" placeholder="Adınızı giriniz" />
+                                        <input asp-for="Name" class="form-control" placeholder="Adınızı giriniz"
+                                               autocomplete="given-name" />
 
                                     </div>
 
-                                    <span asp-validation-for="Name" class="text-danger small">
+                                    <span asp-validation-for="Name" class="text-danger profile-validation-message">
                                     </span>
 
                                 </div>
 
 
-                                <!-- SOYAD -->
+                                <!-- =================================================
+                                     SOYAD
+                                     ================================================= -->
                                 <div class="col-md-6">
 
-                                    <label asp-for="Surname" class="form-label fw-semibold">
+                                    <label asp-for="Surname" class="profile-form-label">
                                     </label>
 
                                     <div class="profile-input">
 
-                                        <i class="fa-regular fa-id-card"></i>
+                                        <span class="profile-input-icon">
+                                            <i class="fa-regular fa-id-card"></i>
+                                        </span>
 
-                                        <input asp-for="Surname" class="form-control"
-                                               placeholder="Soyadınızı giriniz" />
+                                        <input asp-for="Surname" class="form-control" placeholder="Soyadınızı giriniz"
+                                               autocomplete="family-name" />
 
                                     </div>
 
-                                    <span asp-validation-for="Surname" class="text-danger small">
+                                    <span asp-validation-for="Surname" class="text-danger profile-validation-message">
                                     </span>
 
                                 </div>
 
 
-                                <!-- EMAIL -->
+                                <!-- =================================================
+                                     EMAIL
+                                     ================================================= -->
                                 <div class="col-md-6">
 
-                                    <label asp-for="Email" class="form-label fw-semibold">
+                                    <label asp-for="Email" class="profile-form-label">
                                     </label>
 
                                     <div class="profile-input">
 
-                                        <i class="fa-regular fa-envelope"></i>
+                                        <span class="profile-input-icon">
+                                            <i class="fa-regular fa-envelope"></i>
+                                        </span>
 
                                         <input asp-for="Email" type="email" class="form-control"
-                                               placeholder="ornek@email.com" />
+                                               placeholder="ornek@email.com" autocomplete="email" />
 
                                     </div>
 
-                                    <span asp-validation-for="Email" class="text-danger small">
+                                    <span asp-validation-for="Email" class="text-danger profile-validation-message">
                                     </span>
 
                                 </div>
 
 
-                                <!-- TELEFON -->
+                                <!-- =================================================
+                                     TELEFON
+                                     ================================================= -->
                                 <div class="col-md-6">
 
-                                    <label asp-for="Phone" class="form-label fw-semibold">
+                                    <label asp-for="Phone" class="profile-form-label">
                                     </label>
 
                                     <div class="profile-input">
 
-                                        <i class="fa-solid fa-phone"></i>
+                                        <span class="profile-input-icon">
+                                            <i class="fa-solid fa-phone"></i>
+                                        </span>
 
                                         <input asp-for="Phone" type="tel" class="form-control"
-                                               placeholder="05xx xxx xx xx" />
+                                               placeholder="05xx xxx xx xx" autocomplete="tel" />
 
                                     </div>
 
-                                    <span asp-validation-for="Phone" class="text-danger small">
+                                    <span asp-validation-for="Phone" class="text-danger profile-validation-message">
                                     </span>
 
                                 </div>
 
 
-                                <!-- USERNAME -->
+                                <!-- =================================================
+                                     KULLANICI ADI
+                                     ================================================= -->
                                 <div class="col-12">
 
-                                    <label asp-for="UserName" class="form-label fw-semibold">
+                                    <label asp-for="UserName" class="profile-form-label">
                                     </label>
 
                                     <div class="profile-input">
 
-                                        <i class="fa-solid fa-at"></i>
+                                        <span class="profile-input-icon">
+                                            <i class="fa-solid fa-at"></i>
+                                        </span>
 
                                         <input asp-for="UserName" class="form-control"
-                                               placeholder="Kullanıcı adınızı giriniz" />
+                                               placeholder="Kullanıcı adınızı giriniz" autocomplete="username" />
 
                                     </div>
 
-                                    <span asp-validation-for="UserName" class="text-danger small">
+                                    <span asp-validation-for="UserName" class="text-danger profile-validation-message">
                                     </span>
 
                                 </div>
 
 
-                                <!-- YENİ ŞİFRE -->
+                                <!-- =================================================
+                                     YENİ ŞİFRE
+                                     ================================================= -->
                                 <div class="col-12">
 
-                                    <label asp-for="Password" class="form-label fw-semibold">
+                                    <label class="profile-form-label" for="newPassword">
 
                                         Yeni Şifre
 
+                                        <span class="optional-label">
+                                            İsteğe bağlı
+                                        </span>
+
                                     </label>
 
-                                    <div class="profile-input">
 
-                                        <i class="fa-solid fa-lock"></i>
+                                    <div class="profile-input profile-password-input">
 
-                                        <input type="password" name="newPassword" class="form-control"
+                                        <span class="profile-input-icon">
+                                            <i class="fa-solid fa-lock"></i>
+                                        </span>
+
+                                        <input id="newPassword" type="password" name="newPassword" class="form-control"
                                                placeholder="Değiştirmek istemiyorsanız boş bırakın"
                                                autocomplete="new-password" />
 
+
+                                        <!-- ŞİFRE GÖSTER / GİZLE -->
+                                        <button type="button" id="toggleNewPassword" class="password-toggle"
+                                                aria-label="Şifreyi göster">
+
+                                            <i id="newPasswordIcon" class="fa-regular fa-eye">
+                                            </i>
+
+                                        </button>
+
                                     </div>
 
-                                    <div class="form-text">
-                                        Şifrenizi değiştirmek istemiyorsanız bu alanı boş bırakabilirsiniz.
+
+                                    <div class="password-help">
+
+                                        <i class="fa-solid fa-circle-info"></i>
+
+                                        <span>
+                                            Şifrenizi değiştirmek istemiyorsanız
+                                            bu alanı boş bırakabilirsiniz.
+                                        </span>
+
                                     </div>
 
                                 </div>
@@ -187,19 +276,29 @@
                             </div>
 
 
+                            <!-- =================================================
+                                 BUTONLAR
+                                 ================================================= -->
                             <div class="edit-profile-actions">
 
-                                <a asp-controller="Account" asp-action="Profile" class="btn btn-outline-secondary">
+                                <a asp-controller="Account" asp-action="Profile" class="profile-cancel-button">
 
-                                    <i class="fa-solid fa-arrow-left me-2"></i>
-                                    Vazgeç
+                                    <i class="fa-solid fa-arrow-left"></i>
+
+                                    <span>
+                                        Vazgeç
+                                    </span>
 
                                 </a>
 
-                                <button type="submit" class="btn btn-dark">
 
-                                    <i class="fa-solid fa-floppy-disk me-2"></i>
-                                    Değişiklikleri Kaydet
+                                <button type="submit" class="profile-save-button">
+
+                                    <i class="fa-solid fa-floppy-disk"></i>
+
+                                    <span>
+                                        Değişiklikleri Kaydet
+                                    </span>
 
                                 </button>
 
@@ -221,29 +320,50 @@
 
 
 <style>
+    /* =========================================================
+       SAYFA
+       ========================================================= */
+
     .edit-profile-section {
-        min-height: 70vh;
-        background-color: #f7f8fa;
+        min-height: 75vh;
+
+        padding: 55px 0 70px;
+
+        background:
+            radial-gradient(circle at top left,
+                rgba(190, 145, 91, 0.07),
+                transparent 32%),
+            linear-gradient(180deg,
+                #ffffff 0%,
+                #faf7f3 100%);
     }
+
+
+    /* =========================================================
+       ANA KART
+       ========================================================= */
 
     .edit-profile-card {
         overflow: hidden;
 
-        border: 1px solid #e9ecef;
-        border-radius: 24px;
+        border: 1px solid #e7ddd2;
+        border-radius: 22px;
 
         background-color: #ffffff;
 
         box-shadow:
-            0 12px 40px rgba(0, 0, 0, 0.07);
+            0 16px 42px rgba(70, 47, 30, 0.09);
     }
 
-    .edit-profile-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
 
-        gap: 20px;
+    /* =========================================================
+       HEADER
+       ========================================================= */
+
+    .edit-profile-header {
+        position: relative;
+
+        overflow: hidden;
 
         padding: 34px 38px;
 
@@ -251,36 +371,104 @@
 
         background:
             linear-gradient(135deg,
-                #212529 0%,
-                #343a40 65%,
-                #0d6efd 160%);
+                #35251b 0%,
+                #513724 55%,
+                #8b5d32 130%);
     }
+
+
+    .edit-profile-header::after {
+        content: "";
+
+        position: absolute;
+
+        top: -90px;
+        right: -70px;
+
+        width: 250px;
+        height: 250px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(circle,
+                rgba(224, 177, 112, 0.18),
+                transparent 68%);
+
+        pointer-events: none;
+    }
+
+
+    .edit-profile-header-decoration {
+        position: absolute;
+
+        right: 90px;
+        bottom: -70px;
+
+        width: 145px;
+        height: 145px;
+
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+
+        pointer-events: none;
+    }
+
+
+    .edit-profile-header-content {
+        position: relative;
+
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 22px;
+    }
+
 
     .edit-profile-label {
         display: block;
 
         margin-bottom: 6px;
 
-        color: rgba(255, 255, 255, 0.65);
+        color: #deb57e;
 
-        font-size: 0.72rem;
-        font-weight: 700;
+        font-size: 0.67rem;
+        font-weight: 800;
 
-        letter-spacing: 1.8px;
+        letter-spacing: 0.16em;
     }
 
+
     .edit-profile-header h1 {
-        margin-bottom: 8px;
+        margin: 0 0 7px;
+
+        color: #ffffff;
 
         font-size: 1.8rem;
         font-weight: 800;
+
+        letter-spacing: -0.02em;
     }
+
 
     .edit-profile-header p {
+        max-width: 520px;
+
         margin: 0;
 
-        color: rgba(255, 255, 255, 0.75);
+        color: rgba(255, 255, 255, 0.68);
+
+        font-size: 0.82rem;
+        line-height: 1.6;
     }
+
+
+    /* =========================================================
+       AVATAR
+       ========================================================= */
 
     .edit-profile-avatar {
         width: 72px;
@@ -292,61 +480,301 @@
 
         flex-shrink: 0;
 
-        border: 3px solid rgba(255, 255, 255, 0.25);
+        border: 2px solid rgba(255, 255, 255, 0.28);
         border-radius: 50%;
 
-        color: #212529;
+        color: #4b3322;
 
-        background-color: #ffffff;
+        background:
+            linear-gradient(145deg,
+                #fffaf3,
+                #e8c99e);
 
-        font-size: 1.6rem;
+        font-size: 1.55rem;
+        font-weight: 800;
+
+        box-shadow:
+            0 8px 22px rgba(25, 15, 8, 0.20);
+    }
+
+
+    /* =========================================================
+       BODY
+       ========================================================= */
+
+    .edit-profile-body {
+        padding: 34px 38px 38px;
+    }
+
+
+    .edit-profile-form-header {
+        margin-bottom: 25px;
+    }
+
+
+    .edit-profile-form-header>span {
+        display: inline-block;
+
+        margin-bottom: 5px;
+
+        color: #9a7042;
+
+        font-size: 0.65rem;
+        font-weight: 800;
+
+        letter-spacing: 0.14em;
+    }
+
+
+    .edit-profile-form-header h2 {
+        position: relative;
+
+        margin: 0 0 8px;
+        padding-bottom: 10px;
+
+        color: #30251d;
+
+        font-size: 1.25rem;
         font-weight: 800;
     }
 
-    .edit-profile-body {
-        padding: 38px;
+
+    .edit-profile-form-header h2::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 38px;
+        height: 3px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #895b2e,
+                #d0a16a);
     }
 
+
+    .edit-profile-form-header p {
+        margin: 0;
+
+        color: #8b7e72;
+
+        font-size: 0.8rem;
+    }
+
+
+    /* =========================================================
+       LABEL
+       ========================================================= */
+
+    .profile-form-label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #49392e;
+
+        font-size: 0.79rem;
+        font-weight: 700;
+    }
+
+
+    .optional-label {
+        display: inline-flex;
+
+        margin-left: 5px;
+
+        padding: 2px 6px;
+
+        border-radius: 10px;
+
+        color: #987653;
+
+        background-color: #f5ede4;
+
+        font-size: 0.58rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       INPUT
+       ========================================================= */
+
     .profile-input {
-        height: 52px;
+        height: 51px;
 
         display: flex;
         align-items: center;
 
-        gap: 8px;
+        overflow: hidden;
 
-        padding: 0 15px;
+        border: 1px solid #e0d6cb;
+        border-radius: 11px;
 
-        border: 1px solid #dee2e6;
-        border-radius: 12px;
+        background-color: #fbf9f6;
+
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .profile-input:focus-within {
+        border-color: #b7895a;
 
         background-color: #ffffff;
 
-        transition: 0.2s ease;
-    }
-
-    .profile-input:focus-within {
-        border-color: #212529;
-
         box-shadow:
-            0 0 0 0.18rem rgba(33, 37, 41, 0.07);
+            0 0 0 0.15rem rgba(183, 137, 90, 0.10);
     }
 
-    .profile-input i {
-        width: 20px;
 
-        color: #adb5bd;
+    .profile-input-icon {
+        width: 44px;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        color: #a58c73;
+
+        font-size: 0.84rem;
     }
+
 
     .profile-input .form-control {
         height: 100%;
 
+        padding: 0 12px 0 0;
+
         border: 0;
+
+        color: #3d3128;
 
         background-color: transparent;
 
-        box-shadow: none;
+        font-size: 0.85rem;
+
+        box-shadow: none !important;
     }
+
+
+    .profile-input .form-control::placeholder {
+        color: #b5aaa0;
+    }
+
+
+    /* =========================================================
+       ŞİFRE
+       ========================================================= */
+
+    .profile-password-input .form-control {
+        padding-right: 4px;
+    }
+
+
+    .password-toggle {
+        width: 44px;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border: 0;
+
+        color: #9d8b7b;
+
+        background-color: transparent;
+
+        font-size: 0.9rem;
+
+        cursor: pointer;
+
+        transition:
+            color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+
+    .password-toggle:hover {
+        color: #704b2c;
+
+        background-color: #f5eee6;
+    }
+
+
+    .password-toggle:focus {
+        outline: none;
+    }
+
+
+    .password-help {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 6px;
+
+        margin-top: 7px;
+
+        color: #96897d;
+
+        font-size: 0.7rem;
+        line-height: 1.5;
+    }
+
+
+    .password-help i {
+        margin-top: 2px;
+
+        color: #b28a60;
+
+        font-size: 0.67rem;
+    }
+
+
+    /* =========================================================
+       VALIDATION
+       ========================================================= */
+
+    .edit-profile-validation {
+        margin-bottom: 18px;
+
+        color: #b54e4e;
+
+        font-size: 0.78rem;
+    }
+
+
+    .edit-profile-validation:empty {
+        display: none;
+    }
+
+
+    .profile-validation-message {
+        display: block;
+
+        margin-top: 5px;
+
+        font-size: 0.7rem;
+    }
+
+
+    /* =========================================================
+       ALT BUTONLAR
+       ========================================================= */
 
     .edit-profile-actions {
         display: flex;
@@ -355,45 +783,198 @@
 
         gap: 10px;
 
-        margin-top: 32px;
-        padding-top: 25px;
+        margin-top: 30px;
+        padding-top: 23px;
 
-        border-top: 1px solid #eeeeee;
+        border-top: 1px solid #eee6dd;
     }
 
-    .edit-profile-actions .btn {
-        padding: 11px 20px;
+
+    .profile-cancel-button,
+    .profile-save-button {
+        min-height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 9px 17px;
 
         border-radius: 10px;
 
-        font-weight: 600;
+        font-size: 0.78rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
     }
+
+
+    /* =========================================================
+       VAZGEÇ
+       ========================================================= */
+
+    .profile-cancel-button {
+        border: 1px solid #ddd2c5;
+
+        color: #685343;
+
+        background-color: #ffffff;
+    }
+
+
+    .profile-cancel-button:hover {
+        color: #443226;
+
+        border-color: #c7aa88;
+
+        background-color: #fbf8f4;
+
+        transform: translateX(-2px);
+    }
+
+
+    /* =========================================================
+       KAYDET
+       ========================================================= */
+
+    .profile-save-button {
+        border: 1px solid #493225;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        box-shadow:
+            0 5px 15px rgba(73, 50, 37, 0.16);
+    }
+
+
+    .profile-save-button:hover {
+        color: #ffffff;
+
+        border-color: #9b6a3a;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(73, 50, 37, 0.21);
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .edit-profile-section {
+            padding: 40px 0 55px;
+        }
+
+
+        .edit-profile-header {
+            padding: 30px;
+        }
+
+
+        .edit-profile-body {
+            padding: 30px;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
 
     @@media (max-width: 767.98px) {
 
-        .edit-profile-header {
-            padding: 26px 22px;
+        .edit-profile-section {
+            padding: 28px 0 45px;
         }
+
+
+        .edit-profile-card {
+            border-radius: 17px;
+        }
+
+
+        .edit-profile-header {
+            padding: 25px 21px;
+        }
+
 
         .edit-profile-header h1 {
-            font-size: 1.5rem;
+            font-size: 1.45rem;
         }
+
+
+        .edit-profile-header p {
+            font-size: 0.76rem;
+        }
+
 
         .edit-profile-avatar {
-            width: 60px;
-            height: 60px;
+            width: 62px;
+            height: 62px;
+
+            font-size: 1.35rem;
         }
 
+
         .edit-profile-body {
-            padding: 25px 20px;
+            padding: 24px 20px;
         }
+
 
         .edit-profile-actions {
             flex-direction: column-reverse;
+            align-items: stretch;
         }
 
-        .edit-profile-actions .btn {
+
+        .profile-cancel-button,
+        .profile-save-button {
             width: 100%;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .edit-profile-header-content {
+            align-items: flex-start;
+        }
+
+
+        .edit-profile-avatar {
+            width: 55px;
+            height: 55px;
+
+            font-size: 1.15rem;
         }
 
     }
@@ -403,4 +984,94 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const passwordInput =
+                    document.getElementById(
+                        "newPassword"
+                    );
+
+                const togglePassword =
+                    document.getElementById(
+                        "toggleNewPassword"
+                    );
+
+                const passwordIcon =
+                    document.getElementById(
+                        "newPasswordIcon"
+                    );
+
+
+                if (!passwordInput ||
+                    !togglePassword ||
+                    !passwordIcon) {
+
+                    return;
+                }
+
+
+                togglePassword.addEventListener(
+                    "click",
+                    function () {
+
+                        const isPassword =
+                            passwordInput.type ===
+                            "password";
+
+
+                        /*
+                         * Şifre gizliyse göster,
+                         * görünüyorsa tekrar gizle.
+                         */
+                        passwordInput.type =
+                            isPassword
+                                ? "text"
+                                : "password";
+
+
+                        if (isPassword) {
+
+                            passwordIcon.classList.remove(
+                                "fa-eye"
+                            );
+
+                            passwordIcon.classList.add(
+                                "fa-eye-slash"
+                            );
+
+                            togglePassword.setAttribute(
+                                "aria-label",
+                                "Şifreyi gizle"
+                            );
+
+                        }
+                        else {
+
+                            passwordIcon.classList.remove(
+                                "fa-eye-slash"
+                            );
+
+                            passwordIcon.classList.add(
+                                "fa-eye"
+                            );
+
+                            togglePassword.setAttribute(
+                                "aria-label",
+                                "Şifreyi göster"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
 }

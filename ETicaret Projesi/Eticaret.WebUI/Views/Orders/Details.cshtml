@@ -1,161 +1,316 @@
+@using Eticaret.Core.Enums
 @model Order
 
 @{
     ViewData["Title"] = "Sipariş Detayı";
 }
 
-<div class="container py-5">
+<section class="order-detail-page">
 
-    <!-- =====================================================
-         ÜST ALAN
-         ===================================================== -->
+    <div class="container">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- =====================================================
+             SAYFA BAŞLIĞI
+             ===================================================== -->
+        <div class="order-detail-page-header">
 
-        <div class="order-detail-header">
-            <span>Sipariş Detayı</span>
+            <div>
 
-            <h1>@Model.OrderNumber</h1>
+                <span class="order-detail-label">
+                    SİPARİŞ DETAYI
+                </span>
 
-            <p>
-                @(Model.OrderDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm"))
-            </p>
+                <h1>
+                    @Model.OrderNumber
+                </h1>
+
+                <div class="order-date">
+
+                    <i class="fa-regular fa-calendar"></i>
+
+                    <span>
+                        @Model.OrderDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a asp-controller="Orders" asp-action="Index" class="back-orders-button">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                <span>
+                    Siparişlerime Dön
+                </span>
+
+            </a>
+
         </div>
 
 
-        <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary">
-
-            <i class="fa-solid fa-arrow-left me-2"></i>
-
-            Siparişlerime Dön
-
-        </a>
-
-    </div>
-
-
-    <div class="row g-4">
-
-        <!-- =================================================
-             SOL TARAF
-             ================================================= -->
-
-        <div class="col-lg-8">
+        <div class="row g-4">
 
             <!-- =================================================
-                 ÜRÜNLER
+                 SOL TARAF
                  ================================================= -->
+            <div class="col-lg-8">
 
-            <div class="card border-0 shadow-sm">
 
-                <div class="card-body p-4">
+                <!-- =================================================
+                     SİPARİŞTEKİ ÜRÜNLER
+                     ================================================= -->
+                <div class="order-detail-card">
 
-                    <h2 class="h5 fw-bold mb-4">
-                        Siparişteki Ürünler
-                    </h2>
+                    <div class="order-card-header">
+
+                        <div class="order-card-icon">
+
+                            <i class="fa-solid fa-box-open"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                ÜRÜNLER
+                            </span>
+
+                            <h2>
+                                Siparişteki Ürünler
+                            </h2>
+
+                            <p>
+                                Bu sipariş kapsamında satın aldığınız ürünler.
+                            </p>
+
+                        </div>
+
+                    </div>
 
 
                     @if (!Model.OrderDetails.Any())
                     {
-                        <div class="alert alert-warning mb-0">
+                        <div class="order-empty-warning">
 
-                            Bu siparişe ait ürün bilgisi bulunamadı.
+                            <div class="order-empty-warning-icon">
+
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                            </div>
+
+
+                            <span>
+                                Bu siparişe ait ürün bilgisi bulunamadı.
+                            </span>
 
                         </div>
                     }
                     else
                     {
-                        @foreach (var item in Model.OrderDetails)
-                        {
-                            <div class="order-product">
+                        <div class="order-products">
 
-                                <!-- Ürün Görseli -->
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                <div class="order-product">
 
-                                <div class="product-image">
+                                    <!-- =====================================
+                                         ÜRÜN GÖRSELİ
+                                         ===================================== -->
+                                    <div class="product-image">
 
-                                    @if (item.Product is not null &&
-                                         !string.IsNullOrWhiteSpace(item.Product.Image))
-                                    {
-                                        <img src="@item.Product.Image" alt="@item.Product.Name" />
-                                    }
-                                    else
-                                    {
-                                        <div class="no-image">
-
-                                            <i class="fa-solid fa-image"></i>
-
-                                        </div>
-                                    }
-
-                                </div>
-
-
-                                <!-- Ürün Bilgileri -->
-
-                                <div class="flex-grow-1">
-
-                                    <strong class="d-block">
-
-                                        @if (item.Product is not null)
+                                        @if (item.Product is not null &&
+                                             !string.IsNullOrWhiteSpace(item.Product.Image))
                                         {
-                                            @item.Product.Name
+                                            <img src="@item.Product.Image" alt="@item.Product.Name" />
                                         }
                                         else
                                         {
-                                            <span>Ürün</span>
+                                            <div class="no-image">
+
+                                                <i class="fa-regular fa-image"></i>
+
+                                            </div>
                                         }
 
-                                    </strong>
+                                    </div>
 
 
-                                    <span class="text-muted small">
+                                    <!-- =====================================
+                                         ÜRÜN BİLGİLERİ
+                                         ===================================== -->
+                                    <div class="order-product-info">
 
-                                        @item.Quantity adet ×
-                                        @item.UnitPrice.ToString("N2") ₺
+                                        <span class="order-product-label">
+                                            ÜRÜN
+                                        </span>
 
-                                    </span>
+
+                                        @if (item.Product is not null)
+                                        {
+                                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId"
+                                               class="order-product-name">
+
+                                                @item.Product.Name
+
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="order-product-name">
+                                                Ürün
+                                            </span>
+                                        }
+
+
+                                        <div class="order-product-meta">
+
+                                            <span>
+
+                                                <i class="fa-solid fa-box"></i>
+
+                                                @item.Quantity adet
+
+                                            </span>
+
+
+                                            <span class="meta-dot"></span>
+
+
+                                            <span>
+
+                                                <i class="fa-solid fa-tag"></i>
+
+                                                @item.UnitPrice.ToString("N2") ₺
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =====================================
+                                         SATIR TOPLAMI
+                                         ===================================== -->
+                                    <div class="order-product-total">
+
+                                        <span>
+                                            Toplam
+                                        </span>
+
+                                        <strong>
+                                            @((item.UnitPrice * item.Quantity).ToString("N2")) ₺
+                                        </strong>
+
+                                    </div>
 
                                 </div>
+                            }
 
-
-                                <!-- Satır Toplamı -->
-
-                                <strong>
-
-                                    @((item.UnitPrice * item.Quantity)
-                                        .ToString("N2")) ₺
-
-                                </strong>
-
-                            </div>
-                        }
+                        </div>
                     }
 
                 </div>
 
-            </div>
+
+                <!-- =================================================
+                     ADRESLER
+                     ================================================= -->
+                <div class="row g-4 mt-0">
+
+                    <!-- =============================================
+                         TESLİMAT ADRESİ
+                         ============================================= -->
+                    <div class="col-md-6">
+
+                        <div class="address-detail-card">
+
+                            <div class="address-detail-header">
+
+                                <div class="address-detail-icon">
+
+                                    <i class="fa-solid fa-location-dot"></i>
+
+                                </div>
 
 
-            <!-- =================================================
-                 TESLİMAT ADRESİ
-                 ================================================= -->
+                                <div>
 
-            <div class="card border-0 shadow-sm mt-4">
+                                    <span>
+                                        TESLİMAT
+                                    </span>
 
-                <div class="card-body p-4">
+                                    <h2>
+                                        Teslimat Adresi
+                                    </h2>
 
-                    <h2 class="h5 fw-bold mb-3">
+                                </div>
 
-                        <i class="fa-solid fa-location-dot me-2"></i>
-
-                        Teslimat Adresi
-
-                    </h2>
+                            </div>
 
 
-                    <p class="text-muted mb-0">
-                        @Model.DeliveryAddress
-                    </p>
+                            <div class="address-detail-content">
+
+                                <i class="fa-regular fa-map"></i>
+
+                                <p>
+                                    @Model.DeliveryAddress
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =============================================
+                         FATURA ADRESİ
+                         ============================================= -->
+                    <div class="col-md-6">
+
+                        <div class="address-detail-card">
+
+                            <div class="address-detail-header">
+
+                                <div class="address-detail-icon">
+
+                                    <i class="fa-solid fa-file-invoice"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        FATURA
+                                    </span>
+
+                                    <h2>
+                                        Fatura Adresi
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="address-detail-content">
+
+                                <i class="fa-regular fa-file-lines"></i>
+
+                                <p>
+                                    @Model.BillingAddress
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -163,99 +318,228 @@
 
 
             <!-- =================================================
-                 FATURA ADRESİ
+                 SAĞ TARAF
                  ================================================= -->
+            <div class="col-lg-4">
 
-            <div class="card border-0 shadow-sm mt-4">
+                <div class="order-summary">
 
-                <div class="card-body p-4">
+                    <!-- =============================================
+                         ÖZET HEADER
+                         ============================================= -->
+                    <div class="order-summary-header">
 
-                    <h2 class="h5 fw-bold mb-3">
+                        <div class="summary-header-icon">
 
-                        <i class="fa-solid fa-file-invoice me-2"></i>
+                            <i class="fa-solid fa-receipt"></i>
 
-                        Fatura Adresi
-
-                    </h2>
-
-
-                    <p class="text-muted mb-0">
-                        @Model.BillingAddress
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
+                        </div>
 
 
-        <!-- =================================================
-             SAĞ TARAF - ÖZET
-             ================================================= -->
+                        <div>
 
-        <div class="col-lg-4">
+                            <span>
+                                SİPARİŞ
+                            </span>
 
-            <div class="card border-0 shadow-sm order-summary">
+                            <h2>
+                                Sipariş Özeti
+                            </h2>
 
-                <div class="card-body p-4">
-
-                    <h2 class="h5 fw-bold mb-4">
-                        Sipariş Özeti
-                    </h2>
-
-
-                    <div class="d-flex justify-content-between mb-3">
-
-                        <span class="text-muted">
-                            Farklı Ürün
-                        </span>
-
-                        <strong>
-                            @Model.OrderDetails.Count
-                        </strong>
+                        </div>
 
                     </div>
 
 
-                    <div class="d-flex justify-content-between mb-3">
-
-                        <span class="text-muted">
-                            Toplam Adet
-                        </span>
-
-                        <strong>
-                            @Model.OrderDetails.Sum(x => x.Quantity)
-                        </strong>
-
-                    </div>
+                    <!-- =============================================
+                         ÖZET BODY
+                         ============================================= -->
+                    <div class="order-summary-body">
 
 
-                    <div class="d-flex justify-content-between mb-3">
+                        <!-- Sipariş Numarası -->
+                        <div class="summary-order-number">
 
-                        <span class="text-muted">
-                            Kargo
-                        </span>
+                            <span>
+                                Sipariş Numarası
+                            </span>
 
-                        <strong class="text-success">
-                            Ücretsiz
-                        </strong>
+                            <strong>
+                                @Model.OrderNumber
+                            </strong>
 
-                    </div>
-
-
-                    <hr />
+                        </div>
 
 
-                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="summary-divider"></div>
 
-                        <strong>
-                            Toplam
-                        </strong>
 
-                        <strong class="fs-5">
-                            @Model.TotalPrice.ToString("N2") ₺
-                        </strong>
+                        <!-- Farklı Ürün -->
+                        <div class="summary-row">
+
+                            <div class="summary-row-title">
+
+                                <i class="fa-solid fa-box-open"></i>
+
+                                <span>
+                                    Farklı Ürün
+                                </span>
+
+                            </div>
+
+                            <strong>
+                                @Model.OrderDetails.Count
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Toplam Adet -->
+                        <div class="summary-row">
+
+                            <div class="summary-row-title">
+
+                                <i class="fa-solid fa-layer-group"></i>
+
+                                <span>
+                                    Toplam Adet
+                                </span>
+
+                            </div>
+
+                            <strong>
+                                @Model.OrderDetails.Sum(x => x.Quantity)
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Kargo -->
+                        <div class="summary-row">
+
+                            <div class="summary-row-title">
+
+                                <i class="fa-solid fa-truck-fast"></i>
+
+                                <span>
+                                    Kargo
+                                </span>
+
+                            </div>
+
+                            <strong class="free-shipping">
+
+                                <i class="fa-solid fa-check"></i>
+
+                                Ücretsiz
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-divider"></div>
+
+
+                        <!-- =========================================
+                             GENEL TOPLAM
+                             ========================================= -->
+                        <div class="summary-total">
+
+                            <div>
+
+                                <span>
+                                    Genel Toplam
+                                </span>
+
+                                <small>
+                                    KDV dahil toplam tutar
+                                </small>
+
+                            </div>
+
+
+                            <strong>
+                                @Model.TotalPrice.ToString("N2") ₺
+                            </strong>
+
+                        </div>
+
+
+                        <!-- =========================================
+                             ALT BİLGİ
+                             ========================================= -->
+                        <div class="summary-info">
+
+                            <i class="fa-solid fa-shield-halved"></i>
+
+                            <span>
+                                Sipariş bilgileriniz hesabınızda güvenli şekilde saklanır.
+                            </span>
+
+                        </div>
+
+                        @if (Model.Status == OrderStatus.PendingApproval)
+                        {
+                            <div class="order-cancel-area">
+
+                                <div class="order-cancel-info">
+                                    <i class="fa-solid fa-circle-info"></i>
+
+                                    <span>
+                                        Siparişiniz henüz onaylanmadığı için iptal edebilirsiniz.
+                                    </span>
+                                </div>
+
+                                <form asp-controller="Orders" asp-action="Cancel" asp-route-id="@Model.Id" method="post"
+                                      onsubmit="return confirm('Siparişinizi iptal etmek istediğinize emin misiniz?');">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit" class="order-cancel-button">
+
+                                        <i class="fa-solid fa-xmark"></i>
+
+                                        <span>
+                                            Siparişi İptal Et
+                                        </span>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        }
+                        else if (Model.Status == OrderStatus.Cancelled)
+                        {
+                            <div class="order-cancelled-info">
+
+                                <i class="fa-solid fa-ban"></i>
+
+                                <div>
+                                    <strong>Sipariş İptal Edildi</strong>
+
+                                    <span>
+                                        Bu sipariş iptal edilmiştir.
+                                    </span>
+                                </div>
+
+                            </div>
+                        }
+
+
+                        <!-- =========================================
+                             SİPARİŞLERE DÖN
+                             ========================================= -->
+                        <a asp-controller="Orders" asp-action="Index" class="summary-back-button">
+
+                            <i class="fa-solid fa-arrow-left"></i>
+
+                            <span>
+                                Tüm Siparişlerim
+                            </span>
+
+                        </a>
 
                     </div>
 
@@ -267,32 +551,315 @@
 
     </div>
 
-</div>
+</section>
 
 
 <style>
-    .order-product {
+    /* =========================================================
+       SAYFA
+       ========================================================= */
+
+    .order-detail-page {
+        min-height: 75vh;
+
+        padding: 55px 0 70px;
+
+        background:
+            radial-gradient(circle at top left,
+                rgba(190, 145, 91, 0.07),
+                transparent 32%),
+            linear-gradient(180deg,
+                #ffffff 0%,
+                #faf7f3 100%);
+    }
+
+
+    /* =========================================================
+       SAYFA HEADER
+       ========================================================= */
+
+    .order-detail-page-header {
         display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 25px;
+
+        margin-bottom: 30px;
+    }
+
+
+    .order-detail-label {
+        display: inline-block;
+
+        margin-bottom: 6px;
+
+        color: #9a7042;
+
+        font-size: 0.67rem;
+        font-weight: 800;
+
+        letter-spacing: 0.15em;
+    }
+
+
+    .order-detail-page-header h1 {
+        position: relative;
+
+        margin: 0 0 9px;
+        padding-bottom: 12px;
+
+        color: #30251d;
+
+        font-size: 2rem;
+        font-weight: 800;
+
+        letter-spacing: -0.02em;
+    }
+
+
+    .order-detail-page-header h1::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 42px;
+        height: 3px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #895b2e,
+                #d0a16a);
+    }
+
+
+    .order-date {
+        display: flex;
+        align-items: center;
+
+        gap: 6px;
+
+        color: #8e8175;
+
+        font-size: 0.72rem;
+    }
+
+
+    .order-date i {
+        color: #aa8866;
+
+        font-size: 0.66rem;
+    }
+
+
+    /* =========================================================
+       GERİ DÖN
+       ========================================================= */
+
+    .back-orders-button {
+        min-height: 40px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        padding: 8px 13px;
+
+        border: 1px solid #d8c9ba;
+        border-radius: 9px;
+
+        color: #66503f;
+
+        background-color: #ffffff;
+
+        font-size: 0.7rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 4px 12px rgba(70, 47, 30, 0.04);
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .back-orders-button:hover {
+        color: #493529;
+
+        border-color: #bd9e7d;
+
+        background-color: #faf6f1;
+
+        transform: translateX(-2px);
+    }
+
+
+    /* =========================================================
+       GENEL KART
+       ========================================================= */
+
+    .order-detail-card {
+        padding: 24px;
+
+        border: 1px solid #e7ddd2;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 9px 27px rgba(70, 47, 30, 0.06);
+    }
+
+
+    /* =========================================================
+       KART HEADER
+       ========================================================= */
+
+    .order-card-header {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+
+        margin-bottom: 18px;
+        padding-bottom: 17px;
+
+        border-bottom: 1px solid #eee5dc;
+    }
+
+
+    .order-card-icon {
+        width: 41px;
+        height: 41px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #573a28,
+                #986538);
+
+        font-size: 0.78rem;
+
+        box-shadow:
+            0 4px 12px rgba(73, 50, 37, 0.15);
+    }
+
+
+    .order-card-header span {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #9a7042;
+
+        font-size: 0.56rem;
+        font-weight: 800;
+
+        letter-spacing: 0.11em;
+    }
+
+
+    .order-card-header h2 {
+        margin: 0 0 2px;
+
+        color: #3b2d24;
+
+        font-size: 0.95rem;
+        font-weight: 800;
+    }
+
+
+    .order-card-header p {
+        margin: 0;
+
+        color: #978a7f;
+
+        font-size: 0.65rem;
+    }
+
+
+    /* =========================================================
+       ÜRÜNLER
+       ========================================================= */
+
+    .order-products {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .order-product {
+        display: grid;
+
+        grid-template-columns:
+            82px minmax(0, 1fr) auto;
+
         align-items: center;
 
         gap: 15px;
 
-        padding: 18px 0;
+        padding: 16px 0;
 
-        border-bottom: 1px solid #eeeeee;
+        border-bottom: 1px solid #eee6de;
     }
 
 
     .order-product:last-child {
-        border-bottom: none;
+        padding-bottom: 0;
+
+        border-bottom: 0;
     }
 
 
-    .product-image {
-        width: 75px;
-        height: 75px;
+    .order-product:first-child {
+        padding-top: 0;
+    }
 
-        flex-shrink: 0;
+
+    /* =========================================================
+       ÜRÜN GÖRSELİ
+       ========================================================= */
+
+    .product-image {
+        width: 82px;
+        height: 82px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 6px;
+
+        overflow: hidden;
+
+        border: 1px solid #eee3d7;
+        border-radius: 11px;
+
+        background:
+            radial-gradient(circle at center,
+                #ffffff,
+                #faf5ef);
     }
 
 
@@ -301,8 +868,9 @@
         height: 100%;
 
         object-fit: contain;
+        object-position: center;
 
-        border-radius: 10px;
+        border-radius: 7px;
     }
 
 
@@ -314,25 +882,900 @@
         align-items: center;
         justify-content: center;
 
-        border-radius: 10px;
+        border-radius: 7px;
 
-        background-color: #f1f3f5;
+        color: #b6a79a;
 
-        color: #adb5bd;
+        background-color: #f5eee7;
+
+        font-size: 1rem;
     }
 
+
+    /* =========================================================
+       ÜRÜN BİLGİLERİ
+       ========================================================= */
+
+    .order-product-info {
+        min-width: 0;
+    }
+
+
+    .order-product-label {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #a47d57;
+
+        font-size: 0.53rem;
+        font-weight: 800;
+
+        letter-spacing: 0.1em;
+    }
+
+
+    .order-product-name {
+        display: block;
+
+        overflow: hidden;
+
+        color: #45352a;
+
+        font-size: 0.82rem;
+        font-weight: 750;
+        line-height: 1.4;
+
+        text-decoration: none;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+
+        transition:
+            color 0.2s ease;
+    }
+
+
+    a.order-product-name:hover {
+        color: #956438;
+    }
+
+
+    .order-product-meta {
+        display: flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-top: 6px;
+
+        color: #968a80;
+
+        font-size: 0.63rem;
+    }
+
+
+    .order-product-meta span {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 4px;
+    }
+
+
+    .order-product-meta i {
+        color: #ad9279;
+
+        font-size: 0.55rem;
+    }
+
+
+    .meta-dot {
+        width: 3px;
+        height: 3px;
+
+        display: block !important;
+
+        border-radius: 50%;
+
+        background-color: #cab9a9;
+    }
+
+
+    /* =========================================================
+       ÜRÜN TOPLAMI
+       ========================================================= */
+
+    .order-product-total {
+        min-width: 100px;
+
+        text-align: right;
+    }
+
+
+    .order-product-total span {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #9d9085;
+
+        font-size: 0.57rem;
+    }
+
+
+    .order-product-total strong {
+        color: #80542d;
+
+        font-size: 0.82rem;
+        font-weight: 800;
+
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       ÜRÜN BULUNAMADI
+       ========================================================= */
+
+    .order-empty-warning {
+        display: flex;
+        align-items: center;
+
+        gap: 9px;
+
+        padding: 13px;
+
+        border: 1px solid #e8d8b8;
+        border-radius: 10px;
+
+        color: #866c43;
+
+        background-color: #fcf7ed;
+
+        font-size: 0.7rem;
+    }
+
+
+    .order-empty-warning-icon {
+        width: 29px;
+        height: 29px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        color: #946d36;
+
+        background-color: #f2e3c7;
+
+        font-size: 0.65rem;
+    }
+
+
+    /* =========================================================
+       ADRES KARTLARI
+       ========================================================= */
+
+    .address-detail-card {
+        height: 100%;
+
+        padding: 20px;
+
+        border: 1px solid #e7ddd2;
+        border-radius: 16px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 7px 21px rgba(70, 47, 30, 0.05);
+    }
+
+
+    .address-detail-header {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        margin-bottom: 15px;
+        padding-bottom: 13px;
+
+        border-bottom: 1px solid #eee6dd;
+    }
+
+
+    .address-detail-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #805832;
+
+        background:
+            linear-gradient(145deg,
+                #f5eadd,
+                #eddbc7);
+
+        font-size: 0.73rem;
+    }
+
+
+    .address-detail-header span {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #9b7147;
+
+        font-size: 0.53rem;
+        font-weight: 800;
+
+        letter-spacing: 0.11em;
+    }
+
+
+    .address-detail-header h2 {
+        margin: 0;
+
+        color: #423329;
+
+        font-size: 0.82rem;
+        font-weight: 800;
+    }
+
+
+    .address-detail-content {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 8px;
+    }
+
+
+    .address-detail-content>i {
+        margin-top: 3px;
+
+        flex-shrink: 0;
+
+        color: #ad9279;
+
+        font-size: 0.66rem;
+    }
+
+
+    .address-detail-content p {
+        margin: 0;
+
+        color: #84776c;
+
+        font-size: 0.7rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       SİPARİŞ ÖZETİ
+       ========================================================= */
 
     .order-summary {
         position: sticky;
 
-        top: 20px;
+        top: 95px;
+
+        overflow: hidden;
+
+        border: 1px solid #e6d9cc;
+        border-radius: 18px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 12px 30px rgba(70, 47, 30, 0.08);
     }
 
 
+    .order-summary-header {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+
+        padding: 18px 20px;
+
+        border-bottom: 1px solid #eee4d9;
+
+        background:
+            linear-gradient(90deg,
+                #fcf8f3,
+                #ffffff);
+    }
+
+
+    .summary-header-icon {
+        width: 39px;
+        height: 39px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #573a28,
+                #986538);
+
+        font-size: 0.78rem;
+
+        box-shadow:
+            0 4px 12px rgba(73, 50, 37, 0.15);
+    }
+
+
+    .order-summary-header span {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #9b7146;
+
+        font-size: 0.57rem;
+        font-weight: 800;
+
+        letter-spacing: 0.11em;
+    }
+
+
+    .order-summary-header h2 {
+        margin: 0;
+
+        color: #3b2d24;
+
+        font-size: 0.95rem;
+        font-weight: 800;
+    }
+
+
+    .order-summary-body {
+        padding: 20px;
+    }
+
+
+    /* =========================================================
+       SİPARİŞ NUMARASI
+       ========================================================= */
+
+    .summary-order-number {
+        padding: 11px 12px;
+
+        border: 1px solid #eadfd4;
+        border-radius: 10px;
+
+        background-color: #fbf8f4;
+    }
+
+
+    .summary-order-number span {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #9b8e82;
+
+        font-size: 0.59rem;
+    }
+
+
+    .summary-order-number strong {
+        display: block;
+
+        overflow: hidden;
+
+        color: #543f2f;
+
+        font-size: 0.74rem;
+        font-weight: 800;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       ÖZET SATIRLARI
+       ========================================================= */
+
+    .summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .summary-row-title {
+        display: flex;
+        align-items: center;
+
+        gap: 7px;
+
+        color: #77695e;
+
+        font-size: 0.7rem;
+    }
+
+
+    .summary-row-title i {
+        width: 15px;
+
+        color: #aa8b6c;
+
+        font-size: 0.61rem;
+
+        text-align: center;
+    }
+
+
+    .summary-row>strong {
+        color: #49392e;
+
+        font-size: 0.72rem;
+        font-weight: 800;
+    }
+
+
+    .free-shipping {
+        display: flex;
+        align-items: center;
+
+        gap: 4px;
+
+        color: #56754e !important;
+    }
+
+
+    .free-shipping i {
+        font-size: 0.52rem;
+    }
+
+
+    .summary-divider {
+        height: 1px;
+
+        margin: 17px 0;
+
+        background-color: #eee4d9;
+    }
+
+
+    /* =========================================================
+       GENEL TOPLAM
+       ========================================================= */
+
+    .summary-total {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+    }
+
+
+    .summary-total>div>span {
+        display: block;
+
+        color: #403128;
+
+        font-size: 0.82rem;
+        font-weight: 800;
+    }
+
+
+    .summary-total small {
+        display: block;
+
+        margin-top: 1px;
+
+        color: #a09387;
+
+        font-size: 0.55rem;
+    }
+
+
+    .summary-total>strong {
+        color: #80542d;
+
+        font-size: 1.12rem;
+        font-weight: 850;
+
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       ALT BİLGİ
+       ========================================================= */
+
+    .summary-info {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 7px;
+
+        margin-top: 19px;
+        padding: 10px 11px;
+
+        border: 1px solid #e5ddd4;
+        border-radius: 9px;
+
+        color: #918479;
+
+        background-color: #faf8f5;
+
+        font-size: 0.58rem;
+        line-height: 1.45;
+    }
+
+    /* =========================================================
+   SİPARİŞ İPTAL
+   ========================================================= */
+
+    .order-cancel-area {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid #eee4d9;
+    }
+
+    .order-cancel-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+
+        margin-bottom: 10px;
+        padding: 10px 11px;
+
+        border: 1px solid #ead9c8;
+        border-radius: 9px;
+
+        color: #806c5b;
+        background-color: #fcf8f3;
+
+        font-size: 0.59rem;
+        line-height: 1.5;
+    }
+
+    .order-cancel-info i {
+        margin-top: 2px;
+        flex-shrink: 0;
+
+        color: #a47a51;
+        font-size: 0.62rem;
+    }
+
+    .order-cancel-button {
+        width: 100%;
+        min-height: 41px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        padding: 9px 14px;
+
+        border: 1px solid #dfc4c0;
+        border-radius: 9px;
+
+        color: #9b4f49;
+        background-color: #fffafa;
+
+        font-size: 0.67rem;
+        font-weight: 750;
+
+        cursor: pointer;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .order-cancel-button:hover {
+        color: #ffffff;
+        border-color: #a85c55;
+        background-color: #a85c55;
+
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 6px 16px rgba(150, 72, 65, 0.15);
+    }
+
+    .order-cancel-button i {
+        font-size: 0.63rem;
+    }
+
+
+    /* =========================================================
+   İPTAL EDİLMİŞ SİPARİŞ
+   ========================================================= */
+
+    .order-cancelled-info {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+
+        margin-top: 14px;
+        padding: 11px 12px;
+
+        border: 1px solid #ead0cd;
+        border-radius: 9px;
+
+        color: #96534d;
+        background-color: #fff7f6;
+    }
+
+    .order-cancelled-info>i {
+        width: 29px;
+        height: 29px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        color: #9b514b;
+        background-color: #f6dfdc;
+
+        font-size: 0.65rem;
+    }
+
+    .order-cancelled-info div {
+        min-width: 0;
+    }
+
+    .order-cancelled-info strong {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #874943;
+
+        font-size: 0.66rem;
+        font-weight: 800;
+    }
+
+    .order-cancelled-info span {
+        display: block;
+
+        color: #a06d68;
+
+        font-size: 0.56rem;
+    }
+
+
+    .summary-info i {
+        margin-top: 2px;
+
+        flex-shrink: 0;
+
+        color: #8b6b4d;
+
+        font-size: 0.61rem;
+    }
+
+
+    /* =========================================================
+       TÜM SİPARİŞLER
+       ========================================================= */
+
+    .summary-back-button {
+        min-height: 41px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        margin-top: 13px;
+
+        border: 1px solid #d5c4b3;
+        border-radius: 9px;
+
+        color: #614a38;
+
+        background-color: #ffffff;
+
+        font-size: 0.67rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .summary-back-button:hover {
+        color: #ffffff;
+
+        border-color: #80562f;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
     @@media (max-width: 991.98px) {
+
+        .order-detail-page {
+            padding: 40px 0 55px;
+        }
+
 
         .order-summary {
             position: static;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .order-detail-page {
+            padding: 30px 0 45px;
+        }
+
+
+        .order-detail-page-header {
+            flex-direction: column;
+            align-items: flex-start;
+
+            gap: 18px;
+        }
+
+
+        .order-detail-page-header h1 {
+            font-size: 1.5rem;
+        }
+
+
+        .back-orders-button {
+            width: 100%;
+        }
+
+
+        .order-detail-card {
+            padding: 19px;
+        }
+
+
+        .order-product {
+            grid-template-columns:
+                72px minmax(0, 1fr);
+
+            gap: 12px;
+        }
+
+
+        .product-image {
+            width: 72px;
+            height: 72px;
+        }
+
+
+        .order-product-total {
+            grid-column: 2;
+
+            min-width: 0;
+
+            text-align: left;
+        }
+
+
+        .order-product-total span {
+            display: inline;
+
+            margin-right: 4px;
+        }
+
+
+        .order-product-total strong {
+            font-size: 0.76rem;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .order-detail-card {
+            padding: 16px;
+        }
+
+
+        .order-card-header {
+            align-items: flex-start;
+        }
+
+
+        .order-card-header p {
+            line-height: 1.5;
+        }
+
+
+        .order-product {
+            grid-template-columns:
+                65px minmax(0, 1fr);
+        }
+
+
+        .product-image {
+            width: 65px;
+            height: 65px;
+        }
+
+
+        .order-product-name {
+            font-size: 0.75rem;
+        }
+
+
+        .order-product-meta {
+            flex-wrap: wrap;
+
+            gap: 5px;
+        }
+
+
+        .address-detail-card {
+            padding: 17px;
         }
 
     }

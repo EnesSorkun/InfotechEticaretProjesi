@@ -6,316 +6,374 @@
     // =====================================================
     // FAVORİ SAYISI
     // =====================================================
-
     var favoriteProducts =
         Context.Session
-            .GetJson<List<FavoriteProductViewModel>>(
-                "Favorites")
+            .GetJson<List<FavoriteProductViewModel>>("Favorites")
         ?? new List<FavoriteProductViewModel>();
 
     var favoriteCount =
-     User.Identity?.IsAuthenticated == true
-         ? favoriteProducts.Count
-         : 0;
+        User.Identity?.IsAuthenticated == true
+            ? favoriteProducts.Count
+            : 0;
 
 
     // =====================================================
     // SEPET SAYISI
     // =====================================================
-
     var cart =
         Context.Session
-            .GetJson<CartService>(
-                "Cart")
+            .GetJson<CartService>("Cart")
         ?? new CartService();
 
     // Sepette kaç FARKLI ürün olduğunu gösteriyoruz.
-    // Aynı üründen 3 tane alınsa bile burada 1 olarak sayılır.
     var cartCount =
-    User.Identity?.IsAuthenticated == true
-        ? cart.CartLines.Count
-        : 0;
+        User.Identity?.IsAuthenticated == true
+            ? cart.CartLines.Count
+            : 0;
 }
 
 
 <header class="site-header">
 
-    <div class="container py-3">
+    <!-- =====================================================
+         ÜST HEADER
+         ===================================================== -->
+    <div class="header-main">
 
-        <div class="d-flex align-items-center justify-content-between gap-3">
+        <div class="container">
 
+            <div class="header-main-inner">
 
-            <!-- =====================================================
-                 LOGO
-                 ===================================================== -->
+                <!-- =================================================
+                     LOGO
+                     ================================================= -->
+                <a class="site-logo" asp-area="" asp-controller="Home" asp-action="Index">
 
-            <a class="site-logo text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="site-logo-icon">
+                        <i class="fa-solid fa-gem"></i>
+                    </span>
 
-                <span class="logo-main">
-                    Kehr-i
-                </span>
+                    <span class="site-logo-text">
 
-                <span class="logo-sub">
-                    Bar
-                </span>
+                        <span class="logo-main">
+                            Kehr-i
+                        </span>
 
-            </a>
-
-
-            <!-- =====================================================
-                 ARAMA
-                 ===================================================== -->
-
-            <form asp-area="" asp-controller="Products" asp-action="Index" method="get"
-                  class="header-search d-none d-md-flex flex-grow-1">
-
-                <div class="input-group">
-
-                    <span class="input-group-text">
-
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span class="logo-sub">
+                            Bar
+                        </span>
 
                     </span>
 
-
-                    <input type="text" name="search" class="form-control"
-                           placeholder="Ürün, marka veya kategori ara..." />
-
-
-                    <button class="btn search-button" type="submit">
-
-                        Ara
-
-                    </button>
-
-                </div>
-
-            </form>
-
-
-            <!-- =====================================================
-                 SAĞ ALAN
-                 ===================================================== -->
-
-            <div class="header-actions">
+                </a>
 
 
                 <!-- =================================================
-                     HESABIM
+                     DESKTOP ARAMA
                      ================================================= -->
+                <form asp-area="" asp-controller="Products" asp-action="Index" method="get"
+                      class="header-search d-none d-md-flex">
 
-                <div class="dropdown">
+                    <div class="header-search-box">
 
-                    <button class="header-action border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                            title="Hesabım">
+                        <span class="header-search-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
 
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <i class="fa-solid fa-user"></i>
-                        }
-                        else
-                        {
-                            <i class="fa-regular fa-user"></i>
-                        }
+                        <input type="text" name="search" class="form-control" placeholder="Ara..." autocomplete="off" />
 
-                    </button>
+                        <button class="search-button" type="submit">
 
+                            <span>
+                                Ara
+                            </span>
 
-                    <ul class="dropdown-menu dropdown-menu-end account-dropdown">
+                            <i class="fa-solid fa-arrow-right"></i>
 
+                        </button>
 
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <!-- =====================================
-                                 GİRİŞ YAPMIŞ KULLANICI
-                                 ===================================== -->
+                    </div>
 
+                </form>
 
-                            <!-- Kullanıcı Bilgisi -->
 
-                            <li class="account-user-header">
+                <!-- =================================================
+                     SAĞ ALAN
+                     ================================================= -->
+                <div class="header-actions">
 
-                                <div class="account-avatar">
+                    <!-- =============================================
+                         HESABIM
+                         ============================================= -->
+                    <div class="dropdown">
 
-                                    <i class="fa-solid fa-user"></i>
+                        <button class="header-action" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                title="Hesabım">
 
-                                </div>
-
-
-                                <div class="account-user-info">
-
-                                    <small>
-                                        Hoş geldiniz
-                                    </small>
-
-
-                                    <strong>
-                                        @User.Identity.Name
-                                    </strong>
-
-
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <span class="account-role admin-role">
-
-                                            Yönetici
-
-                                        </span>
-                                    }
-                                    else if (User.IsInRole("Customer"))
-                                    {
-                                        <span class="account-role customer-role">
-
-                                            Müşteri
-
-                                        </span>
-                                    }
-
-                                </div>
-
-                            </li>
-
-
-                            <li>
-
-                                <hr class="dropdown-divider" />
-
-                            </li>
-
-
-                            <!-- =====================================
-                                 KULLANICI BİLGİLERİM
-                                 ===================================== -->
-
-                            <li>
-
-                                <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Account"
-                                   asp-action="Profile">
-
-                                    <span class="account-menu-icon">
-
-                                        <i class="fa-regular fa-user"></i>
-
-                                    </span>
-
-
-                                    <span>
-
-                                        Kullanıcı Bilgilerim
-
-                                    </span>
-
-                                </a>
-
-                            </li>
-
-
-                            <!-- =====================================
-                                 SİPARİŞLERİM
-                                 ===================================== -->
-
-                            <li>
-
-                                <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Orders"
-                                   asp-action="Index">
-
-                                    <span class="account-menu-icon">
-
-                                        <i class="fa-solid fa-box"></i>
-
-                                    </span>
-
-
-                                    <span>
-
-                                        Siparişlerim
-
-                                    </span>
-
-                                </a>
-
-                            </li>
-
-
-                            <!-- =====================================
-                                 DEĞERLENDİRMELERİM
-                                 ===================================== -->
-
-                            <li>
-
-                                <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Reviews"
-                                   asp-action="Index">
-
-                                    <span class="account-menu-icon">
-
-                                        <i class="fa-regular fa-star"></i>
-
-                                    </span>
-
-
-                                    <span>
-
-                                        Değerlendirmelerim
-
-                                    </span>
-
-                                </a>
-
-                            </li>
-
-                            <!-- =====================================
-                                 ADRESLERİM
-                            ===================================== -->
-
-                            <li>
-
-                                <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Addresses"
-                                   asp-action="Index">
-
-                                    <span class="account-menu-icon">
-
-                                        <i class="fa-solid fa-location-dot"></i>
-
-                                    </span>
-
-                                    <span>
-                                        Adreslerim
-                                    </span>
-
-                                </a>
-
-                            </li>
-
-
-                            <!-- =====================================
-                                 SADECE ADMIN
-                                 ===================================== -->
-
-                            @if (User.IsInRole("Admin"))
+                            @if (User.Identity?.IsAuthenticated == true)
                             {
-                                <li>
+                                <i class="fa-solid fa-user"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-regular fa-user"></i>
+                            }
 
-                                    <hr class="dropdown-divider" />
+                        </button>
+
+
+                        <ul class="dropdown-menu dropdown-menu-end account-dropdown">
+
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <!-- =====================================
+                                     KULLANICI
+                                     ===================================== -->
+                                <li class="account-user-header">
+
+                                    <div class="account-avatar">
+
+                                        <i class="fa-solid fa-user"></i>
+
+                                    </div>
+
+
+                                    <div class="account-user-info">
+
+                                        <small>
+                                            HOŞ GELDİNİZ
+                                        </small>
+
+                                        <strong>
+                                            @User.Identity.Name
+                                        </strong>
+
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <span class="account-role admin-role">
+
+                                                <i class="fa-solid fa-shield-halved"></i>
+
+                                                Yönetici
+
+                                            </span>
+                                        }
+                                        else if (User.IsInRole("Customer"))
+                                        {
+                                            <span class="account-role customer-role">
+
+                                                <i class="fa-regular fa-user"></i>
+
+                                                Müşteri
+
+                                            </span>
+                                        }
+
+                                    </div>
 
                                 </li>
 
 
                                 <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
 
-                                    <a class="dropdown-item account-menu-item admin-menu-item" asp-area="Admin"
-                                       asp-controller="Main" asp-action="Index" target="_blank">
 
-                                        <span class="account-menu-icon admin-menu-icon">
+                                <!-- =====================================
+                                     KULLANICI BİLGİLERİM
+                                     ===================================== -->
+                                <li>
 
-                                            <i class="fa-solid fa-gauge-high"></i>
+                                    <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Account"
+                                       asp-action="Profile">
 
+                                        <span class="account-menu-icon">
+                                            <i class="fa-regular fa-user"></i>
                                         </span>
 
+                                        <span>
+                                            Kullanıcı Bilgilerim
+                                        </span>
+
+                                        <i class="fa-solid fa-chevron-right account-menu-arrow"></i>
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- =====================================
+                                     SİPARİŞLERİM
+                                     ===================================== -->
+                                <li>
+
+                                    <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Orders"
+                                       asp-action="Index">
+
+                                        <span class="account-menu-icon">
+                                            <i class="fa-solid fa-box"></i>
+                                        </span>
 
                                         <span>
+                                            Siparişlerim
+                                        </span>
 
-                                            Admin Paneli
+                                        <i class="fa-solid fa-chevron-right account-menu-arrow"></i>
 
+                                    </a>
+
+                                </li>
+
+
+                                <!-- =====================================
+                                     ADRESLERİM
+                                     ===================================== -->
+                                <li>
+
+                                    <a class="dropdown-item account-menu-item" asp-area="" asp-controller="Addresses"
+                                       asp-action="Index">
+
+                                        <span class="account-menu-icon">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                        </span>
+
+                                        <span>
+                                            Adreslerim
+                                        </span>
+
+                                        <i class="fa-solid fa-chevron-right account-menu-arrow"></i>
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- =====================================
+                                     ADMIN
+                                     ===================================== -->
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+
+
+                                    <li>
+
+                                        <a class="dropdown-item account-menu-item admin-menu-item" asp-area="Admin"
+                                           asp-controller="Main" asp-action="Index" target="_blank">
+
+                                            <span class="account-menu-icon admin-menu-icon">
+                                                <i class="fa-solid fa-gauge-high"></i>
+                                            </span>
+
+                                            <span>
+                                                Admin Paneli
+                                            </span>
+
+                                            <i class="fa-solid fa-arrow-up-right-from-square account-menu-arrow"></i>
+
+                                        </a>
+
+                                    </li>
+                                }
+
+
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+
+
+                                <!-- =====================================
+                                     ÇIKIŞ
+                                     ===================================== -->
+                                <li>
+
+                                    <form asp-area="" asp-controller="Account" asp-action="SignOut" method="post">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit" class="dropdown-item account-menu-item logout-item">
+
+                                            <span class="account-menu-icon">
+                                                <i class="fa-solid fa-right-from-bracket"></i>
+                                            </span>
+
+                                            <span>
+                                                Oturumu Kapat
+                                            </span>
+
+                                        </button>
+
+                                    </form>
+
+                                </li>
+                            }
+                            else
+                            {
+                                <!-- =====================================
+                                     MİSAFİR KULLANICI
+                                     ===================================== -->
+                                <li class="account-guest-header">
+
+                                    <div class="guest-header-icon">
+
+                                        <i class="fa-regular fa-user"></i>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            HESABIM
+                                        </span>
+
+                                        <strong>
+                                            Hoş Geldiniz
+                                        </strong>
+
+                                        <p>
+                                            Hesabınıza giriş yapın veya
+                                            yeni hesap oluşturun.
+                                        </p>
+
+                                    </div>
+
+                                </li>
+
+
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+
+
+                                <li class="account-auth-item">
+
+                                    <a asp-area="" asp-controller="Account" asp-action="SignIn"
+                                       class="account-login-button">
+
+                                        <i class="fa-solid fa-right-to-bracket"></i>
+
+                                        <span>
+                                            Giriş Yap
+                                        </span>
+
+                                    </a>
+
+                                </li>
+
+
+                                <li class="account-auth-item">
+
+                                    <a asp-area="" asp-controller="Account" asp-action="SignUp"
+                                       class="account-register-button">
+
+                                        <i class="fa-solid fa-user-plus"></i>
+
+                                        <span>
+                                            Kayıt Ol
                                         </span>
 
                                     </a>
@@ -323,218 +381,114 @@
                                 </li>
                             }
 
+                        </ul>
 
-                            <li>
-
-                                <hr class="dropdown-divider" />
-
-                            </li>
+                    </div>
 
 
-                            <!-- =====================================
-                                 OTURUMU KAPAT
-                                 ===================================== -->
+                    <!-- =============================================
+                         FAVORİLER
+                         ============================================= -->
+                    <a asp-area="" asp-controller="Favorites" asp-action="Index" class="header-action position-relative"
+                       title="Favorilerim">
 
-                            <li>
-
-                                <form asp-area="" asp-controller="Account" asp-action="SignOut" method="post">
-
-                                    @Html.AntiForgeryToken()
-
-
-                                    <button type="submit" class="dropdown-item account-menu-item logout-item">
-
-                                        <span class="account-menu-icon">
-
-                                            <i class="fa-solid fa-right-from-bracket"></i>
-
-                                        </span>
-
-
-                                        <span>
-
-                                            Oturumu Kapat
-
-                                        </span>
-
-                                    </button>
-
-                                </form>
-
-                            </li>
+                        @if (favoriteCount > 0)
+                        {
+                            <i class="fa-solid fa-heart favorite-active"></i>
                         }
                         else
                         {
-                            <!-- =====================================
-                                 GİRİŞ YAPMAMIŞ KULLANICI
-                                 ===================================== -->
-
-                            <li class="account-guest-header">
-
-                                <div class="fw-bold">
-
-                                    Hesabım
-
-                                </div>
-
-
-                                <small class="text-muted">
-
-                                    Hesabınıza giriş yapın veya yeni hesap oluşturun.
-
-                                </small>
-
-                            </li>
-
-
-                            <li>
-
-                                <hr class="dropdown-divider" />
-
-                            </li>
-
-
-                            <!-- Giriş Yap -->
-
-                            <li class="px-2">
-
-                                <a asp-area="" asp-controller="Account" asp-action="SignIn" class="btn btn-dark w-100 mb-2">
-
-                                    <i class="fa-solid fa-right-to-bracket me-2"></i>
-
-                                    Giriş Yap
-
-                                </a>
-
-                            </li>
-
-
-                            <!-- Kayıt Ol -->
-
-                            <li class="px-2 pb-2">
-
-                                <a asp-area="" asp-controller="Account" asp-action="SignUp"
-                                   class="btn btn-outline-dark w-100">
-
-                                    <i class="fa-solid fa-user-plus me-2"></i>
-
-                                    Kayıt Ol
-
-                                </a>
-
-                            </li>
+                            <i class="fa-regular fa-heart"></i>
                         }
 
-                    </ul>
+                        @if (favoriteCount > 0)
+                        {
+                            <span class="action-badge favorite-badge">
+                                @favoriteCount
+                            </span>
+                        }
+
+                    </a>
+
+
+                    <!-- =============================================
+                         SEPET
+                         ============================================= -->
+                    <a asp-area="" asp-controller="Cart" asp-action="Index" class="header-action position-relative"
+                       title="Sepetim">
+
+                        <i class="fa-solid fa-bag-shopping"></i>
+
+                        @if (cartCount > 0)
+                        {
+                            <span class="action-badge">
+                                @cartCount
+                            </span>
+                        }
+
+                    </a>
 
                 </div>
 
-
-                <!-- =================================================
-                     FAVORİLER
-                     ================================================= -->
-
-                <a asp-area="" asp-controller="Favorites" asp-action="Index" class="header-action position-relative"
-                   title="Favorilerim">
-
-                    @if (favoriteCount > 0)
-                    {
-                        <i class="fa-solid fa-heart text-danger"></i>
-                    }
-                    else
-                    {
-                        <i class="fa-regular fa-heart"></i>
-                    }
-
-
-                    <span class="action-badge">
-
-                        @favoriteCount
-
-                    </span>
-
-                </a>
-
-
-                <!-- =================================================
-                     SEPET
-                     ================================================= -->
-
-                <a asp-area="" asp-controller="Cart" asp-action="Index" class="header-action position-relative"
-                   title="Sepetim">
-
-                    <i class="fa-solid fa-cart-shopping"></i>
-
-
-                    <span class="action-badge">
-
-                        @cartCount
-
-                    </span>
-
-                </a>
-
             </div>
+
+
+            <!-- =================================================
+                 MOBİL ARAMA
+                 ================================================= -->
+            <form asp-area="" asp-controller="Products" asp-action="Index" method="get"
+                  class="header-search mobile-header-search d-flex d-md-none">
+
+                <div class="header-search-box">
+
+                    <span class="header-search-icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+
+                    <input type="text" name="search" class="form-control" placeholder="Ürün ara..."
+                           autocomplete="off" />
+
+                    <button class="search-button" type="submit">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
-
-
-        <!-- =====================================================
-             MOBİL ARAMA
-             ===================================================== -->
-
-        <form asp-area="" asp-controller="Products" asp-action="Index" method="get"
-              class="header-search d-flex d-md-none mt-3">
-
-            <div class="input-group">
-
-                <span class="input-group-text">
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                </span>
-
-
-                <input type="text" name="search" class="form-control" placeholder="Ürün ara..." />
-
-
-                <button class="btn search-button" type="submit">
-
-                    Ara
-
-                </button>
-
-            </div>
-
-        </form>
 
     </div>
 
 
     <!-- =========================================================
-         ALT MENÜ
+         ALT NAVBAR
          ========================================================= -->
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-top border-bottom">
+    <nav class="header-navigation navbar navbar-expand-lg">
 
         <div class="container">
 
+            <button class="navbar-toggler header-navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Menüyü Aç">
 
-            <button class="navbar-toggler my-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Menüyü Aç">
+                <i class="fa-solid fa-bars"></i>
 
-                <span class="navbar-toggler-icon"></span>
+                <span>
+                    Menü
+                </span>
 
             </button>
 
 
             <div class="collapse navbar-collapse" id="mainNavbar">
 
-                <ul class="navbar-nav align-items-lg-center gap-lg-1">
+                <ul class="navbar-nav header-nav-list">
 
-
-                    <!-- ANASAYFA -->
-
+                    <!-- =========================================
+                         ANASAYFA
+                         ========================================= -->
                     <li class="nav-item">
 
                         <a class="nav-link header-nav-link" asp-area="" asp-controller="Home" asp-action="Index">
@@ -546,13 +500,54 @@
                     </li>
 
 
-                    <!-- KATEGORİLER -->
+                    <!-- =========================================
+                         ATEŞ KEHRİBAR
+                         ========================================= -->
+                    <li class="nav-item">
 
-                    @await Component.InvokeAsync("Categories")
+                        <a class="nav-link header-nav-link" asp-area="" asp-controller="Products" asp-action="Index"
+                           asp-route-categoryId="11">
+
+                            Ateş Kehribar
+
+                        </a>
+
+                    </li>
 
 
-                    <!-- İLETİŞİM -->
+                    <!-- =========================================
+                         SIKMA KEHRİBAR
+                         ========================================= -->
+                    <li class="nav-item">
 
+                        <a class="nav-link header-nav-link" asp-area="" asp-controller="Products" asp-action="Index"
+                           asp-route-categoryId="12">
+
+                            Sıkma Kehribar
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- =========================================
+                         DAMLA KEHRİBAR
+                         ========================================= -->
+                    <li class="nav-item">
+
+                        <a class="nav-link header-nav-link" asp-area="" asp-controller="Products" asp-action="Index"
+                           asp-route-categoryId="13">
+
+                            Damla Kehribar
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- =========================================
+                         İLETİŞİM
+                         ========================================= -->
                     <li class="nav-item">
 
                         <a class="nav-link header-nav-link" asp-area="" asp-controller="Home" asp-action="ContactUs">
@@ -564,8 +559,9 @@
                     </li>
 
 
-                    <!-- Sadece Admin -->
-
+                    <!-- =========================================
+                         MOBİL ADMIN
+                         ========================================= -->
                     @if (User.Identity?.IsAuthenticated == true &&
                          User.IsInRole("Admin"))
                     {
@@ -584,6 +580,20 @@
 
                 </ul>
 
+
+                <!-- =================================================
+                     DESKTOP SAĞ YAZI
+                     ================================================= -->
+                <div class="header-nav-brand d-none d-lg-flex">
+
+                    <i class="fa-solid fa-gem"></i>
+
+                    <span>
+                        Kehribar Tesbih Koleksiyonları
+                    </span>
+
+                </div>
+
             </div>
 
         </div>
@@ -600,9 +610,33 @@
 
     .site-header {
         position: relative;
+
         z-index: 1000;
 
         background-color: #ffffff;
+
+        box-shadow:
+            0 3px 18px rgba(70, 47, 30, 0.035);
+    }
+
+
+    .header-main {
+        background:
+            radial-gradient(circle at top left,
+                rgba(190, 145, 91, 0.06),
+                transparent 30%),
+            #ffffff;
+    }
+
+
+    .header-main-inner {
+        min-height: 82px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 30px;
     }
 
 
@@ -614,20 +648,79 @@
         display: inline-flex;
         align-items: center;
 
-        font-size: 1.8rem;
-        font-weight: 800;
+        gap: 10px;
+
+        flex-shrink: 0;
+
+        color: inherit;
+
+        text-decoration: none;
+    }
+
+
+    .site-logo-icon {
+        width: 43px;
+        height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #9b6838);
+
+        font-size: 0.95rem;
+
+        box-shadow:
+            0 6px 16px rgba(73, 50, 37, 0.18);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .site-logo:hover .site-logo-icon {
+        transform: rotate(-4deg) translateY(-1px);
+
+        box-shadow:
+            0 8px 20px rgba(73, 50, 37, 0.23);
+    }
+
+
+    .site-logo-text {
+        display: flex;
+        align-items: baseline;
+
+        gap: 4px;
 
         white-space: nowrap;
     }
 
 
     .logo-main {
-        color: #212529;
+        color: #30251d;
+
+        font-size: 1.55rem;
+        font-weight: 800;
+
+        letter-spacing: -0.04em;
     }
 
 
     .logo-sub {
-        color: #0d6efd;
+        color: #a16e3d;
+
+        font-size: 1.55rem;
+        font-weight: 800;
+
+        letter-spacing: -0.04em;
     }
 
 
@@ -636,67 +729,131 @@
        ========================================================= */
 
     .header-search {
-        max-width: 650px;
+        width: 100%;
+        max-width: 590px;
 
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto;
     }
 
 
-    .header-search .input-group {
+    .header-search-box {
+        width: 100%;
+        height: 45px;
+
+        display: flex;
+        align-items: center;
+
         overflow: hidden;
 
-        border: 1px solid #dee2e6;
-        border-radius: 14px;
+        border: 1px solid #e0d5ca;
+        border-radius: 12px;
 
-        background-color: #f8f9fa;
+        background-color: #fbf9f6;
 
-        transition: 0.2s ease;
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
 
-    .header-search .input-group:focus-within {
-        border-color: #212529;
+    .header-search-box:focus-within {
+        border-color: #b7895a;
+
+        background-color: #ffffff;
 
         box-shadow:
-            0 0 0 0.15rem rgba(33, 37, 41, 0.08);
+            0 0 0 0.15rem rgba(183, 137, 90, 0.10);
     }
 
 
-    .header-search .input-group-text {
-        border: 0;
+    .header-search-icon {
+        width: 43px;
+        height: 100%;
 
-        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        background-color: transparent;
+        flex-shrink: 0;
+
+        color: #a28a73;
+
+        font-size: 0.73rem;
     }
 
 
     .header-search .form-control {
+        height: 100%;
+
+        min-width: 0;
+
+        padding: 0 12px 0 0;
+
         border: 0;
+
+        color: #43352b;
 
         background-color: transparent;
 
-        box-shadow: none;
+        font-size: 0.76rem;
+
+        box-shadow: none !important;
+    }
+
+
+    .header-search .form-control::placeholder {
+        color: #ada298;
     }
 
 
     .search-button {
-        padding-left: 22px;
-        padding-right: 22px;
+        height: 35px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        flex-shrink: 0;
+
+        margin-right: 5px;
+        padding: 0 14px;
 
         border: 0;
+        border-radius: 8px;
 
         color: #ffffff;
 
-        background-color: #212529;
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        font-size: 0.68rem;
+        font-weight: 700;
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease;
     }
 
 
     .search-button:hover {
         color: #ffffff;
 
-        background-color: #000000;
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateX(1px);
+    }
+
+
+    .search-button i {
+        font-size: 0.55rem;
     }
 
 
@@ -708,13 +865,17 @@
         display: flex;
         align-items: center;
 
-        gap: 8px;
+        gap: 7px;
+
+        flex-shrink: 0;
     }
 
 
     .header-action {
-        width: 42px;
-        height: 42px;
+        position: relative;
+
+        width: 41px;
+        height: 41px;
 
         display: flex;
         align-items: center;
@@ -722,30 +883,50 @@
 
         padding: 0;
 
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
+        border: 1px solid #e4dacf;
+        border-radius: 11px;
 
-        color: #212529;
+        color: #554236;
 
         background-color: #ffffff;
 
+        font-size: 0.82rem;
+
         text-decoration: none;
 
+        box-shadow:
+            0 3px 10px rgba(70, 47, 30, 0.035);
+
         transition:
-            transform 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease,
             background-color 0.2s ease,
-            border-color 0.2s ease;
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
 
-    .header-action:hover {
-        color: #212529;
+    .header-action:hover,
+    .header-action[aria-expanded="true"] {
+        color: #815a35;
 
-        border-color: #dee2e6;
+        border-color: #cdb49a;
 
-        background-color: #f8f9fa;
+        background-color: #faf5ef;
 
         transform: translateY(-2px);
+
+        box-shadow:
+            0 5px 13px rgba(70, 47, 30, 0.07);
+    }
+
+
+    /* =========================================================
+       FAVORİ
+       ========================================================= */
+
+    .favorite-active {
+        color: #a95757;
     }
 
 
@@ -756,8 +937,8 @@
     .action-badge {
         position: absolute;
 
-        top: -5px;
-        right: -5px;
+        top: -6px;
+        right: -6px;
 
         min-width: 18px;
         height: 18px;
@@ -768,14 +949,26 @@
 
         padding: 0 5px;
 
+        border: 2px solid #ffffff;
         border-radius: 20px;
 
         color: #ffffff;
 
-        background-color: #dc3545;
+        background:
+            linear-gradient(135deg,
+                #85582f,
+                #bd8148);
 
-        font-size: 0.65rem;
-        font-weight: 700;
+        font-size: 0.55rem;
+        font-weight: 800;
+
+        line-height: 1;
+    }
+
+
+    .favorite-badge {
+        background-color: #a95757;
+        background-image: none;
     }
 
 
@@ -784,34 +977,47 @@
        ========================================================= */
 
     .account-dropdown {
-        width: 290px;
+        width: 300px;
 
-        margin-top: 10px !important;
-        padding: 7px;
+        margin-top: 11px !important;
+        padding: 8px;
 
-        border: 1px solid #e9ecef !important;
+        overflow: hidden;
+
+        border: 1px solid #e5d9cd !important;
         border-radius: 16px;
 
         background-color: #ffffff;
 
         box-shadow:
-            0 14px 40px rgba(0, 0, 0, 0.13) !important;
+            0 16px 40px rgba(62, 42, 28, 0.13) !important;
     }
 
+
+    .account-dropdown .dropdown-divider {
+        margin: 6px 5px;
+
+        border-color: #eee5dc;
+    }
+
+
+    /* =========================================================
+       KULLANICI HEADER
+       ========================================================= */
 
     .account-user-header {
         display: flex;
         align-items: center;
 
-        gap: 12px;
+        gap: 11px;
 
         padding: 10px;
     }
 
 
     .account-avatar {
-        width: 44px;
-        height: 44px;
+        width: 43px;
+        height: 43px;
 
         display: flex;
         align-items: center;
@@ -819,16 +1025,25 @@
 
         flex-shrink: 0;
 
-        border-radius: 50%;
+        border-radius: 11px;
 
         color: #ffffff;
 
-        background-color: #212529;
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #986538);
+
+        font-size: 0.8rem;
+
+        box-shadow:
+            0 4px 12px rgba(73, 50, 37, 0.15);
     }
 
 
     .account-user-info {
         min-width: 0;
+
         flex: 1;
     }
 
@@ -836,11 +1051,14 @@
     .account-user-info small {
         display: block;
 
-        margin-bottom: 2px;
+        margin-bottom: 1px;
 
-        color: #6c757d;
+        color: #a17b57;
 
-        font-size: 0.75rem;
+        font-size: 0.51rem;
+        font-weight: 800;
+
+        letter-spacing: 0.1em;
     }
 
 
@@ -849,9 +1067,10 @@
 
         overflow: hidden;
 
-        color: #212529;
+        color: #3e3027;
 
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        font-weight: 800;
 
         text-overflow: ellipsis;
 
@@ -860,51 +1079,43 @@
 
 
     /* =========================================================
-       ROLE BADGE
+       ROLE
        ========================================================= */
 
     .account-role {
-        display: inline-flex;
+        width: fit-content;
+
+        display: flex;
+        align-items: center;
+
+        gap: 4px;
 
         margin-top: 5px;
-        padding: 3px 8px;
+        padding: 3px 7px;
 
+        border: 1px solid;
         border-radius: 20px;
 
-        font-size: 0.65rem;
-        font-weight: 700;
+        font-size: 0.5rem;
+        font-weight: 800;
     }
 
 
     .admin-role {
-        color: #842029;
+        color: #81572f;
 
-        background-color: #f8d7da;
+        border-color: #dfc5a7;
+
+        background-color: #f8ecde;
     }
 
 
     .customer-role {
-        color: #084298;
+        color: #6e5846;
 
-        background-color: #cfe2ff;
-    }
+        border-color: #e0d3c7;
 
-
-    /* =========================================================
-       MİSAFİR
-       ========================================================= */
-
-    .account-guest-header {
-        padding: 10px 12px;
-    }
-
-
-    .account-guest-header small {
-        display: block;
-
-        margin-top: 4px;
-
-        line-height: 1.4;
+        background-color: #f8f4ef;
     }
 
 
@@ -916,17 +1127,21 @@
         display: flex;
         align-items: center;
 
-        gap: 10px;
+        gap: 9px;
 
-        padding: 10px 11px;
+        width: 100%;
+
+        padding: 8px 9px;
 
         border: 0;
         border-radius: 9px;
 
-        color: #343a40;
+        color: #59463a;
 
-        font-size: 0.9rem;
-        font-weight: 500;
+        background-color: transparent;
+
+        font-size: 0.69rem;
+        font-weight: 650;
 
         transition:
             color 0.2s ease,
@@ -935,15 +1150,15 @@
 
 
     .account-menu-item:hover {
-        color: #212529;
+        color: #714e31;
 
-        background-color: #f5f7fa;
+        background-color: #faf5ef;
     }
 
 
     .account-menu-icon {
-        width: 28px;
-        height: 28px;
+        width: 29px;
+        height: 29px;
 
         display: flex;
         align-items: center;
@@ -953,39 +1168,58 @@
 
         border-radius: 8px;
 
-        color: #6c757d;
+        color: #8c6949;
 
-        background-color: #f5f7fa;
+        background-color: #f3e8dc;
+
+        font-size: 0.62rem;
+
+        transition:
+            color 0.2s ease,
+            background-color 0.2s ease;
     }
 
 
     .account-menu-item:hover .account-menu-icon {
-        color: #212529;
+        color: #ffffff;
 
-        background-color: #e9ecef;
+        background-color: #91623a;
+    }
+
+
+    .account-menu-arrow {
+        margin-left: auto;
+
+        color: #b6a89b;
+
+        font-size: 0.48rem;
+
+        transition:
+            color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .account-menu-item:hover .account-menu-arrow {
+        color: #91623a;
+
+        transform: translateX(2px);
     }
 
 
     /* =========================================================
-       ADMIN MENU ITEM
+       ADMIN
        ========================================================= */
 
     .admin-menu-item {
-        font-weight: 600;
+        font-weight: 750;
     }
 
 
     .admin-menu-icon {
-        color: #0d6efd;
+        color: #80552f;
 
-        background-color: #e7f1ff;
-    }
-
-
-    .admin-menu-item:hover .admin-menu-icon {
-        color: #0a58ca;
-
-        background-color: #cfe2ff;
+        background-color: #f5e6d6;
     }
 
 
@@ -994,39 +1228,217 @@
        ========================================================= */
 
     .logout-item {
-        width: 100%;
-
-        color: #dc3545;
+        color: #a65353;
     }
 
 
     .logout-item .account-menu-icon {
-        color: #dc3545;
+        color: #a65353;
 
-        background-color: #fff5f5;
+        background-color: #faeeee;
     }
 
 
     .logout-item:hover {
-        color: #dc3545;
+        color: #9b4646;
 
-        background-color: #fff5f5;
+        background-color: #fcf2f2;
+    }
+
+
+    .logout-item:hover .account-menu-icon {
+        color: #ffffff;
+
+        background-color: #a65353;
     }
 
 
     /* =========================================================
-       NAV
+       MİSAFİR
        ========================================================= */
 
+    .account-guest-header {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 10px;
+
+        padding: 10px;
+    }
+
+
+    .guest-header-icon {
+        width: 39px;
+        height: 39px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #805832;
+
+        background-color: #f2e4d5;
+
+        font-size: 0.73rem;
+    }
+
+
+    .account-guest-header span {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #9b7147;
+
+        font-size: 0.5rem;
+        font-weight: 800;
+
+        letter-spacing: 0.1em;
+    }
+
+
+    .account-guest-header strong {
+        display: block;
+
+        color: #43342a;
+
+        font-size: 0.76rem;
+        font-weight: 800;
+    }
+
+
+    .account-guest-header p {
+        margin: 3px 0 0;
+
+        color: #988b80;
+
+        font-size: 0.59rem;
+        line-height: 1.45;
+    }
+
+
+    .account-auth-item {
+        padding: 3px 4px;
+    }
+
+
+    .account-login-button,
+    .account-register-button {
+        min-height: 39px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        border-radius: 9px;
+
+        font-size: 0.67rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .account-login-button {
+        border: 1px solid #493225;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+    }
+
+
+    .account-login-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-1px);
+    }
+
+
+    .account-register-button {
+        border: 1px solid #d5c3b1;
+
+        color: #624a38;
+
+        background-color: #ffffff;
+    }
+
+
+    .account-register-button:hover {
+        color: #4d3829;
+
+        border-color: #b99470;
+
+        background-color: #faf5ef;
+
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+       ALT NAVBAR
+       ========================================================= */
+
+    .header-navigation {
+        min-height: 50px;
+
+        padding: 0;
+
+        border-top: 1px solid #eee6de;
+        border-bottom: 1px solid #e8ded4;
+
+        background:
+            linear-gradient(90deg,
+                #ffffff,
+                #fdfaf6,
+                #ffffff);
+    }
+
+
+    .header-navigation .navbar-collapse {
+        align-items: center;
+        justify-content: space-between;
+    }
+
+
+    .header-nav-list {
+        align-items: center;
+
+        gap: 2px;
+    }
+
+
     .header-nav-link {
-        padding: 14px 12px !important;
+        position: relative;
 
-        border-radius: 8px;
+        padding: 15px 12px !important;
 
-        color: #343a40 !important;
+        color: #58463a !important;
 
-        font-size: 0.92rem;
-        font-weight: 600;
+        font-size: 0.72rem;
+        font-weight: 700;
+
+        white-space: nowrap;
 
         transition:
             color 0.2s ease,
@@ -1034,27 +1446,190 @@
     }
 
 
-    .header-nav-link:hover {
-        color: #0d6efd !important;
+    .header-nav-link::after {
+        content: "";
 
-        background-color: #f8f9fa;
+        position: absolute;
+
+        left: 50%;
+        bottom: 7px;
+
+        width: 0;
+        height: 2px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #895b2e,
+                #d0a16a);
+
+        transform: translateX(-50%);
+
+        transition:
+            width 0.25s ease;
+    }
+
+
+    .header-nav-link:hover {
+        color: #946238 !important;
+
+        background-color: transparent;
+    }
+
+
+    .header-nav-link:hover::after {
+        width: calc(100% - 24px);
     }
 
 
     /* =========================================================
-       TABLET / TELEFON
+       NAV SAĞ MARKA
+       ========================================================= */
+
+    .header-nav-brand {
+        display: flex;
+        align-items: center;
+
+        gap: 6px;
+
+        margin-left: auto;
+
+        color: #a18e7d;
+
+        font-size: 0.57rem;
+        font-weight: 600;
+
+        white-space: nowrap;
+    }
+
+
+    .header-nav-brand i {
+        color: #a4774d;
+
+        font-size: 0.58rem;
+    }
+
+
+    /* =========================================================
+       MOBİL MENÜ BUTONU
+       ========================================================= */
+
+    .header-navbar-toggler {
+        display: flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin: 7px 0;
+        padding: 7px 11px;
+
+        border: 1px solid #ddcfc1 !important;
+        border-radius: 9px;
+
+        color: #604938;
+
+        background-color: #ffffff;
+
+        font-size: 0.67rem;
+        font-weight: 700;
+
+        box-shadow: none !important;
+    }
+
+
+    .header-navbar-toggler i {
+        color: #8b603a;
+
+        font-size: 0.7rem;
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .header-main-inner {
+            gap: 18px;
+        }
+
+
+        .header-search {
+            max-width: 480px;
+        }
+
+
+        .header-navigation {
+            padding: 0;
+        }
+
+
+        .header-nav-list {
+            align-items: stretch;
+
+            gap: 0;
+
+            padding: 7px 0 11px;
+        }
+
+
+        .header-nav-link {
+            padding: 10px 11px !important;
+
+            border-radius: 8px;
+        }
+
+
+        .header-nav-link::after {
+            display: none;
+        }
+
+
+        .header-nav-link:hover {
+            background-color: #faf5ef;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBİL
        ========================================================= */
 
     @@media (max-width: 767.98px) {
 
-        .site-logo {
-            font-size: 1.5rem;
+        .header-main {
+            padding: 13px 0;
         }
 
 
-        .header-action {
-            width: 38px;
-            height: 38px;
+        .header-main-inner {
+            min-height: auto;
+
+            gap: 10px;
+        }
+
+
+        .site-logo {
+            gap: 7px;
+        }
+
+
+        .site-logo-icon {
+            width: 37px;
+            height: 37px;
+
+            border-radius: 10px;
+
+            font-size: 0.78rem;
+        }
+
+
+        .logo-main,
+        .logo-sub {
+            font-size: 1.28rem;
         }
 
 
@@ -1063,33 +1638,84 @@
         }
 
 
-        .search-button {
-            padding-left: 16px;
-            padding-right: 16px;
+        .header-action {
+            width: 37px;
+            height: 37px;
+
+            border-radius: 10px;
+
+            font-size: 0.75rem;
+        }
+
+
+        .mobile-header-search {
+            max-width: none;
+
+            margin-top: 12px;
+        }
+
+
+        .header-search-box {
+            height: 43px;
+        }
+
+
+        .mobile-header-search .search-button {
+            width: 36px;
+
+            padding: 0;
         }
 
 
         .account-dropdown {
-            width: 270px;
+            width: 280px;
         }
+
     }
 
 
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
     @@media (max-width: 480px) {
 
-        .site-logo {
-            font-size: 1.35rem;
+        .site-logo-icon {
+            width: 34px;
+            height: 34px;
+
+            font-size: 0.7rem;
+        }
+
+
+        .logo-main,
+        .logo-sub {
+            font-size: 1.12rem;
         }
 
 
         .header-action {
-            width: 36px;
-            height: 36px;
+            width: 35px;
+            height: 35px;
+
+            font-size: 0.7rem;
+        }
+
+
+        .action-badge {
+            top: -5px;
+            right: -5px;
+
+            min-width: 17px;
+            height: 17px;
+
+            font-size: 0.5rem;
         }
 
 
         .account-dropdown {
-            width: 260px;
+            width: 265px;
         }
+
     }
 </style>

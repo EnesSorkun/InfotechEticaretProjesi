@@ -6,22 +6,26 @@
 
 <section class="favorites-page">
 
-    <div class="container py-5">
+    <div class="container">
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <!-- =====================================================
+             SAYFA BAŞLIĞI
+             ===================================================== -->
+        <div class="favorites-header">
 
             <div>
 
-                <span class="text-primary fw-bold small">
+                <span class="favorites-label">
                     HESABIM
                 </span>
 
-                <h1 class="fw-bold mb-1">
+                <h1>
                     Favorilerim
                 </h1>
 
-                <p class="text-muted mb-0">
-                    Beğendiğiniz ürünleri burada görüntüleyebilirsiniz.
+                <p>
+                    Beğendiğiniz ürünleri burada görüntüleyebilir
+                    ve dilediğiniz zaman tekrar inceleyebilirsiniz.
                 </p>
 
             </div>
@@ -29,24 +33,41 @@
 
             <div class="favorite-count">
 
-                <i class="fa-regular fa-heart"></i>
+                <div class="favorite-count-icon">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
 
-                <span>
-                    @Model.Count Ürün
-                </span>
+                <div>
+
+                    <span>
+                        Favori Ürün
+                    </span>
+
+                    <strong>
+                        @Model.Count
+                    </strong>
+
+                </div>
 
             </div>
 
         </div>
 
 
+        <!-- =====================================================
+             MESAJLAR
+             ===================================================== -->
         @if (TempData["SuccessMessage"] is not null)
         {
-            <div class="alert alert-success">
+            <div class="favorites-message favorites-success">
 
-                <i class="fa-solid fa-circle-check me-2"></i>
+                <div class="favorites-message-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
 
-                @TempData["SuccessMessage"]
+                <span>
+                    @TempData["SuccessMessage"]
+                </span>
 
             </div>
         }
@@ -54,11 +75,15 @@
 
         @if (TempData["InfoMessage"] is not null)
         {
-            <div class="alert alert-info">
+            <div class="favorites-message favorites-info">
 
-                <i class="fa-solid fa-circle-info me-2"></i>
+                <div class="favorites-message-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
 
-                @TempData["InfoMessage"]
+                <span>
+                    @TempData["InfoMessage"]
+                </span>
 
             </div>
         }
@@ -66,28 +91,36 @@
 
         @if (Model.Count == 0)
         {
+            <!-- =================================================
+                 FAVORİ YOK
+                 ================================================= -->
             <div class="empty-favorites">
 
                 <div class="empty-icon">
-
                     <i class="fa-regular fa-heart"></i>
-
                 </div>
 
-                <h2 class="fw-bold">
+                <span class="empty-favorites-label">
+                    FAVORİLERİM
+                </span>
+
+                <h2>
                     Favori ürününüz bulunmuyor
                 </h2>
 
-                <p class="text-muted">
-                    Beğendiğiniz ürünleri favorilerinize ekleyerek
-                    daha sonra kolayca ulaşabilirsiniz.
+                <p>
+                    Beğendiğiniz tesbih modellerini favorilerinize
+                    ekleyerek daha sonra kolayca ulaşabilirsiniz.
                 </p>
 
-                <a asp-controller="Products" asp-action="Index" class="btn btn-dark">
 
-                    <i class="fa-solid fa-bag-shopping me-2"></i>
+                <a asp-controller="Products" asp-action="Index" class="empty-favorites-button">
 
-                    Ürünleri İncele
+                    <i class="fa-solid fa-bag-shopping"></i>
+
+                    <span>
+                        Ürünleri İncele
+                    </span>
 
                 </a>
 
@@ -95,6 +128,9 @@
         }
         else
         {
+            <!-- =================================================
+                 FAVORİ ÜRÜNLER
+                 ================================================= -->
             <div class="row g-4">
 
                 @foreach (var item in Model)
@@ -103,7 +139,9 @@
 
                         <div class="favorite-card">
 
-                            <!-- Ürün Resmi -->
+                            <!-- =================================================
+                                 ÜRÜN RESMİ
+                                 ================================================= -->
                             <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
                                class="favorite-image-area">
 
@@ -112,7 +150,9 @@
                             </a>
 
 
-                            <!-- Favoriden Çıkar -->
+                            <!-- =================================================
+                                 FAVORİDEN ÇIKAR
+                                 ================================================= -->
                             <form asp-controller="Favorites" asp-action="Remove" method="post" class="remove-form">
 
                                 @Html.AntiForgeryToken()
@@ -120,7 +160,8 @@
                                 <input type="hidden" name="id" value="@item.Id" />
 
 
-                                <button type="submit" class="remove-button" title="Favorilerden Kaldır">
+                                <button type="submit" class="remove-button" title="Favorilerden Kaldır"
+                                        aria-label="Favorilerden Kaldır">
 
                                     <i class="fa-solid fa-heart"></i>
 
@@ -129,36 +170,49 @@
                             </form>
 
 
-                            <!-- Ürün Bilgileri -->
+                            <!-- =================================================
+                                 ÜRÜN BİLGİLERİ
+                                 ================================================= -->
                             <div class="favorite-content">
 
-                                @if (item.BrandName is not null)
-                                {
-                                    <span class="brand-name">
-                                        @item.BrandName
-                                    </span>
-                                }
+                                <div class="favorite-product-top">
+
+                                    @if (!string.IsNullOrWhiteSpace(item.BrandName))
+                                    {
+                                        <span class="brand-name">
+                                            @item.BrandName
+                                        </span>
+                                    }
 
 
-                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="product-name">
+                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
+                                       class="product-name">
 
-                                    @item.Name
+                                        @item.Name
 
-                                </a>
-
-
-                                @if (!string.IsNullOrWhiteSpace(item.ProductCode))
-                                {
-                                    <div class="product-code">
-
-                                        Ürün Kodu:
-                                        @item.ProductCode
-
-                                    </div>
-                                }
+                                    </a>
 
 
-                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    @if (!string.IsNullOrWhiteSpace(item.ProductCode))
+                                    {
+                                        <div class="product-code">
+
+                                            <i class="fa-solid fa-barcode"></i>
+
+                                            <span>
+                                                @item.ProductCode
+                                            </span>
+
+                                        </div>
+                                    }
+
+                                </div>
+
+
+                                <!-- =================================================
+                                     FİYAT + STOK
+                                     ================================================= -->
+                                <div class="favorite-price-row">
 
                                     <span class="product-price">
                                         @item.Price.ToString("N2") ₺
@@ -167,24 +221,39 @@
 
                                     @if (item.Stock > 0)
                                     {
-                                        <span class="badge bg-success-subtle text-success">
+                                        <span class="stock-badge stock-available">
+
+                                            <i class="fa-solid fa-circle-check"></i>
+
                                             Stokta
+
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger-subtle text-danger">
+                                        <span class="stock-badge stock-empty">
+
+                                            <i class="fa-solid fa-circle-xmark"></i>
+
                                             Tükendi
+
                                         </span>
                                     }
 
                                 </div>
 
 
+                                <!-- =================================================
+                                     DETAY BUTONU
+                                     ================================================= -->
                                 <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
-                                   class="btn btn-dark w-100 mt-3">
+                                   class="favorite-detail-button">
 
-                                    Ürünü İncele
+                                    <span>
+                                        Ürünü İncele
+                                    </span>
+
+                                    <i class="fa-solid fa-chevron-right"></i>
 
                                 </a>
 
@@ -204,69 +273,293 @@
 
 
 <style>
-    .favorites-page {
-        min-height: 70vh;
+    /* =========================================================
+       SAYFA
+       ========================================================= */
 
-        background-color: #f7f8fa;
+    .favorites-page {
+        min-height: 72vh;
+
+        padding: 55px 0 70px;
+
+        background:
+            radial-gradient(circle at top left,
+                rgba(190, 145, 91, 0.07),
+                transparent 32%),
+            linear-gradient(180deg,
+                #ffffff 0%,
+                #faf7f3 100%);
     }
 
 
+    /* =========================================================
+       SAYFA BAŞLIĞI
+       ========================================================= */
+
+    .favorites-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 25px;
+
+        margin-bottom: 30px;
+    }
+
+
+    .favorites-label {
+        display: inline-block;
+
+        margin-bottom: 6px;
+
+        color: #9a7042;
+
+        font-size: 0.67rem;
+        font-weight: 800;
+
+        letter-spacing: 0.15em;
+    }
+
+
+    .favorites-header h1 {
+        position: relative;
+
+        margin: 0 0 10px;
+        padding-bottom: 12px;
+
+        color: #30251d;
+
+        font-size: 2rem;
+        font-weight: 800;
+
+        letter-spacing: -0.02em;
+    }
+
+
+    .favorites-header h1::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 42px;
+        height: 3px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #895b2e,
+                #d0a16a);
+    }
+
+
+    .favorites-header p {
+        max-width: 640px;
+
+        margin: 0;
+
+        color: #887b70;
+
+        font-size: 0.84rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       FAVORİ SAYISI
+       ========================================================= */
+
     .favorite-count {
+        min-width: 135px;
+
         display: flex;
         align-items: center;
 
-        gap: 8px;
+        gap: 10px;
 
-        padding: 10px 16px;
+        padding: 10px 13px;
 
-        border: 1px solid #e9ecef;
+        border: 1px solid #e4d8cc;
         border-radius: 12px;
-
-        color: #dc3545;
 
         background-color: #ffffff;
 
+        box-shadow:
+            0 5px 15px rgba(70, 47, 30, 0.05);
+    }
+
+
+    .favorite-count-icon {
+        width: 36px;
+        height: 36px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        color: #9b5656;
+
+        background-color: #faeeee;
+
+        font-size: 0.85rem;
+    }
+
+
+    .favorite-count span {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #9a8d81;
+
+        font-size: 0.61rem;
         font-weight: 600;
     }
 
+
+    .favorite-count strong {
+        display: block;
+
+        color: #49382c;
+
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+
+    /* =========================================================
+       MESAJLAR
+       ========================================================= */
+
+    .favorites-message {
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+
+        margin-bottom: 22px;
+        padding: 12px 15px;
+
+        border-radius: 11px;
+
+        font-size: 0.77rem;
+        font-weight: 600;
+    }
+
+
+    .favorites-message-icon {
+        width: 27px;
+        height: 27px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        font-size: 0.7rem;
+    }
+
+
+    .favorites-success {
+        border: 1px solid #d6e5d1;
+
+        color: #526d4b;
+
+        background-color: #f1f7ef;
+    }
+
+
+    .favorites-success .favorites-message-icon {
+        color: #54764c;
+
+        background-color: #e1efdd;
+    }
+
+
+    .favorites-info {
+        border: 1px solid #ded6ca;
+
+        color: #725f4d;
+
+        background-color: #f8f4ee;
+    }
+
+
+    .favorites-info .favorites-message-icon {
+        color: #8e653e;
+
+        background-color: #eee2d4;
+    }
+
+
+    /* =========================================================
+       FAVORİ KARTI
+       ========================================================= */
 
     .favorite-card {
         position: relative;
 
         height: 100%;
 
+        display: flex;
+        flex-direction: column;
+
         overflow: hidden;
 
-        border: 1px solid #e9ecef;
+        border: 1px solid #e8ded3;
         border-radius: 18px;
 
         background-color: #ffffff;
 
         box-shadow:
-            0 6px 20px rgba(0, 0, 0, 0.05);
+            0 8px 24px rgba(70, 47, 30, 0.06);
 
         transition:
             transform 0.25s ease,
+            border-color 0.25s ease,
             box-shadow 0.25s ease;
     }
 
 
     .favorite-card:hover {
-        transform: translateY(-5px);
+        border-color: #d7bea2;
+
+        transform: translateY(-4px);
 
         box-shadow:
-            0 14px 30px rgba(0, 0, 0, 0.10);
+            0 14px 30px rgba(70, 47, 30, 0.10);
     }
 
 
+    /* =========================================================
+       ÜRÜN RESMİ
+       ========================================================= */
+
     .favorite-image-area {
+        position: relative;
+
         display: block;
 
-        height: 230px;
+        height: 275px;
 
-        padding: 18px;
+        padding: 20px;
 
-        background-color: #ffffff;
+        overflow: hidden;
+
+        background:
+            radial-gradient(circle at center,
+                #ffffff 0%,
+                #faf6f1 100%);
     }
 
 
@@ -275,164 +568,519 @@
         height: 100%;
 
         object-fit: contain;
+        object-position: center;
 
-        transition: transform 0.3s ease;
+        transition:
+            transform 0.35s ease;
     }
 
 
     .favorite-card:hover .favorite-image {
-        transform: scale(1.04);
+        transform: scale(1.035);
     }
 
+
+    /* =========================================================
+       FAVORİDEN ÇIKAR
+       ========================================================= */
 
     .remove-form {
         position: absolute;
 
+        z-index: 5;
+
         top: 14px;
         right: 14px;
+
+        margin: 0;
     }
 
 
     .remove-button {
-        width: 40px;
-        height: 40px;
+        width: 39px;
+        height: 39px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        border: 1px solid #e9ecef;
+        border: 1px solid #ead5d5;
         border-radius: 50%;
 
-        color: #dc3545;
+        color: #a85757;
 
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.95);
+
+        font-size: 0.86rem;
 
         box-shadow:
-            0 4px 12px rgba(0, 0, 0, 0.08);
+            0 4px 12px rgba(70, 47, 30, 0.09);
 
-        transition: 0.2s ease;
+        cursor: pointer;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            transform 0.2s ease;
     }
 
 
     .remove-button:hover {
         color: #ffffff;
 
-        border-color: #dc3545;
+        border-color: #a85353;
 
-        background-color: #dc3545;
+        background-color: #a85353;
 
         transform: scale(1.06);
     }
 
 
-    .favorite-content {
-        padding: 20px;
+    /* =========================================================
+       İÇERİK
+       ========================================================= */
 
-        border-top: 1px solid #f1f3f5;
+    .favorite-content {
+        display: flex;
+        flex-direction: column;
+
+        flex: 1;
+
+        padding: 18px;
+
+        border-top: 1px solid #eee5dc;
     }
 
+
+    .favorite-product-top {
+        flex: 1;
+    }
+
+
+    /* =========================================================
+       MARKA
+       ========================================================= */
 
     .brand-name {
         display: block;
 
         margin-bottom: 5px;
 
-        color: #868e96;
+        color: #a07952;
 
-        font-size: 0.75rem;
-        font-weight: 700;
+        font-size: 0.65rem;
+        font-weight: 800;
+
+        letter-spacing: 0.06em;
 
         text-transform: uppercase;
     }
 
 
+    /* =========================================================
+       ÜRÜN ADI
+       ========================================================= */
+
     .product-name {
-        display: block;
+        display: -webkit-box;
 
-        color: #212529;
+        min-height: 45px;
 
-        font-size: 1rem;
-        font-weight: 700;
+        overflow: hidden;
+
+        color: #3b2e25;
+
+        font-size: 0.92rem;
+        font-weight: 750;
+        line-height: 1.45;
 
         text-decoration: none;
+
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+
+        transition:
+            color 0.2s ease;
     }
 
 
     .product-name:hover {
-        color: #0d6efd;
+        color: #9a6839;
     }
 
 
+    /* =========================================================
+       ÜRÜN KODU
+       ========================================================= */
+
     .product-code {
-        margin-top: 7px;
+        display: flex;
+        align-items: center;
 
-        color: #868e96;
+        gap: 5px;
 
-        font-size: 0.78rem;
+        margin-top: 8px;
+
+        color: #9c9085;
+
+        font-size: 0.67rem;
+    }
+
+
+    .product-code i {
+        color: #af957c;
+
+        font-size: 0.62rem;
+    }
+
+
+    /* =========================================================
+       FİYAT + STOK
+       ========================================================= */
+
+    .favorite-price-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-top: 17px;
     }
 
 
     .product-price {
-        color: #212529;
+        color: #81562e;
 
-        font-size: 1.15rem;
+        font-size: 1.08rem;
         font-weight: 800;
+
+        letter-spacing: -0.01em;
     }
 
 
+    .stock-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 4px;
+
+        padding: 5px 8px;
+
+        border: 1px solid transparent;
+        border-radius: 20px;
+
+        font-size: 0.59rem;
+        font-weight: 800;
+
+        white-space: nowrap;
+    }
+
+
+    .stock-badge i {
+        font-size: 0.52rem;
+    }
+
+
+    .stock-available {
+        color: #4f6c49;
+
+        border-color: #d4e3d0;
+
+        background-color: #eef5ec;
+    }
+
+
+    .stock-empty {
+        color: #a05252;
+
+        border-color: #ead1d1;
+
+        background-color: #faeeee;
+    }
+
+
+    /* =========================================================
+       ÜRÜNÜ İNCELE
+       ========================================================= */
+
+    .favorite-detail-button {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        margin-top: 15px;
+
+        padding: 8px 14px;
+
+        border: 1px solid #493225;
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        font-size: 0.72rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 5px 14px rgba(73, 50, 37, 0.13);
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .favorite-detail-button i {
+        font-size: 0.6rem;
+
+        transition:
+            transform 0.2s ease;
+    }
+
+
+    .favorite-detail-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 7px 18px rgba(73, 50, 37, 0.18);
+    }
+
+
+    .favorite-detail-button:hover i {
+        transform: translateX(2px);
+    }
+
+
+    /* =========================================================
+       BOŞ FAVORİLER
+       ========================================================= */
+
     .empty-favorites {
-        max-width: 620px;
+        max-width: 650px;
 
-        margin: 50px auto;
+        margin: 20px auto 0;
 
-        padding: 60px 30px;
+        padding: 55px 25px;
 
-        border: 1px solid #e9ecef;
-        border-radius: 22px;
+        border: 1px solid #e7ddd2;
+        border-radius: 20px;
 
         background-color: #ffffff;
 
         text-align: center;
 
         box-shadow:
-            0 8px 28px rgba(0, 0, 0, 0.05);
+            0 12px 34px rgba(70, 47, 30, 0.07);
     }
 
 
     .empty-icon {
-        width: 85px;
-        height: 85px;
+        width: 76px;
+        height: 76px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        margin: 0 auto 20px;
+        margin: 0 auto 17px;
 
         border-radius: 50%;
 
-        color: #dc3545;
+        color: #a15757;
 
-        background-color: #fff0f1;
+        background:
+            linear-gradient(145deg,
+                #fbf0ee,
+                #efd6d0);
 
-        font-size: 2rem;
+        font-size: 1.7rem;
     }
 
 
-    @@media (max-width: 767.98px) {
+    .empty-favorites-label {
+        display: inline-block;
+
+        margin-bottom: 5px;
+
+        color: #9a7042;
+
+        font-size: 0.65rem;
+        font-weight: 800;
+
+        letter-spacing: 0.14em;
+    }
+
+
+    .empty-favorites h2 {
+        margin: 0 0 8px;
+
+        color: #34281f;
+
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+
+    .empty-favorites p {
+        max-width: 480px;
+
+        margin: 0 auto 22px;
+
+        color: #897d72;
+
+        font-size: 0.82rem;
+        line-height: 1.6;
+    }
+
+
+    .empty-favorites-button {
+        min-height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 9px 18px;
+
+        border: 1px solid #493225;
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        font-size: 0.77rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 5px 15px rgba(73, 50, 37, 0.16);
+
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .empty-favorites-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(73, 50, 37, 0.21);
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .favorites-page {
+            padding: 40px 0 55px;
+        }
+
 
         .favorite-image-area {
-            height: 200px;
+            height: 250px;
         }
 
     }
 
 
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .favorites-page {
+            padding: 30px 0 45px;
+        }
+
+
+        .favorites-header {
+            flex-direction: column;
+            align-items: flex-start;
+
+            gap: 18px;
+        }
+
+
+        .favorites-header h1 {
+            font-size: 1.65rem;
+        }
+
+
+        .favorite-count {
+            width: 100%;
+        }
+
+
+        .favorite-image-area {
+            height: 235px;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
     @@media (max-width: 480px) {
 
         .favorite-image-area {
-            height: 180px;
+            height: 215px;
+        }
+
+
+        .favorite-content {
+            padding: 16px;
+        }
+
+
+        .empty-favorites {
+            padding: 45px 20px;
+        }
+
+
+        .empty-favorites h2 {
+            font-size: 1.2rem;
         }
 
     }

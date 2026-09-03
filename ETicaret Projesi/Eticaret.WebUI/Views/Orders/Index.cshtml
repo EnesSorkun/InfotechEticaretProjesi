@@ -1,224 +1,322 @@
 @using Eticaret.Core.Enums
+
 @model IEnumerable<Order>
 
 @{
     ViewData["Title"] = "Siparişlerim";
 }
 
-<div class="container py-5">
+<section class="orders-section">
 
-    <!-- =====================================================
-         BAŞLIK
-         ===================================================== -->
-    <div class="mb-4">
+    <div class="container">
 
-        <h1 class="fw-bold mb-1">
-            Siparişlerim
-        </h1>
+        <!-- =====================================================
+             BAŞLIK
+             ===================================================== -->
+        <div class="orders-header">
 
-        <p class="text-muted mb-0">
-            Geçmiş siparişlerinizi, sipariş durumlarını ve sipariş detaylarınızı görüntüleyebilirsiniz.
-        </p>
+            <span class="orders-label">
+                HESABIM
+            </span>
 
-    </div>
+            <h1>
+                Siparişlerim
+            </h1>
+
+            <p>
+                Geçmiş siparişlerinizi, sipariş durumlarını ve
+                sipariş detaylarınızı görüntüleyebilirsiniz.
+            </p>
+
+        </div>
 
 
-    @if (!Model.Any())
-    {
-        <!-- =================================================
-             SİPARİŞ YOK
-             ================================================= -->
-        <div class="card border-0 shadow-sm">
+        @if (!Model.Any())
+        {
+            <!-- =================================================
+                 SİPARİŞ YOK
+                 ================================================= -->
+            <div class="empty-order-card">
 
-            <div class="card-body text-center py-5">
-
-                <div class="empty-order-icon mb-3">
+                <div class="empty-order-icon">
                     <i class="fa-solid fa-box-open"></i>
                 </div>
 
-                <h2 class="h4 fw-bold">
+                <span class="empty-order-label">
+                    SİPARİŞLERİM
+                </span>
+
+                <h2>
                     Henüz siparişiniz bulunmuyor.
                 </h2>
 
-                <p class="text-muted">
-                    Ürünlerimizi inceleyerek ilk siparişinizi oluşturabilirsiniz.
+                <p>
+                    Koleksiyonlarımızı inceleyerek ilk siparişinizi
+                    oluşturabilirsiniz.
                 </p>
 
-                <a asp-controller="Products" asp-action="Index" class="btn btn-dark px-4">
+                <a asp-controller="Products" asp-action="Index" class="empty-order-button">
 
-                    <i class="fa-solid fa-bag-shopping me-2"></i>
+                    <i class="fa-solid fa-bag-shopping"></i>
 
-                    Alışverişe Başla
+                    <span>
+                        Alışverişe Başla
+                    </span>
 
                 </a>
 
             </div>
+        }
+        else
+        {
+            <!-- =================================================
+                 SİPARİŞ LİSTESİ
+                 ================================================= -->
+            <div class="orders-list">
 
-        </div>
-    }
-    else
-    {
-        <!-- =================================================
-             SİPARİŞ LİSTESİ
-             ================================================= -->
-        <div class="row g-3">
+                @foreach (var order in Model)
+                {
+                    <div class="order-card">
 
-            @foreach (var order in Model)
-            {
-                <div class="col-12">
+                        <!-- ÜST ŞERİT -->
+                        <div class="order-card-top">
 
-                    <div class="card border-0 shadow-sm order-card">
+                            <div class="order-number-area">
 
-                        <div class="card-body p-4">
+                                <span class="order-number-icon">
+                                    <i class="fa-solid fa-receipt"></i>
+                                </span>
 
-                            <div class="row align-items-center g-3">
+                                <div>
 
-
-                                <!-- Sipariş No -->
-                                <div class="col-lg-3 col-md-6">
-
-                                    <small class="text-muted d-block mb-1">
+                                    <span class="order-meta-label">
                                         Sipariş No
-                                    </small>
+                                    </span>
 
-                                    <strong>
+                                    <strong class="order-number">
                                         @order.OrderNumber
                                     </strong>
 
                                 </div>
 
+                            </div>
 
-                                <!-- Sipariş Tarihi -->
-                                <div class="col-lg-2 col-md-6">
 
-                                    <small class="text-muted d-block mb-1">
-                                        Sipariş Tarihi
-                                    </small>
+                            <!-- DURUM -->
+                            <div>
 
-                                    <span>
-                                        @(order.OrderDate
-                                            .ToLocalTime()
-                                            .ToString("dd.MM.yyyy HH:mm"))
-                                    </span>
+                                @switch (order.Status)
+                                {
+                                    case OrderStatus.PendingApproval:
+
+                                        <span class="order-status status-pending">
+
+                                            <i class="fa-regular fa-clock"></i>
+
+                                            Onay Bekliyor
+
+                                        </span>
+
+                                        break;
+
+
+                                    case OrderStatus.Approved:
+
+                                        <span class="order-status status-approved">
+
+                                            <i class="fa-solid fa-circle-check"></i>
+
+                                            Onaylandı
+
+                                        </span>
+
+                                        break;
+
+
+                                    case OrderStatus.Preparing:
+
+                                        <span class="order-status status-preparing">
+
+                                            <i class="fa-solid fa-box"></i>
+
+                                            Hazırlanıyor
+
+                                        </span>
+
+                                        break;
+
+
+                                    case OrderStatus.Shipped:
+
+                                        <span class="order-status status-shipped">
+
+                                            <i class="fa-solid fa-truck"></i>
+
+                                            Kargoya Verildi
+
+                                        </span>
+
+                                        break;
+
+
+                                    case OrderStatus.Delivered:
+
+                                        <span class="order-status status-delivered">
+
+                                            <i class="fa-solid fa-circle-check"></i>
+
+                                            Teslim Edildi
+
+                                        </span>
+
+                                        break;
+
+
+                                    case OrderStatus.Cancelled:
+
+                                        <span class="order-status status-cancelled">
+
+                                            <i class="fa-solid fa-circle-xmark"></i>
+
+                                            İptal Edildi
+
+                                        </span>
+
+                                        break;
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ALT BİLGİLER -->
+                        <div class="order-card-body">
+
+                            <div class="row g-3 align-items-center">
+
+                                <!-- TARİH -->
+                                <div class="col-lg-3 col-md-6">
+
+                                    <div class="order-info-item">
+
+                                        <div class="order-info-icon">
+                                            <i class="fa-regular fa-calendar"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Sipariş Tarihi
+                                            </span>
+
+                                            <strong>
+                                                @(order.OrderDate
+                                                    .ToLocalTime()
+                                                    .ToString("dd.MM.yyyy HH:mm"))
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
 
-                                <!-- Toplam Tutar -->
-                                <div class="col-lg-2 col-md-6">
+                                <!-- TOPLAM -->
+                                <div class="col-lg-3 col-md-6">
 
-                                    <small class="text-muted d-block mb-1">
-                                        Sipariş Toplamı
-                                    </small>
+                                    <div class="order-info-item">
 
-                                    <strong>
-                                        @order.TotalPrice.ToString("N2") ₺
-                                    </strong>
+                                        <div class="order-info-icon">
+                                            <i class="fa-solid fa-wallet"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Sipariş Toplamı
+                                            </span>
+
+                                            <strong class="order-price">
+                                                @order.TotalPrice.ToString("N2") ₺
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
 
-                                <!-- Sipariş Durumu -->
-                                <div class="col-lg-2 col-md-6">
+                                <!-- DURUM AÇIKLAMA -->
+                                <div class="col-lg-3 col-md-6">
 
-                                    <small class="text-muted d-block mb-1">
-                                        Sipariş Durumu
-                                    </small>
+                                    <div class="order-info-item">
 
-                                    @switch (order.Status)
-                                    {
-                                        case OrderStatus.PendingApproval:
+                                        <div class="order-info-icon">
+                                            <i class="fa-solid fa-box-archive"></i>
+                                        </div>
 
-                                            <span class="badge bg-warning text-dark order-status-badge">
+                                        <div>
 
-                                                <i class="fa-solid fa-clock me-1"></i>
-
-                                                Onay Bekliyor
-
+                                            <span>
+                                                Sipariş Durumu
                                             </span>
 
-                                            break;
+                                            <strong>
+                                                @switch (order.Status)
+                                                {
+                                                    case OrderStatus.PendingApproval:
+                                                        <text>Onay Bekliyor</text>
+                                                        break;
 
+                                                    case OrderStatus.Approved:
+                                                        <text>Onaylandı</text>
+                                                        break;
 
-                                        case OrderStatus.Approved:
+                                                    case OrderStatus.Preparing:
+                                                        <text>Hazırlanıyor</text>
+                                                        break;
 
-                                            <span class="badge bg-primary order-status-badge">
+                                                    case OrderStatus.Shipped:
+                                                        <text>Kargoya Verildi</text>
+                                                        break;
 
-                                                <i class="fa-solid fa-circle-check me-1"></i>
+                                                    case OrderStatus.Delivered:
+                                                        <text>Teslim Edildi</text>
+                                                        break;
 
-                                                Onaylandı
+                                                    case OrderStatus.Cancelled:
+                                                        <text>İptal Edildi</text>
+                                                        break;
+                                                }
+                                            </strong>
 
-                                            </span>
+                                        </div>
 
-                                            break;
-
-
-                                        case OrderStatus.Preparing:
-
-                                            <span class="badge bg-info text-dark order-status-badge">
-
-                                                <i class="fa-solid fa-box me-1"></i>
-
-                                                Hazırlanıyor
-
-                                            </span>
-
-                                            break;
-
-
-                                        case OrderStatus.Shipped:
-
-                                            <span class="badge bg-secondary order-status-badge">
-
-                                                <i class="fa-solid fa-truck me-1"></i>
-
-                                                Kargoya Verildi
-
-                                            </span>
-
-                                            break;
-
-
-                                        case OrderStatus.Delivered:
-
-                                            <span class="badge bg-success order-status-badge">
-
-                                                <i class="fa-solid fa-circle-check me-1"></i>
-
-                                                Teslim Edildi
-
-                                            </span>
-
-                                            break;
-
-
-                                        case OrderStatus.Cancelled:
-
-                                            <span class="badge bg-danger order-status-badge">
-
-                                                <i class="fa-solid fa-circle-xmark me-1"></i>
-
-                                                İptal Edildi
-
-                                            </span>
-
-                                            break;
-                                    }
+                                    </div>
 
                                 </div>
 
 
-                                <!-- Detay -->
-                                <div class="col-lg-3 col-md-12 text-lg-end">
+                                <!-- DETAY -->
+                                <div class="col-lg-3 col-md-6">
 
-                                    <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id"
-                                       class="btn btn-outline-dark">
+                                    <div class="order-detail-button-wrapper">
 
-                                        Sipariş Detayı
+                                        <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id"
+                                           class="order-detail-button">
 
-                                        <i class="fa-solid fa-chevron-right ms-2"></i>
+                                            <span>
+                                                Sipariş Detayı
+                                            </span>
 
-                                    </a>
+                                            <i class="fa-solid fa-chevron-right"></i>
+
+                                        </a>
+
+                                    </div>
 
                                 </div>
 
@@ -227,43 +325,664 @@
                         </div>
 
                     </div>
+                }
 
-                </div>
-            }
+            </div>
+        }
 
-        </div>
-    }
+    </div>
 
-</div>
+</section>
 
 
 <style>
-    .order-card {
-        border-radius: 14px;
-        transition: all 0.2s ease;
+    /* =========================================================
+       SAYFA
+       ========================================================= */
+
+    .orders-section {
+        min-height: 72vh;
+
+        padding: 55px 0 70px;
+
+        background:
+            radial-gradient(circle at top left,
+                rgba(190, 145, 91, 0.07),
+                transparent 32%),
+            linear-gradient(180deg,
+                #ffffff 0%,
+                #faf7f3 100%);
     }
+
+
+    /* =========================================================
+       BAŞLIK
+       ========================================================= */
+
+    .orders-header {
+        margin-bottom: 30px;
+    }
+
+
+    .orders-label {
+        display: inline-block;
+
+        margin-bottom: 6px;
+
+        color: #9a7042;
+
+        font-size: 0.67rem;
+        font-weight: 800;
+
+        letter-spacing: 0.15em;
+    }
+
+
+    .orders-header h1 {
+        position: relative;
+
+        margin: 0 0 10px;
+        padding-bottom: 12px;
+
+        color: #30251d;
+
+        font-size: 2rem;
+        font-weight: 800;
+
+        letter-spacing: -0.02em;
+    }
+
+
+    .orders-header h1::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 42px;
+        height: 3px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #895b2e,
+                #d0a16a);
+    }
+
+
+    .orders-header p {
+        max-width: 720px;
+
+        margin: 0;
+
+        color: #887b70;
+
+        font-size: 0.84rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       SİPARİŞ LİSTESİ
+       ========================================================= */
+
+    .orders-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+
+    /* =========================================================
+       SİPARİŞ KARTI
+       ========================================================= */
+
+    .order-card {
+        overflow: hidden;
+
+        border: 1px solid #e8ded3;
+        border-radius: 17px;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 8px 24px rgba(70, 47, 30, 0.06);
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
 
     .order-card:hover {
+        border-color: #d8c0a5;
+
         transform: translateY(-2px);
+
+        box-shadow:
+            0 12px 28px rgba(70, 47, 30, 0.09);
     }
 
-    .empty-order-icon {
-        width: 80px;
-        height: 80px;
+
+    /* =========================================================
+       KART ÜST KISIM
+       ========================================================= */
+
+    .order-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 18px;
+
+        padding: 17px 20px;
+
+        border-bottom: 1px solid #eee5dc;
+
+        background:
+            linear-gradient(90deg,
+                #fcfaf7,
+                #ffffff);
+    }
+
+
+    .order-number-area {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+    }
+
+
+    .order-number-icon {
+        width: 38px;
+        height: 38px;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 50%;
-        background-color: #f1f3f5;
-        font-size: 2rem;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #8c6035;
+
+        background:
+            linear-gradient(145deg,
+                #f7eee4,
+                #f0e1d0);
+
+        font-size: 0.82rem;
     }
 
-    .order-status-badge {
-        padding: 8px 12px;
+
+    .order-meta-label {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #978a7f;
+
+        font-size: 0.67rem;
+        font-weight: 600;
+    }
+
+
+    .order-number {
+        color: #3e3027;
+
         font-size: 0.85rem;
-        font-weight: 500;
-        border-radius: 8px;
+        font-weight: 800;
+    }
+
+
+    /* =========================================================
+       DURUM BADGE
+       ========================================================= */
+
+    .order-status {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 6px;
+
+        padding: 6px 10px;
+
+        border: 1px solid transparent;
+        border-radius: 20px;
+
+        font-size: 0.68rem;
+        font-weight: 700;
+
+        white-space: nowrap;
+    }
+
+
+    /* Onay Bekliyor */
+    .status-pending {
+        color: #8a651f;
+
+        border-color: #ead7a4;
+
+        background-color: #fff7df;
+    }
+
+
+    /* Onaylandı */
+    .status-approved {
+        color: #4f6488;
+
+        border-color: #d4dceb;
+
+        background-color: #f0f4fa;
+    }
+
+
+    /* Hazırlanıyor */
+    .status-preparing {
+        color: #80612e;
+
+        border-color: #e7d9bd;
+
+        background-color: #faf4e8;
+    }
+
+
+    /* Kargoya Verildi */
+    .status-shipped {
+        color: #655c54;
+
+        border-color: #ddd7d1;
+
+        background-color: #f4f2f0;
+    }
+
+
+    /* Teslim Edildi */
+    .status-delivered {
+        color: #4e6c48;
+
+        border-color: #d6e4d2;
+
+        background-color: #edf5ea;
+    }
+
+
+    /* İptal */
+    .status-cancelled {
+        color: #a04d4d;
+
+        border-color: #edd3d3;
+
+        background-color: #f9eeee;
+    }
+
+
+    /* =========================================================
+       KART BODY
+       ========================================================= */
+
+    .order-card-body {
+        padding: 20px;
+    }
+
+
+    /* =========================================================
+       BİLGİ
+       ========================================================= */
+
+    .order-info-item {
+        min-height: 58px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+    }
+
+
+    .order-info-icon {
+        width: 36px;
+        height: 36px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        color: #95704b;
+
+        background-color: #f7f0e8;
+
+        font-size: 0.75rem;
+    }
+
+
+    .order-info-item span {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #998c80;
+
+        font-size: 0.66rem;
+        font-weight: 600;
+    }
+
+
+    .order-info-item strong {
+        display: block;
+
+        color: #403229;
+
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+
+    .order-price {
+        color: #80552d !important;
+
+        font-size: 0.86rem !important;
+        font-weight: 800 !important;
+    }
+
+
+    /* =========================================================
+       DETAY BUTONU
+       ========================================================= */
+
+    .order-detail-button-wrapper {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+
+    .order-detail-button {
+        min-height: 42px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 9px 15px;
+
+        border: 1px solid #d8c8b7;
+        border-radius: 10px;
+
+        color: #644c3a;
+
+        background-color: #ffffff;
+
+        font-size: 0.73rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .order-detail-button i {
+        font-size: 0.62rem;
+
+        transition:
+            transform 0.2s ease;
+    }
+
+
+    .order-detail-button:hover {
+        color: #ffffff;
+
+        border-color: #754d2a;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        transform: translateY(-1px);
+
+        box-shadow:
+            0 5px 14px rgba(73, 50, 37, 0.14);
+    }
+
+
+    .order-detail-button:hover i {
+        transform: translateX(2px);
+    }
+
+
+    /* =========================================================
+       BOŞ SİPARİŞ
+       ========================================================= */
+
+    .empty-order-card {
+        padding: 55px 25px;
+
+        border: 1px solid #e7ddd2;
+        border-radius: 20px;
+
+        background-color: #ffffff;
+
+        text-align: center;
+
+        box-shadow:
+            0 12px 34px rgba(70, 47, 30, 0.07);
+    }
+
+
+    .empty-order-icon {
+        width: 76px;
+        height: 76px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 17px;
+
+        border-radius: 50%;
+
+        color: #8b6038;
+
+        background:
+            linear-gradient(145deg,
+                #f8eee2,
+                #ebd3b5);
+
+        font-size: 1.75rem;
+    }
+
+
+    .empty-order-label {
+        display: inline-block;
+
+        margin-bottom: 5px;
+
+        color: #9a7042;
+
+        font-size: 0.65rem;
+        font-weight: 800;
+
+        letter-spacing: 0.14em;
+    }
+
+
+    .empty-order-card h2 {
+        margin: 0 0 8px;
+
+        color: #34281f;
+
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+
+    .empty-order-card p {
+        margin: 0 auto 22px;
+
+        max-width: 470px;
+
+        color: #897d72;
+
+        font-size: 0.82rem;
+        line-height: 1.6;
+    }
+
+
+    .empty-order-button {
+        min-height: 44px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        padding: 9px 18px;
+
+        border: 1px solid #493225;
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
+
+        font-size: 0.77rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 5px 15px rgba(73, 50, 37, 0.16);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+
+    .empty-order-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(73, 50, 37, 0.21);
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .orders-section {
+            padding: 40px 0 55px;
+        }
+
+
+        .order-detail-button-wrapper {
+            justify-content: flex-start;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .orders-section {
+            padding: 30px 0 45px;
+        }
+
+
+        .orders-header h1 {
+            font-size: 1.65rem;
+        }
+
+
+        .order-card {
+            border-radius: 15px;
+        }
+
+
+        .order-card-top {
+            align-items: flex-start;
+        }
+
+
+        .order-card-body {
+            padding: 17px;
+        }
+
+
+        .order-detail-button-wrapper {
+            width: 100%;
+        }
+
+
+        .order-detail-button {
+            width: 100%;
+        }
+
+
+        .empty-order-card {
+            padding: 45px 20px;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .order-card-top {
+            flex-direction: column;
+        }
+
+
+        .order-status {
+            margin-left: 49px;
+        }
+
+
+        .empty-order-card h2 {
+            font-size: 1.2rem;
+        }
+
     }
 </style>

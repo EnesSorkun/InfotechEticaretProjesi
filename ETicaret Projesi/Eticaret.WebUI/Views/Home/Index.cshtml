@@ -4,54 +4,384 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
+<!-- =====================================================
+     SLIDER
+     ===================================================== -->
 <partial name="_Slider" model="Model.Sliders" />
 
 
 <!-- =====================================================
      ÜRÜNLERİMİZ
-     Ürün varsa bölüm gösterilir.
-     Ürün yoksa bölüm hiç oluşturulmaz.
      ===================================================== -->
-
 @if (Model.Products is not null && Model.Products.Any())
 {
-    <div>
+    <section class="home-section">
 
-        <h1>Ürünlerimiz</h1>
+        <div class="container">
 
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <!-- Bölüm Başlığı -->
+            <div class="home-section-header">
 
-            @foreach (var item in Model.Products)
-            {
-                <partial name="_ProductView" model="item" />
-            }
+                <div>
+
+                    <span class="home-section-label">
+                        ÖZENLE SEÇİLDİ
+                    </span>
+
+                    <h2 class="home-section-title">
+                        Ürünlerimiz
+                    </h2>
+
+                    <p class="home-section-description">
+                        Ateş, sıkma ve damla kehribar koleksiyonlarımızdan
+                        öne çıkan tesbih modellerini keşfedin.
+                    </p>
+
+                </div>
+
+
+                <a asp-area="" asp-controller="Products" asp-action="Index" class="home-section-link">
+
+                    <span>
+                        Tüm Ürünleri Gör
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <!-- Ürünler -->
+            <div class="row g-4 row-cols-2 row-cols-md-3 row-cols-xl-4">
+
+                @foreach (var item in Model.Products)
+                {
+                    <partial name="_ProductView" model="item" />
+                }
+
+            </div>
 
         </div>
 
-    </div>
+    </section>
 }
 
 
 <!-- =====================================================
      KAMPANYALARIMIZ
-     Kampanya varsa bölüm gösterilir.
-     Kampanya yoksa bölüm hiç oluşturulmaz.
      ===================================================== -->
-
 @if (Model.News is not null && Model.News.Any())
 {
-    <div>
+    <section class="home-section home-campaign-section">
 
-        <h1>Kampanyalarımız</h1>
+        <div class="container">
 
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <!-- Bölüm Başlığı -->
+            <div class="home-section-header">
 
-            @foreach (var item in Model.News)
-            {
-                <partial name="_NewsView" model="item" />
-            }
+                <div>
+
+                    <span class="home-section-label">
+                        SİZE ÖZEL
+                    </span>
+
+                    <h2 class="home-section-title">
+                        Kampanyalarımız
+                    </h2>
+
+                    <p class="home-section-description">
+                        Güncel kampanyaları, özel fırsatları ve
+                        koleksiyon duyurularını inceleyin.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Kampanyalar -->
+            <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-xl-4">
+
+                @foreach (var item in Model.News)
+                {
+                    <partial name="_NewsView" model="item" />
+                }
+
+            </div>
 
         </div>
 
-    </div>
+    </section>
 }
+
+
+<style>
+    /* =========================================================
+       ANA SAYFA BÖLÜMLERİ
+       ========================================================= */
+
+    .home-section {
+        padding: 56px 0;
+    }
+
+
+    .home-campaign-section {
+        margin-top: 12px;
+
+        background:
+            linear-gradient(180deg,
+                #fbf8f4 0%,
+                #f6f0e8 100%);
+
+        border-top: 1px solid #ede4da;
+        border-bottom: 1px solid #ede4da;
+    }
+
+
+    /* =========================================================
+       BÖLÜM BAŞLIĞI
+       ========================================================= */
+
+    .home-section-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 24px;
+
+        margin-bottom: 30px;
+    }
+
+
+    .home-section-label {
+        display: inline-block;
+
+        margin-bottom: 7px;
+
+        color: #9a7042;
+
+        font-size: 0.7rem;
+        font-weight: 800;
+
+        letter-spacing: 0.16em;
+    }
+
+
+    .home-section-title {
+        position: relative;
+
+        margin: 0 0 9px;
+
+        padding-bottom: 12px;
+
+        color: #2d241c;
+
+        font-size: clamp(1.7rem,
+                3vw,
+                2.25rem);
+
+        font-weight: 800;
+
+        letter-spacing: -0.02em;
+    }
+
+
+    .home-section-title::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 45px;
+        height: 3px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #8a5d2d,
+                #d4a56f);
+    }
+
+
+    .home-section-description {
+        max-width: 600px;
+
+        margin: 0;
+
+        color: #7f7368;
+
+        font-size: 0.9rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       TÜM ÜRÜNLERİ GÖR
+       ========================================================= */
+
+    .home-section-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        flex-shrink: 0;
+
+        padding: 10px 15px;
+
+        border: 1px solid #ded3c7;
+        border-radius: 10px;
+
+        color: #5d4938;
+
+        background-color: #ffffff;
+
+        font-size: 0.8rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        box-shadow:
+            0 4px 12px rgba(79, 54, 34, 0.04);
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .home-section-link i {
+        font-size: 0.72rem;
+
+        transition:
+            transform 0.2s ease;
+    }
+
+
+    .home-section-link:hover {
+        color: #ffffff;
+
+        border-color: #7b522c;
+
+        background:
+            linear-gradient(135deg,
+                #4c3525,
+                #875a31);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 7px 18px rgba(79, 54, 34, 0.14);
+    }
+
+
+    .home-section-link:hover i {
+        transform: translateX(3px);
+    }
+
+
+    /* =========================================================
+       GRID
+       ========================================================= */
+
+    .home-section .row {
+        align-items: stretch;
+    }
+
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @@media (max-width: 991.98px) {
+
+        .home-section {
+            padding: 44px 0;
+        }
+
+
+        .home-section-header {
+            margin-bottom: 24px;
+        }
+
+    }
+
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .home-section {
+            padding: 34px 0;
+        }
+
+
+        .home-section-header {
+            flex-direction: column;
+            align-items: flex-start;
+
+            gap: 16px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .home-section-title {
+            font-size: 1.65rem;
+        }
+
+
+        .home-section-description {
+            font-size: 0.83rem;
+        }
+
+
+        .home-section-link {
+            padding: 9px 13px;
+
+            font-size: 0.76rem;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .home-section {
+            padding: 30px 0;
+        }
+
+
+        .home-section-label {
+            font-size: 0.64rem;
+
+            letter-spacing: 0.13em;
+        }
+
+
+        .home-section-title {
+            font-size: 1.45rem;
+        }
+
+
+        .home-section-description {
+            font-size: 0.79rem;
+        }
+
+    }
+</style>

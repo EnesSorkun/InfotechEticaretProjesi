@@ -18,10 +18,13 @@ namespace Eticaret.WebUI.Controllers
 
 
         // =====================================================
-        // ÜRÜNLERİ LİSTELE + ARAMA
+        // ÜRÜNLERİ LİSTELE
+        // KATEGORİ FİLTRESİ + ARAMA
         // =====================================================
 
-        public async Task<IActionResult> Index(string? search)
+        public async Task<IActionResult> Index(
+            int? categoryId,
+            string? search)
         {
             var query = _productService
                 .GetQueryable()
@@ -30,24 +33,71 @@ namespace Eticaret.WebUI.Controllers
                 .Where(x => x.IsActive)
                 .AsQueryable();
 
+
+            // =====================================================
+            // KATEGORİ FİLTRESİ
+            // =====================================================
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(x =>
+                    x.CategoryId == categoryId.Value);
+            }
+
+
+            // =====================================================
+            // ARAMA
+            // =====================================================
+
             if (!string.IsNullOrWhiteSpace(search))
             {
                 search = search.Trim();
 
+                var searchPattern = $"%{search}%";
+
                 query = query.Where(x =>
-                    x.Name.Contains(search) ||
+
+                    EF.Functions.ILike(
+                        x.Name,
+                        searchPattern)
+
+                    ||
+
                     (x.ProductCode != null &&
-                     x.ProductCode.Contains(search)) ||
+                     EF.Functions.ILike(
+                         x.ProductCode,
+                         searchPattern))
+
+                    ||
+
                     (x.Brand != null &&
-                     x.Brand.Name.Contains(search)) ||
+                     EF.Functions.ILike(
+                         x.Brand.Name,
+                         searchPattern))
+
+                    ||
+
                     (x.Category != null &&
-                     x.Category.Name.Contains(search)));
+                     EF.Functions.ILike(
+                         x.Category.Name,
+                         searchPattern))
+                );
             }
+
+
+            // =====================================================
+            // ÜRÜNLERİ GETİR
+            // =====================================================
 
             var products = await query
                 .OrderBy(x => x.OrderNo)
                 .AsNoTracking()
                 .ToListAsync();
+
+
+            ViewBag.CategoryId = categoryId;
+            ViewBag.Search = search;
+
 
             return View(products);
         }
@@ -64,23 +114,27 @@ namespace Eticaret.WebUI.Controllers
                 return NotFound();
             }
 
+
             var product = await _productService
                 .GetQueryable()
                 .Include(x => x.Brand)
                 .Include(x => x.Category)
-
-                // Ürüne ait bütün resimleri getir
                 .Include(x => x.Images)
-
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x =>
                     x.Id == id.Value &&
                     x.IsActive);
 
+
             if (product is null)
             {
                 return NotFound();
             }
+
+
+            // =====================================================
+            // BENZER ÜRÜNLER
+            // =====================================================
 
             var relatedProducts = await _productService
                 .GetQueryable()
@@ -92,11 +146,13 @@ namespace Eticaret.WebUI.Controllers
                 .AsNoTracking()
                 .ToListAsync();
 
+
             var model = new ProductDetailViewModel
             {
                 Product = product,
                 RelatedProducts = relatedProducts
             };
+
 
             return View(model);
         }

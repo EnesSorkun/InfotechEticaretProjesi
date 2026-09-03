@@ -8,85 +8,149 @@
 
     <div class="container">
 
+        <!-- =====================================================
+             SAYFA BAŞLIĞI
+             ===================================================== -->
         <div class="contact-header text-center">
-            <span class="contact-label">BİZE ULAŞIN</span>
 
-            <h1>İletişim</h1>
+            <span class="contact-label">
+                BİZE ULAŞIN
+            </span>
+
+            <h1>
+                İletişim
+            </h1>
 
             <p>
                 Sorularınız, önerileriniz veya destek talepleriniz için
                 bizimle iletişime geçebilirsiniz.
             </p>
+
         </div>
 
 
+        <!-- =====================================================
+             BAŞARI MESAJI
+             ===================================================== -->
         @if (TempData["ContactSuccess"] != null)
         {
-            <div class="alert alert-success contact-alert">
-                <i class="fa-solid fa-circle-check me-2"></i>
-                @TempData["ContactSuccess"]
+            <div class="contact-alert">
+
+                <div class="contact-alert-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+                <span>
+                    @TempData["ContactSuccess"]
+                </span>
+
             </div>
         }
 
 
         <div class="row g-4">
 
-            <!-- SOL TARAF -->
+            <!-- =====================================================
+                 SOL TARAF - İLETİŞİM BİLGİLERİ
+                 ===================================================== -->
             <div class="col-lg-4">
 
                 <div class="contact-info-card">
 
-                    <h3>İletişim Bilgileri</h3>
+                    <div class="contact-info-header">
 
-                    <p class="contact-info-description">
-                        Aşağıdaki iletişim kanallarından da bize ulaşabilirsiniz.
-                    </p>
+                        <div class="contact-info-main-icon">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+
+                        <div>
+                            <h3>
+                                İletişim Bilgileri
+                            </h3>
+
+                            <p>
+                                Aşağıdaki iletişim kanallarından bize
+                                doğrudan ulaşabilirsiniz.
+                            </p>
+                        </div>
+
+                    </div>
 
 
+                    <!-- ADRES -->
                     <div class="contact-info-item">
 
                         <div class="contact-icon">
                             <i class="fa-solid fa-location-dot"></i>
                         </div>
 
-                        <div>
-                            <span>Adres</span>
+                        <div class="contact-info-content">
+
+                            <span>
+                                Adres
+                            </span>
+
                             <strong>
-                                Göztepe / Kadıköy / İstanbul
+                                Bahçelievler / Şirinevler / İstanbul
                             </strong>
+
                         </div>
 
                     </div>
 
 
+                    <!-- E-POSTA -->
                     <div class="contact-info-item">
 
                         <div class="contact-icon">
                             <i class="fa-solid fa-envelope"></i>
                         </div>
 
-                        <div>
-                            <span>Email</span>
+                        <div class="contact-info-content">
+
+                            <span>
+                                E-posta
+                            </span>
+
                             <strong>
-                                info@eticaretsitesi.com
+                                sorkunenes@gmail.com
                             </strong>
+
                         </div>
 
                     </div>
 
 
+                    <!-- TELEFON -->
                     <div class="contact-info-item">
 
                         <div class="contact-icon">
                             <i class="fa-solid fa-phone"></i>
                         </div>
 
-                        <div>
-                            <span>Telefon</span>
+                        <div class="contact-info-content">
+
+                            <span>
+                                Telefon
+                            </span>
+
                             <strong>
-                                0216 444 80 95
+                                0507 020 11 55
                             </strong>
+
                         </div>
+
+                    </div>
+
+
+                    <!-- ALT NOT -->
+                    <div class="contact-info-note">
+
+                        <i class="fa-regular fa-clock"></i>
+
+                        <span>
+                            Mesajlarınıza en kısa sürede dönüş yapıyoruz.
+                        </span>
 
                     </div>
 
@@ -95,18 +159,30 @@
             </div>
 
 
-            <!-- SAĞ TARAF -->
+            <!-- =====================================================
+                 SAĞ TARAF - FORM
+                 ===================================================== -->
             <div class="col-lg-8">
 
                 <div class="contact-form-card">
 
                     <div class="contact-form-title">
 
-                        <h3>Bize Mesaj Gönderin</h3>
+                        <div class="contact-form-title-icon">
+                            <i class="fa-regular fa-message"></i>
+                        </div>
 
-                        <p>
-                            Formu doldurun, en kısa sürede sizinle iletişime geçelim.
-                        </p>
+                        <div>
+
+                            <h3>
+                                Bize Mesaj Gönderin
+                            </h3>
+
+                            <p>
+                                Formu doldurun, talebinizi bize iletin.
+                            </p>
+
+                        </div>
 
                     </div>
 
@@ -115,7 +191,7 @@
 
                         @Html.AntiForgeryToken()
 
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
+                        <div asp-validation-summary="ModelOnly" class="contact-validation-summary">
                         </div>
 
 
@@ -124,11 +200,17 @@
                             <!-- AD -->
                             <div class="col-md-6">
 
-                                <label asp-for="Name" class="form-label">
+                                <label asp-for="Name" class="form-label contact-form-label">
                                 </label>
 
-                                <input asp-for="Name" class="form-control contact-input"
-                                       placeholder="Adınızı giriniz" />
+                                <div class="contact-input-wrapper">
+
+                                    <i class="fa-regular fa-user"></i>
+
+                                    <input asp-for="Name" class="form-control contact-input"
+                                           placeholder="Adınızı giriniz" />
+
+                                </div>
 
                                 <span asp-validation-for="Name" class="text-danger small">
                                 </span>
@@ -139,11 +221,17 @@
                             <!-- SOYAD -->
                             <div class="col-md-6">
 
-                                <label asp-for="Surname" class="form-label">
+                                <label asp-for="Surname" class="form-label contact-form-label">
                                 </label>
 
-                                <input asp-for="Surname" class="form-control contact-input"
-                                       placeholder="Soyadınızı giriniz" />
+                                <div class="contact-input-wrapper">
+
+                                    <i class="fa-regular fa-user"></i>
+
+                                    <input asp-for="Surname" class="form-control contact-input"
+                                           placeholder="Soyadınızı giriniz" />
+
+                                </div>
 
                                 <span asp-validation-for="Surname" class="text-danger small">
                                 </span>
@@ -154,11 +242,17 @@
                             <!-- EMAIL -->
                             <div class="col-md-6">
 
-                                <label asp-for="Email" class="form-label">
+                                <label asp-for="Email" class="form-label contact-form-label">
                                 </label>
 
-                                <input asp-for="Email" type="email" class="form-control contact-input"
-                                       placeholder="ornek@email.com" />
+                                <div class="contact-input-wrapper">
+
+                                    <i class="fa-regular fa-envelope"></i>
+
+                                    <input asp-for="Email" type="email" class="form-control contact-input"
+                                           placeholder="ornek@email.com" />
+
+                                </div>
 
                                 <span asp-validation-for="Email" class="text-danger small">
                                 </span>
@@ -169,11 +263,17 @@
                             <!-- TELEFON -->
                             <div class="col-md-6">
 
-                                <label asp-for="Phone" class="form-label">
+                                <label asp-for="Phone" class="form-label contact-form-label">
                                 </label>
 
-                                <input asp-for="Phone" type="tel" class="form-control contact-input"
-                                       placeholder="05xx xxx xx xx" />
+                                <div class="contact-input-wrapper">
+
+                                    <i class="fa-solid fa-phone"></i>
+
+                                    <input asp-for="Phone" type="tel" class="form-control contact-input"
+                                           placeholder="05xx xxx xx xx" />
+
+                                </div>
 
                                 <span asp-validation-for="Phone" class="text-danger small">
                                 </span>
@@ -184,11 +284,12 @@
                             <!-- MESAJ -->
                             <div class="col-12">
 
-                                <label asp-for="Message" class="form-label">
+                                <label asp-for="Message" class="form-label contact-form-label">
                                 </label>
 
-                                <textarea asp-for="Message" class="form-control contact-input contact-textarea" rows="6"
-                                          placeholder="Mesajınızı yazınız..."></textarea>
+                                <textarea asp-for="Message" class="form-control contact-input contact-textarea" rows="7"
+                                          placeholder="Mesajınızı detaylı şekilde yazabilirsiniz...">
+                                </textarea>
 
                                 <span asp-validation-for="Message" class="text-danger small">
                                 </span>
@@ -199,13 +300,24 @@
                             <!-- BUTON -->
                             <div class="col-12">
 
-                                <button type="submit" class="contact-submit-button">
+                                <div class="contact-form-footer">
 
-                                    Mesajı Gönder
+                                    <p>
+                                        Bilgileriniz yalnızca iletişim talebinizi
+                                        yanıtlamak amacıyla kullanılacaktır.
+                                    </p>
 
-                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <button type="submit" class="contact-submit-button">
 
-                                </button>
+                                        <span>
+                                            Mesajı Gönder
+                                        </span>
+
+                                        <i class="fa-solid fa-paper-plane"></i>
+
+                                    </button>
+
+                                </div>
 
                             </div>
 
@@ -225,229 +337,486 @@
 
 
 <style>
+    /* =========================================================
+       GENEL
+       ========================================================= */
+
     .contact-section {
-        padding: 50px 0 80px;
-        background-color: #ffffff;
+        padding: 55px 0 80px;
+
+        background:
+            linear-gradient(180deg,
+                #ffffff 0%,
+                #fbf8f4 100%);
     }
 
 
-    /* HEADER */
+    /* =========================================================
+       HEADER
+       ========================================================= */
 
     .contact-header {
-        max-width: 650px;
-        margin: 0 auto 45px;
+        max-width: 680px;
+
+        margin: 0 auto 42px;
     }
 
+
     .contact-label {
-        display: block;
+        display: inline-block;
 
         margin-bottom: 8px;
 
-        color: #6c757d;
+        color: #9a7042;
 
-        font-size: 0.75rem;
-        font-weight: 700;
+        font-size: 0.72rem;
+        font-weight: 800;
 
-        letter-spacing: 2px;
+        letter-spacing: 0.16em;
     }
+
 
     .contact-header h1 {
         margin-bottom: 12px;
 
-        color: #212529;
+        color: #2d241c;
 
-        font-size: 2.5rem;
+        font-size: clamp(2rem, 4vw, 2.7rem);
         font-weight: 800;
+
+        letter-spacing: -0.02em;
     }
+
 
     .contact-header p {
         margin: 0;
 
-        color: #6c757d;
+        color: #7d7166;
 
-        font-size: 1rem;
+        font-size: 0.96rem;
         line-height: 1.7;
     }
 
 
-    /* SUCCESS */
+    /* =========================================================
+       BAŞARI MESAJI
+       ========================================================= */
 
     .contact-alert {
-        max-width: 800px;
+        max-width: 850px;
 
-        margin: 0 auto 30px;
-
-        border: 0;
-        border-radius: 12px;
-    }
-
-
-    /* SOL KART */
-
-    .contact-info-card {
-        height: 100%;
-
-        padding: 35px 30px;
-
-        border-radius: 22px;
-
-        color: #ffffff;
-
-        background-color: #212529;
-
-        box-shadow:
-            0 12px 30px rgba(0, 0, 0, 0.10);
-    }
-
-    .contact-info-card h3 {
-        margin-bottom: 10px;
-
-        font-size: 1.4rem;
-        font-weight: 700;
-    }
-
-    .contact-info-description {
-        margin-bottom: 35px;
-
-        color: rgba(255, 255, 255, 0.65);
-
-        font-size: 0.9rem;
-        line-height: 1.6;
-    }
-
-
-    /* İLETİŞİM SATIRI */
-
-    .contact-info-item {
         display: flex;
         align-items: center;
 
-        gap: 15px;
+        gap: 10px;
 
-        margin-bottom: 28px;
+        margin: 0 auto 28px;
+        padding: 13px 16px;
+
+        border: 1px solid #dbe8d6;
+        border-radius: 12px;
+
+        color: #476241;
+
+        background-color: #f3f8f1;
+
+        font-size: 0.86rem;
+        font-weight: 600;
     }
 
-    .contact-icon {
-        width: 45px;
-        height: 45px;
 
-        flex-shrink: 0;
+    .contact-alert-icon {
+        width: 30px;
+        height: 30px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
+        flex-shrink: 0;
+
+        border-radius: 8px;
+
+        color: #5a7b52;
+
+        background-color: #e2efdd;
+    }
+
+
+    /* =========================================================
+       SOL KART
+       ========================================================= */
+
+    .contact-info-card {
+        height: 100%;
+
+        padding: 28px;
+
+        border: 1px solid #e5dbcf;
+        border-radius: 20px;
+
+        background:
+            linear-gradient(145deg,
+                #3a2a20,
+                #5b3e2a);
+
+        box-shadow:
+            0 14px 34px rgba(66, 44, 29, 0.13);
+    }
+
+
+    .contact-info-header {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 13px;
+
+        margin-bottom: 28px;
+    }
+
+
+    .contact-info-main-icon {
+        width: 44px;
+        height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
         border-radius: 12px;
 
-        color: #212529;
+        color: #473123;
 
-        background-color: #ffffff;
+        background:
+            linear-gradient(135deg,
+                #f6e9d7,
+                #d6ac72);
     }
 
-    .contact-info-item span {
+
+    .contact-info-card h3 {
+        margin: 0 0 5px;
+
+        color: #ffffff;
+
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+
+    .contact-info-header p {
+        margin: 0;
+
+        color: rgba(255, 255, 255, 0.66);
+
+        font-size: 0.8rem;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       İLETİŞİM SATIRLARI
+       ========================================================= */
+
+    .contact-info-item {
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+
+        padding: 13px 0;
+
+        border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+
+    .contact-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #e0bb86;
+
+        background-color: rgba(255, 255, 255, 0.09);
+
+        font-size: 0.84rem;
+    }
+
+
+    .contact-info-content {
+        min-width: 0;
+    }
+
+
+    .contact-info-content span {
         display: block;
 
-        margin-bottom: 3px;
+        margin-bottom: 2px;
 
-        color: rgba(255, 255, 255, 0.55);
+        color: rgba(255, 255, 255, 0.52);
 
-        font-size: 0.75rem;
+        font-size: 0.69rem;
+        font-weight: 600;
     }
 
-    .contact-info-item strong {
+
+    .contact-info-content strong {
         display: block;
 
         color: #ffffff;
 
-        font-size: 0.9rem;
-        font-weight: 500;
+        font-size: 0.84rem;
+        font-weight: 600;
 
         word-break: break-word;
     }
 
 
-    /* FORM KART */
+    .contact-info-note {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        margin-top: 22px;
+
+        color: rgba(255, 255, 255, 0.58);
+
+        font-size: 0.73rem;
+        line-height: 1.5;
+    }
+
+
+    .contact-info-note i {
+        color: #d9ad73;
+    }
+
+
+    /* =========================================================
+       FORM KART
+       ========================================================= */
 
     .contact-form-card {
         height: 100%;
 
-        padding: 35px;
+        padding: 30px;
 
-        border: 1px solid #e9ecef;
-        border-radius: 22px;
+        border: 1px solid #e9e0d6;
+        border-radius: 20px;
 
         background-color: #ffffff;
 
         box-shadow:
-            0 10px 30px rgba(0, 0, 0, 0.06);
+            0 10px 30px rgba(70, 48, 31, 0.07);
     }
+
+
+    /* =========================================================
+       FORM BAŞLIK
+       ========================================================= */
 
     .contact-form-title {
-        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        margin-bottom: 27px;
     }
+
+
+    .contact-form-title-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 11px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #4b3425,
+                #936338);
+    }
+
 
     .contact-form-title h3 {
-        margin-bottom: 6px;
+        margin: 0 0 3px;
 
-        color: #212529;
+        color: #30251d;
 
-        font-size: 1.4rem;
-        font-weight: 700;
+        font-size: 1.15rem;
+        font-weight: 800;
     }
+
 
     .contact-form-title p {
         margin: 0;
 
-        color: #6c757d;
+        color: #8a7e73;
 
-        font-size: 0.9rem;
+        font-size: 0.79rem;
     }
 
 
-    /* INPUT */
+    /* =========================================================
+       VALIDATION
+       ========================================================= */
 
-    .contact-form-card .form-label {
+    .contact-validation-summary {
+        margin-bottom: 18px;
+
+        color: #b84f4f;
+
+        font-size: 0.8rem;
+    }
+
+
+    /* =========================================================
+       LABEL
+       ========================================================= */
+
+    .contact-form-label {
         margin-bottom: 7px;
 
-        color: #343a40;
+        color: #46372d;
 
-        font-size: 0.85rem;
-        font-weight: 600;
+        font-size: 0.8rem;
+        font-weight: 700;
     }
 
-    .contact-input {
-        min-height: 48px;
 
-        border: 1px solid #dee2e6;
+    /* =========================================================
+       INPUT WRAPPER
+       ========================================================= */
+
+    .contact-input-wrapper {
+        position: relative;
+    }
+
+
+    .contact-input-wrapper>i {
+        position: absolute;
+
+        top: 50%;
+        left: 13px;
+
+        z-index: 2;
+
+        color: #ab9074;
+
+        font-size: 0.78rem;
+
+        transform: translateY(-50%);
+
+        pointer-events: none;
+    }
+
+
+    .contact-input-wrapper .contact-input {
+        padding-left: 38px;
+    }
+
+
+    /* =========================================================
+       INPUT
+       ========================================================= */
+
+    .contact-input {
+        min-height: 47px;
+
+        border: 1px solid #e3d9ce;
         border-radius: 10px;
 
-        background-color: #f8f9fa;
+        color: #3c3028;
 
-        font-size: 0.9rem;
+        background-color: #fbf9f6;
+
+        font-size: 0.86rem;
+
+        box-shadow: none !important;
 
         transition:
             border-color 0.2s ease,
-            box-shadow 0.2s ease,
-            background-color 0.2s ease;
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
     }
 
+
     .contact-input:focus {
-        border-color: #212529;
+        border-color: #b48759;
 
         background-color: #ffffff;
 
         box-shadow:
-            0 0 0 0.15rem rgba(33, 37, 41, 0.08);
+            0 0 0 0.15rem rgba(180, 135, 89, 0.10) !important;
     }
+
+
+    .contact-input::placeholder {
+        color: #b4aaa0;
+    }
+
 
     .contact-textarea {
-        min-height: 150px;
+        min-height: 170px;
+
+        padding: 13px;
 
         resize: vertical;
+
+        line-height: 1.6;
     }
 
 
-    /* BUTTON */
+    /* =========================================================
+       FORM ALT
+       ========================================================= */
+
+    .contact-form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        margin-top: 8px;
+        padding-top: 20px;
+
+        border-top: 1px solid #eee7df;
+    }
+
+
+    .contact-form-footer p {
+        max-width: 420px;
+
+        margin: 0;
+
+        color: #9a8f85;
+
+        font-size: 0.7rem;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       BUTON
+       ========================================================= */
 
     .contact-submit-button {
         display: inline-flex;
@@ -456,82 +825,144 @@
 
         gap: 9px;
 
-        margin-top: 8px;
+        flex-shrink: 0;
 
-        padding: 12px 24px;
+        padding: 11px 19px;
 
-        border: 0;
+        border: 1px solid #493225;
         border-radius: 10px;
 
         color: #ffffff;
 
-        background-color: #212529;
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
 
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 0.82rem;
+        font-weight: 700;
+
+        box-shadow:
+            0 5px 15px rgba(73, 50, 37, 0.15);
 
         transition:
-            background-color 0.2s ease,
             transform 0.2s ease,
-            box-shadow 0.2s ease;
+            box-shadow 0.2s ease,
+            background 0.2s ease;
     }
 
+
     .contact-submit-button:hover {
-        background-color: #000000;
+        background:
+            linear-gradient(135deg,
+                #5b3d2b,
+                #9b6a3b);
 
         transform: translateY(-2px);
 
         box-shadow:
-            0 7px 18px rgba(0, 0, 0, 0.18);
+            0 8px 20px rgba(73, 50, 37, 0.22);
     }
 
 
-    /* TABLET */
+    /* =========================================================
+       TABLET
+       ========================================================= */
 
     @@media (max-width: 991.98px) {
 
         .contact-section {
-            padding: 35px 0 60px;
+            padding: 40px 0 60px;
         }
+
 
         .contact-header {
             margin-bottom: 30px;
         }
 
+
         .contact-info-card,
         .contact-form-card {
-            border-radius: 18px;
+            border-radius: 17px;
         }
 
     }
 
 
-    /* MOBİL */
+    /* =========================================================
+       MOBİL
+       ========================================================= */
 
     @@media (max-width: 767.98px) {
 
         .contact-section {
-            padding: 25px 0 45px;
+            padding: 30px 0 45px;
         }
+
+
+        .contact-header {
+            padding: 0 8px;
+        }
+
 
         .contact-header h1 {
             font-size: 2rem;
         }
 
+
         .contact-header p {
-            font-size: 0.9rem;
+            font-size: 0.86rem;
         }
+
 
         .contact-info-card {
-            padding: 27px 22px;
+            padding: 22px;
         }
 
+
         .contact-form-card {
-            padding: 27px 20px;
+            padding: 22px 18px;
         }
+
+
+        .contact-form-footer {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+
+        .contact-form-footer p {
+            max-width: none;
+        }
+
 
         .contact-submit-button {
             width: 100%;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 480px) {
+
+        .contact-info-header {
+            gap: 10px;
+        }
+
+
+        .contact-info-main-icon,
+        .contact-form-title-icon {
+            width: 39px;
+            height: 39px;
+        }
+
+
+        .contact-form-title h3 {
+            font-size: 1rem;
         }
 
     }

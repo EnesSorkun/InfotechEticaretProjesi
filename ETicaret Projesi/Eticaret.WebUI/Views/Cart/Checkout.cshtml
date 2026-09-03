@@ -6,56 +6,55 @@
 
 <section class="checkout-page">
 
-    <div class="container py-5">
+    <div class="container">
 
         <!-- =====================================================
              SAYFA BAŞLIĞI
              ===================================================== -->
+        <div class="checkout-page-header">
 
-        <div class="mb-4">
-
-            <span class="text-primary fw-bold small">
-                CHECKOUT
+            <span class="checkout-page-label">
+                ALIŞVERİŞ
             </span>
 
-            <h1 class="fw-bold mb-1">
+            <h1>
                 Siparişi Tamamla
             </h1>
 
-            <p class="text-muted mb-0">
-                Teslimat adresinizi seçin ve ödeme bilgilerinizi girerek siparişinizi tamamlayın.
+            <p>
+                Teslimat adresinizi seçin ve ödeme bilgilerinizi
+                girerek siparişinizi güvenli şekilde tamamlayın.
             </p>
 
         </div>
 
 
-        <form asp-controller="Cart" asp-action="Checkout" method="post">
+        <form asp-controller="Cart"
+              asp-action="Checkout"
+              method="post">
 
             @Html.AntiForgeryToken()
 
 
             <!-- =====================================================
-                 VALIDATION
+                 GENEL VALIDATION
                  ===================================================== -->
-
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+            <div asp-validation-summary="ModelOnly"
+                 class="checkout-validation-summary">
             </div>
 
 
             <div class="row g-4">
 
-
                 <!-- =================================================
                      SOL TARAF
                      ================================================= -->
-
                 <div class="col-lg-8">
 
 
                     <!-- =================================================
-                         TESLİMAT ADRESİ
+                         1 - TESLİMAT ADRESİ
                          ================================================= -->
-
                     <div class="checkout-card mb-4">
 
                         <div class="checkout-card-header">
@@ -65,31 +64,41 @@
                             </div>
 
 
-                            <div class="flex-grow-1">
+                            <div class="checkout-card-heading flex-grow-1">
 
-                                <h2 class="h5 fw-bold mb-1">
+                                <span>
+                                    TESLİMAT
+                                </span>
+
+                                <h2>
                                     Teslimat Adresi
                                 </h2>
 
-                                <p class="text-muted small mb-0">
-                                    Siparişinizin teslim edileceği kayıtlı adresinizi seçiniz.
+                                <p>
+                                    Siparişinizin teslim edileceği kayıtlı
+                                    adresinizi seçiniz.
                                 </p>
 
                             </div>
 
 
-                            <a asp-controller="Addresses" asp-action="Create" class="btn btn-outline-dark btn-sm">
+                            <a asp-controller="Addresses"
+                               asp-action="Create"
+                               class="new-address-button">
 
-                                <i class="fa-solid fa-plus me-1"></i>
+                                <i class="fa-solid fa-plus"></i>
 
-                                Yeni Adres
+                                <span>
+                                    Yeni Adres
+                                </span>
 
                             </a>
 
                         </div>
 
 
-                        <span asp-validation-for="SelectedAddressId" class="text-danger small d-block mb-3">
+                        <span asp-validation-for="SelectedAddressId"
+                              class="text-danger checkout-validation-message">
                         </span>
 
 
@@ -103,69 +112,129 @@
 
                                         <label class="address-select-card">
 
-                                            <input type="radio" asp-for="SelectedAddressId" value="@address.Id"
+                                            <input type="radio"
+                                                   asp-for="SelectedAddressId"
+                                                   value="@address.Id"
                                                    class="address-radio" />
 
 
                                             <div class="address-select-content">
 
-                                                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                                <!-- =====================================
+                                                     SEÇİM İŞARETİ
+                                                     ===================================== -->
+                                                <div class="address-selected-icon">
 
-                                                    <strong>
-                                                        @address.Title
-                                                    </strong>
-
-
-                                                    @if (address.IsDefault)
-                                                    {
-                                                        <span class="badge bg-dark">
-                                                            Varsayılan
-                                                        </span>
-                                                    }
+                                                    <i class="fa-solid fa-check"></i>
 
                                                 </div>
 
 
-                                                <div class="fw-semibold mb-2">
+                                                <div class="address-select-top">
 
-                                                    @address.Name
-                                                    @address.Surname
+                                                    <div class="address-title-area">
 
-                                                </div>
+                                                        <div class="address-icon">
 
+                                                            <i class="fa-solid fa-location-dot"></i>
 
-                                                <div class="text-muted small mb-1">
-
-                                                    @address.FullAddress
-
-                                                </div>
+                                                        </div>
 
 
-                                                <div class="text-muted small">
+                                                        <div>
 
-                                                    @address.District /
-                                                    @address.City
+                                                            <strong class="address-title">
+                                                                @address.Title
+                                                            </strong>
 
-                                                </div>
 
+                                                            @if (address.IsDefault)
+                                                            {
+                                                                <span class="default-address-badge">
 
-                                                @if (!string.IsNullOrWhiteSpace(
-                                                    address.PostalCode))
-                                                {
-                                                    <div class="text-muted small mt-1">
+                                                                    <i class="fa-solid fa-star"></i>
 
-                                                        Posta Kodu:
-                                                        @address.PostalCode
+                                                                    Varsayılan
+
+                                                                </span>
+                                                            }
+
+                                                        </div>
 
                                                     </div>
-                                                }
+
+                                                </div>
 
 
-                                                <div class="text-muted small mt-2">
+                                                <div class="address-person">
 
-                                                    <i class="fa-solid fa-phone me-1"></i>
+                                                    <i class="fa-regular fa-user"></i>
 
-                                                    @address.Phone
+                                                    <span>
+                                                        @address.Name @address.Surname
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div class="address-details">
+
+                                                    <div class="address-detail-row">
+
+                                                        <i class="fa-regular fa-map"></i>
+
+                                                        <span>
+                                                            @address.FullAddress
+                                                        </span>
+
+                                                    </div>
+
+
+                                                    <div class="address-detail-row">
+
+                                                        <i class="fa-solid fa-city"></i>
+
+                                                        <span>
+                                                            @address.District / @address.City
+                                                        </span>
+
+                                                    </div>
+
+
+                                                    @if (!string.IsNullOrWhiteSpace(address.PostalCode))
+                                                    {
+                                                        <div class="address-detail-row">
+
+                                                            <i class="fa-solid fa-envelope"></i>
+
+                                                            <span>
+                                                                @address.PostalCode
+                                                            </span>
+
+                                                        </div>
+                                                    }
+
+
+                                                    <div class="address-detail-row">
+
+                                                        <i class="fa-solid fa-phone"></i>
+
+                                                        <span>
+                                                            @address.Phone
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="address-select-footer">
+
+                                                    <span>
+                                                        Teslimat adresi olarak seç
+                                                    </span>
+
+                                                    <i class="fa-regular fa-circle-check"></i>
 
                                                 </div>
 
@@ -179,13 +248,19 @@
                             </div>
 
 
-                            <div class="mt-3">
+                            <div class="manage-address-area">
 
-                                <a asp-controller="Addresses" asp-action="Index" class="small text-decoration-none">
+                                <a asp-controller="Addresses"
+                                   asp-action="Index"
+                                   class="manage-address-link">
 
-                                    <i class="fa-solid fa-location-dot me-1"></i>
+                                    <i class="fa-solid fa-location-dot"></i>
 
-                                    Adreslerimi Yönet
+                                    <span>
+                                        Adreslerimi Yönet
+                                    </span>
+
+                                    <i class="fa-solid fa-chevron-right"></i>
 
                                 </a>
 
@@ -193,17 +268,40 @@
                         }
                         else
                         {
-                            <div class="alert alert-warning mb-0">
+                            <!-- =============================================
+                                 ADRES YOK
+                                 ============================================= -->
+                            <div class="no-address-warning">
 
-                                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                                <div class="no-address-icon">
 
-                                Kayıtlı adresiniz bulunmuyor.
+                                    <i class="fa-solid fa-location-dot"></i>
 
-                                <a asp-controller="Addresses" asp-action="Create" class="alert-link">
+                                </div>
 
-                                    Yeni adres ekleyin.
 
-                                </a>
+                                <div>
+
+                                    <strong>
+                                        Kayıtlı adresiniz bulunmuyor
+                                    </strong>
+
+                                    <p>
+                                        Sipariş verebilmek için önce bir
+                                        teslimat adresi eklemeniz gerekiyor.
+                                    </p>
+
+
+                                    <a asp-controller="Addresses"
+                                       asp-action="Create">
+
+                                        Yeni adres ekleyin
+
+                                        <i class="fa-solid fa-arrow-right"></i>
+
+                                    </a>
+
+                                </div>
 
                             </div>
                         }
@@ -212,9 +310,8 @@
 
 
                     <!-- =================================================
-                         ÖDEME BİLGİLERİ
+                         2 - ÖDEME BİLGİLERİ
                          ================================================= -->
-
                     <div class="checkout-card">
 
                         <div class="checkout-card-header">
@@ -224,14 +321,19 @@
                             </div>
 
 
-                            <div>
+                            <div class="checkout-card-heading">
 
-                                <h2 class="h5 fw-bold mb-1">
+                                <span>
+                                    ÖDEME
+                                </span>
+
+                                <h2>
                                     Ödeme Bilgileri
                                 </h2>
 
-                                <p class="text-muted small mb-0">
-                                    Siparişinizi tamamlamak için kart bilgilerinizi giriniz.
+                                <p>
+                                    Siparişinizi tamamlamak için kart
+                                    bilgilerinizi giriniz.
                                 </p>
 
                             </div>
@@ -241,85 +343,142 @@
 
                         <div class="row g-3">
 
-
-                            <!-- Kart Sahibinin Adı -->
-
+                            <!-- =========================================
+                                 KART SAHİBİ
+                                 ========================================= -->
                             <div class="col-12">
 
-                                <label asp-for="CardHolderName" class="form-label fw-semibold">
+                                <label asp-for="CardHolderName"
+                                       class="checkout-form-label">
                                 </label>
 
 
-                                <input asp-for="CardHolderName" class="form-control" autocomplete="cc-name"
-                                       placeholder="AD SOYAD" />
+                                <div class="checkout-input">
+
+                                    <span class="checkout-input-icon">
+
+                                        <i class="fa-regular fa-user"></i>
+
+                                    </span>
 
 
-                                <span asp-validation-for="CardHolderName" class="text-danger small">
+                                    <input asp-for="CardHolderName"
+                                           class="form-control"
+                                           autocomplete="cc-name"
+                                           placeholder="Ad Soyad" />
+
+                                </div>
+
+
+                                <span asp-validation-for="CardHolderName"
+                                      class="text-danger checkout-validation-message">
                                 </span>
 
                             </div>
 
 
-                            <!-- Kart Numarası -->
-
+                            <!-- =========================================
+                                 KART NUMARASI
+                                 ========================================= -->
                             <div class="col-12">
 
-                                <label asp-for="CardNumber" class="form-label fw-semibold">
+                                <label asp-for="CardNumber"
+                                       class="checkout-form-label">
                                 </label>
 
 
-                                <div class="input-group">
+                                <div class="checkout-input">
 
-                                    <span class="input-group-text">
+                                    <span class="checkout-input-icon">
 
                                         <i class="fa-regular fa-credit-card"></i>
 
                                     </span>
 
 
-                                    <input asp-for="CardNumber" class="form-control" autocomplete="cc-number"
-                                           inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" />
+                                    <input asp-for="CardNumber"
+                                           class="form-control"
+                                           autocomplete="cc-number"
+                                           inputmode="numeric"
+                                           maxlength="19"
+                                           placeholder="0000 0000 0000 0000" />
 
                                 </div>
 
 
-                                <span asp-validation-for="CardNumber" class="text-danger small">
+                                <span asp-validation-for="CardNumber"
+                                      class="text-danger checkout-validation-message">
                                 </span>
 
                             </div>
 
 
-                            <!-- Son Kullanma Tarihi -->
-
+                            <!-- =========================================
+                                 SON KULLANMA TARİHİ
+                                 ========================================= -->
                             <div class="col-md-6">
 
-                                <label asp-for="ExpirationDate" class="form-label fw-semibold">
+                                <label asp-for="ExpirationDate"
+                                       class="checkout-form-label">
                                 </label>
 
 
-                                <input asp-for="ExpirationDate" class="form-control" autocomplete="cc-exp"
-                                       placeholder="AA/YY" />
+                                <div class="checkout-input">
+
+                                    <span class="checkout-input-icon">
+
+                                        <i class="fa-regular fa-calendar"></i>
+
+                                    </span>
 
 
-                                <span asp-validation-for="ExpirationDate" class="text-danger small">
+                                    <input asp-for="ExpirationDate"
+                                           class="form-control"
+                                           autocomplete="cc-exp"
+                                           placeholder="AA/YY" />
+
+                                </div>
+
+
+                                <span asp-validation-for="ExpirationDate"
+                                      class="text-danger checkout-validation-message">
                                 </span>
 
                             </div>
 
 
-                            <!-- CVV -->
-
+                            <!-- =========================================
+                                 CVV
+                                 ========================================= -->
                             <div class="col-md-6">
 
-                                <label asp-for="Cvv" class="form-label fw-semibold">
+                                <label asp-for="Cvv"
+                                       class="checkout-form-label">
                                 </label>
 
 
-                                <input asp-for="Cvv" type="password" class="form-control" autocomplete="cc-csc"
-                                       inputmode="numeric" maxlength="4" placeholder="***" />
+                                <div class="checkout-input">
+
+                                    <span class="checkout-input-icon">
+
+                                        <i class="fa-solid fa-lock"></i>
+
+                                    </span>
 
 
-                                <span asp-validation-for="Cvv" class="text-danger small">
+                                    <input asp-for="Cvv"
+                                           type="password"
+                                           class="form-control"
+                                           autocomplete="cc-csc"
+                                           inputmode="numeric"
+                                           maxlength="4"
+                                           placeholder="***" />
+
+                                </div>
+
+
+                                <span asp-validation-for="Cvv"
+                                      class="text-danger checkout-validation-message">
                                 </span>
 
                             </div>
@@ -327,21 +486,27 @@
                         </div>
 
 
-                        <!-- Güvenlik Bilgisi -->
+                        <!-- =================================================
+                             GÜVENLİ ÖDEME
+                             ================================================= -->
+                        <div class="payment-security">
 
-                        <div class="payment-security mt-4">
+                            <div class="payment-security-icon">
 
-                            <i class="fa-solid fa-shield-halved"></i>
+                                <i class="fa-solid fa-shield-halved"></i>
+
+                            </div>
+
 
                             <div>
 
-                                <div class="fw-semibold">
+                                <strong>
                                     Güvenli Ödeme
-                                </div>
+                                </strong>
 
-                                <div class="text-muted small">
+                                <p>
                                     Kart bilgileriniz sipariş kaydında saklanmaz.
-                                </div>
+                                </p>
 
                             </div>
 
@@ -355,125 +520,181 @@
                 <!-- =================================================
                      SAĞ TARAF - SİPARİŞ ÖZETİ
                      ================================================= -->
-
                 <div class="col-lg-4">
 
                     <div class="checkout-summary">
 
-                        <h2 class="h5 fw-bold mb-4">
-                            Sipariş Özeti
-                        </h2>
+                        <!-- =================================================
+                             HEADER
+                             ================================================= -->
+                        <div class="checkout-summary-header">
 
+                            <div class="summary-header-icon">
 
-                        <!-- Ürünler -->
-
-                        @foreach (var item in Model.CartLines)
-                        {
-                            <div class="checkout-product">
-
-                                <div class="checkout-product-image">
-
-                                    <img src="@item.Product.Image" alt="@item.Product.Name" />
-
-                                </div>
-
-
-                                <div class="flex-grow-1">
-
-                                    <div class="fw-semibold">
-                                        @item.Product.Name
-                                    </div>
-
-                                    <div class="text-muted small">
-                                        @item.Quantity adet
-                                    </div>
-
-                                </div>
-
-
-                                <div class="fw-semibold text-end">
-
-                                    @((item.Product.Price *
-                                        item.Quantity)
-                                        .ToString("N2")) ₺
-
-                                </div>
+                                <i class="fa-solid fa-receipt"></i>
 
                             </div>
-                        }
 
 
-                        <hr />
+                            <div>
 
+                                <span>
+                                    SİPARİŞ
+                                </span>
 
-                        <!-- Ürün Toplamı -->
+                                <h2>
+                                    Sipariş Özeti
+                                </h2>
 
-                        <div class="summary-row">
-
-                            <span>
-                                Ürün Toplamı
-                            </span>
-
-                            <strong>
-                                @Model.TotalPrice.ToString("N2") ₺
-                            </strong>
+                            </div>
 
                         </div>
 
 
-                        <!-- Kargo -->
+                        <div class="checkout-summary-body">
 
-                        <div class="summary-row">
+                            <!-- =================================================
+                                 ÜRÜNLER
+                                 ================================================= -->
+                            <div class="checkout-products">
 
-                            <span>
-                                Kargo
-                            </span>
+                                @foreach (var item in Model.CartLines)
+                                {
+                                    <div class="checkout-product">
 
-                            <strong class="text-success">
-                                Ücretsiz
-                            </strong>
+                                        <a asp-controller="Products"
+                                           asp-action="Details"
+                                           asp-route-id="@item.Product.Id"
+                                           class="checkout-product-image">
 
-                        </div>
+                                            <img src="@item.Product.Image"
+                                                 alt="@item.Product.Name" />
 
-
-                        <hr />
-
-
-                        <!-- Genel Toplam -->
-
-                        <div class="summary-total">
-
-                            <span>
-                                Toplam
-                            </span>
-
-                            <strong>
-                                @Model.TotalPrice.ToString("N2") ₺
-                            </strong>
-
-                        </div>
+                                        </a>
 
 
-                        <!-- Siparişi Tamamla -->
+                                        <div class="checkout-product-info">
 
-                        <button type="submit" class="btn btn-dark w-100 mt-4 py-3">
+                                            <a asp-controller="Products"
+                                               asp-action="Details"
+                                               asp-route-id="@item.Product.Id"
+                                               class="checkout-product-name">
 
-                            <i class="fa-solid fa-lock me-2"></i>
+                                                @item.Product.Name
 
-                            Siparişi Tamamla
-
-                        </button>
+                                            </a>
 
 
-                        <div class="text-center mt-3">
+                                            <span class="checkout-product-quantity">
 
-                            <small class="text-muted">
+                                                <i class="fa-solid fa-xmark"></i>
 
-                                <i class="fa-solid fa-shield-halved me-1"></i>
+                                                @item.Quantity adet
 
-                                Güvenli ödeme
+                                            </span>
 
-                            </small>
+                                        </div>
+
+
+                                        <strong class="checkout-product-price">
+
+                                            @((item.Product.Price *
+                                                item.Quantity)
+                                                .ToString("N2")) ₺
+
+                                        </strong>
+
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div class="summary-divider"></div>
+
+
+                            <!-- =================================================
+                                 ÜRÜN TOPLAMI
+                                 ================================================= -->
+                            <div class="summary-row">
+
+                                <span>
+                                    Ürün Toplamı
+                                </span>
+
+                                <strong>
+                                    @Model.TotalPrice.ToString("N2") ₺
+                                </strong>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 KARGO
+                                 ================================================= -->
+                            <div class="summary-row">
+
+                                <span>
+                                    Kargo
+                                </span>
+
+                                <strong class="free-shipping">
+
+                                    <i class="fa-solid fa-check"></i>
+
+                                    Ücretsiz
+
+                                </strong>
+
+                            </div>
+
+
+                            <div class="summary-divider"></div>
+
+
+                            <!-- =================================================
+                                 GENEL TOPLAM
+                                 ================================================= -->
+                            <div class="summary-total">
+
+                                <span>
+                                    Toplam
+                                </span>
+
+                                <strong>
+                                    @Model.TotalPrice.ToString("N2") ₺
+                                </strong>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 SİPARİŞİ TAMAMLA
+                                 ================================================= -->
+                            <button type="submit"
+                                    class="complete-order-button"
+                                    @(Model.Addresses.Any() ? null : "disabled")>
+
+                                <i class="fa-solid fa-lock"></i>
+
+                                <span>
+                                    Siparişi Tamamla
+                                </span>
+
+                                <i class="fa-solid fa-chevron-right complete-order-arrow"></i>
+
+                            </button>
+
+
+                            <div class="summary-security">
+
+                                <i class="fa-solid fa-shield-halved"></i>
+
+                                <span>
+                                    Güvenli ödeme
+                                </span>
+
+                            </div>
 
                         </div>
 
@@ -491,47 +712,169 @@
 
 
 <style>
+
     /* =========================================================
-       CHECKOUT
+       SAYFA
        ========================================================= */
 
     .checkout-page {
         min-height: 75vh;
 
-        background-color: #f7f8fa;
+        padding: 55px 0 70px;
+
+        background:
+            radial-gradient(
+                circle at top left,
+                rgba(190, 145, 91, 0.07),
+                transparent 32%
+            ),
+            linear-gradient(
+                180deg,
+                #ffffff 0%,
+                #faf7f3 100%
+            );
     }
 
 
     /* =========================================================
-       CARD
+       SAYFA BAŞLIĞI
+       ========================================================= */
+
+    .checkout-page-header {
+        margin-bottom: 30px;
+    }
+
+
+    .checkout-page-label {
+        display: inline-block;
+
+        margin-bottom: 6px;
+
+        color: #9a7042;
+
+        font-size: 0.67rem;
+        font-weight: 800;
+
+        letter-spacing: 0.15em;
+    }
+
+
+    .checkout-page-header h1 {
+        position: relative;
+
+        margin: 0 0 10px;
+        padding-bottom: 12px;
+
+        color: #30251d;
+
+        font-size: 2rem;
+        font-weight: 800;
+
+        letter-spacing: -0.02em;
+    }
+
+
+    .checkout-page-header h1::after {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        bottom: 0;
+
+        width: 42px;
+        height: 3px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #895b2e,
+                #d0a16a
+            );
+    }
+
+
+    .checkout-page-header p {
+        max-width: 680px;
+
+        margin: 0;
+
+        color: #887b70;
+
+        font-size: 0.84rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       VALIDATION SUMMARY
+       ========================================================= */
+
+    .checkout-validation-summary {
+        margin-bottom: 22px;
+        padding: 12px 15px;
+
+        border: 1px solid #edd0d0;
+        border-radius: 11px;
+
+        color: #a54d4d;
+
+        background-color: #fcf2f2;
+
+        font-size: 0.75rem;
+    }
+
+
+    .checkout-validation-summary:empty {
+        display: none;
+    }
+
+
+    .checkout-validation-message {
+        display: block;
+
+        margin-top: 5px;
+
+        font-size: 0.7rem;
+    }
+
+
+    /* =========================================================
+       CHECKOUT CARD
        ========================================================= */
 
     .checkout-card {
-        padding: 28px;
+        padding: 26px;
 
-        border: 1px solid #e9ecef;
-        border-radius: 18px;
+        border: 1px solid #e7ddd2;
+        border-radius: 19px;
 
         background-color: #ffffff;
 
         box-shadow:
-            0 5px 20px rgba(0, 0, 0, 0.03);
+            0 9px 27px rgba(70, 47, 30, 0.06);
     }
 
+
+    /* =========================================================
+       CARD HEADER
+       ========================================================= */
 
     .checkout-card-header {
         display: flex;
         align-items: center;
 
-        gap: 15px;
+        gap: 13px;
 
-        margin-bottom: 25px;
+        margin-bottom: 24px;
     }
 
 
     .checkout-step {
-        width: 42px;
-        height: 42px;
+        width: 43px;
+        height: 43px;
 
         display: flex;
         align-items: center;
@@ -539,37 +882,104 @@
 
         flex-shrink: 0;
 
-        border-radius: 50%;
+        border-radius: 12px;
 
         color: #ffffff;
 
-        background-color: #212529;
+        background:
+            linear-gradient(
+                135deg,
+                #503525,
+                #996538
+            );
 
-        font-weight: 700;
+        font-size: 0.82rem;
+        font-weight: 800;
+
+        box-shadow:
+            0 5px 14px rgba(73, 50, 37, 0.17);
+    }
+
+
+    .checkout-card-heading > span {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #9a7042;
+
+        font-size: 0.57rem;
+        font-weight: 800;
+
+        letter-spacing: 0.12em;
+    }
+
+
+    .checkout-card-heading h2 {
+        margin: 0 0 3px;
+
+        color: #3b2d24;
+
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+
+    .checkout-card-heading p {
+        margin: 0;
+
+        color: #93867a;
+
+        font-size: 0.7rem;
+        line-height: 1.5;
     }
 
 
     /* =========================================================
-       INPUT
+       YENİ ADRES
        ========================================================= */
 
-    .checkout-card .form-control,
-    .checkout-card .input-group-text {
-        min-height: 48px;
-    }
+    .new-address-button {
+        min-height: 37px;
 
-
-    .checkout-card .form-control {
-        border-radius: 10px;
-    }
-
-
-    .checkout-card .input-group-text {
-        min-width: 48px;
-
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
 
-        background-color: #f8f9fa;
+        gap: 6px;
+
+        flex-shrink: 0;
+
+        padding: 7px 11px;
+
+        border: 1px solid #d7c5b3;
+        border-radius: 9px;
+
+        color: #684f3c;
+
+        background-color: #ffffff;
+
+        font-size: 0.68rem;
+        font-weight: 700;
+
+        text-decoration: none;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .new-address-button:hover {
+        color: #ffffff;
+
+        border-color: #80562f;
+
+        background-color: #80562f;
+
+        transform: translateY(-1px);
     }
 
 
@@ -583,6 +993,8 @@
         display: block;
 
         height: 100%;
+
+        margin: 0;
 
         cursor: pointer;
     }
@@ -598,14 +1010,23 @@
 
 
     .address-select-content {
+        position: relative;
+
         height: 100%;
 
-        padding: 18px;
+        overflow: hidden;
 
-        border: 2px solid #e9ecef;
+        padding: 17px;
+
+        border: 1.5px solid #e4d9ce;
         border-radius: 14px;
 
-        background-color: #ffffff;
+        background:
+            linear-gradient(
+                145deg,
+                #ffffff,
+                #fdfbf8
+            );
 
         transition:
             border-color 0.2s ease,
@@ -616,45 +1037,492 @@
 
 
     .address-select-card:hover .address-select-content {
-        border-color: #adb5bd;
+        border-color: #caae90;
 
         transform: translateY(-2px);
+
+        box-shadow:
+            0 7px 18px rgba(70, 47, 30, 0.07);
     }
 
 
-    .address-radio:checked+.address-select-content {
-        border-color: #212529;
+    .address-radio:checked + .address-select-content {
+        border-color: #95683d;
 
-        background-color: #f8f9fa;
+        background:
+            linear-gradient(
+                145deg,
+                #fffdf9,
+                #f8efe4
+            );
 
         box-shadow:
-            0 0 0 3px rgba(33, 37, 41, 0.07);
+            0 0 0 3px rgba(149, 104, 61, 0.08);
     }
 
 
     /* =========================================================
-       PAYMENT SECURITY
+       SEÇİM İKONU
+       ========================================================= */
+
+    .address-selected-icon {
+        position: absolute;
+
+        top: 11px;
+        right: 11px;
+
+        width: 25px;
+        height: 25px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #e0d5ca;
+        border-radius: 50%;
+
+        color: transparent;
+
+        background-color: #ffffff;
+
+        font-size: 0.56rem;
+
+        transition:
+            color 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+
+    .address-radio:checked +
+    .address-select-content
+    .address-selected-icon {
+        color: #ffffff;
+
+        border-color: #895d33;
+
+        background-color: #895d33;
+    }
+
+
+    /* =========================================================
+       ADRES KARTI İÇİ
+       ========================================================= */
+
+    .address-title-area {
+        display: flex;
+        align-items: center;
+
+        gap: 9px;
+
+        padding-right: 28px;
+    }
+
+
+    .address-icon {
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        color: #8e6238;
+
+        background-color: #f5e9dc;
+
+        font-size: 0.7rem;
+    }
+
+
+    .address-title {
+        display: inline-block;
+
+        color: #45352a;
+
+        font-size: 0.8rem;
+        font-weight: 800;
+    }
+
+
+    .default-address-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 3px;
+
+        margin-left: 5px;
+        padding: 3px 6px;
+
+        border: 1px solid #dfc8aa;
+        border-radius: 20px;
+
+        color: #80592f;
+
+        background-color: #f8eee2;
+
+        font-size: 0.51rem;
+        font-weight: 800;
+    }
+
+
+    .address-person {
+        display: flex;
+        align-items: center;
+
+        gap: 6px;
+
+        margin: 14px 0 10px;
+
+        color: #554237;
+
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+
+    .address-person i {
+        color: #a68a70;
+
+        font-size: 0.64rem;
+    }
+
+
+    .address-details {
+        display: flex;
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+
+    .address-detail-row {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 7px;
+
+        color: #8a7d72;
+
+        font-size: 0.66rem;
+        line-height: 1.5;
+    }
+
+
+    .address-detail-row i {
+        width: 14px;
+
+        margin-top: 3px;
+
+        flex-shrink: 0;
+
+        color: #af9175;
+
+        font-size: 0.58rem;
+
+        text-align: center;
+    }
+
+
+    .address-select-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-top: 14px;
+        padding-top: 11px;
+
+        border-top: 1px solid #eee4da;
+
+        color: #a09387;
+
+        font-size: 0.59rem;
+        font-weight: 600;
+    }
+
+
+    .address-select-footer i {
+        color: #b39a80;
+    }
+
+
+    .address-radio:checked +
+    .address-select-content
+    .address-select-footer {
+        color: #805b38;
+    }
+
+
+    .address-radio:checked +
+    .address-select-content
+    .address-select-footer i {
+        color: #805b38;
+    }
+
+
+    /* =========================================================
+       ADRESLERİ YÖNET
+       ========================================================= */
+
+    .manage-address-area {
+        margin-top: 16px;
+    }
+
+
+    .manage-address-link {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 6px;
+
+        color: #8c623a;
+
+        font-size: 0.68rem;
+        font-weight: 700;
+
+        text-decoration: none;
+    }
+
+
+    .manage-address-link i:last-child {
+        font-size: 0.5rem;
+
+        transition:
+            transform 0.2s ease;
+    }
+
+
+    .manage-address-link:hover {
+        color: #60442e;
+    }
+
+
+    .manage-address-link:hover i:last-child {
+        transform: translateX(2px);
+    }
+
+
+    /* =========================================================
+       ADRES YOK
+       ========================================================= */
+
+    .no-address-warning {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 12px;
+
+        padding: 16px;
+
+        border: 1px solid #e5d4be;
+        border-radius: 12px;
+
+        background-color: #fcf6ee;
+    }
+
+
+    .no-address-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #94673b;
+
+        background-color: #f1e1ce;
+
+        font-size: 0.8rem;
+    }
+
+
+    .no-address-warning strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #60472f;
+
+        font-size: 0.75rem;
+    }
+
+
+    .no-address-warning p {
+        margin: 0 0 5px;
+
+        color: #927f6d;
+
+        font-size: 0.67rem;
+        line-height: 1.5;
+    }
+
+
+    .no-address-warning a {
+        color: #80582f;
+
+        font-size: 0.67rem;
+        font-weight: 700;
+
+        text-decoration: none;
+    }
+
+
+    /* =========================================================
+       INPUT LABEL
+       ========================================================= */
+
+    .checkout-form-label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #49392e;
+
+        font-size: 0.76rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       INPUT
+       ========================================================= */
+
+    .checkout-input {
+        height: 50px;
+
+        display: flex;
+        align-items: center;
+
+        overflow: hidden;
+
+        border: 1px solid #dfd4c9;
+        border-radius: 10px;
+
+        background-color: #fbf9f6;
+
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .checkout-input:focus-within {
+        border-color: #b7895a;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 0 0 0.15rem rgba(183, 137, 90, 0.10);
+    }
+
+
+    .checkout-input-icon {
+        width: 43px;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        color: #a58c73;
+
+        font-size: 0.78rem;
+    }
+
+
+    .checkout-input .form-control {
+        height: 100%;
+
+        padding: 0 12px 0 0;
+
+        border: 0;
+
+        color: #3d3128;
+
+        background-color: transparent;
+
+        font-size: 0.82rem;
+
+        box-shadow: none !important;
+    }
+
+
+    .checkout-input .form-control::placeholder {
+        color: #b7ada4;
+    }
+
+
+    /* =========================================================
+       GÜVENLİ ÖDEME
        ========================================================= */
 
     .payment-security {
         display: flex;
         align-items: center;
 
-        gap: 12px;
+        gap: 11px;
 
-        padding: 15px;
+        margin-top: 23px;
+        padding: 13px 15px;
 
-        border: 1px solid #d1e7dd;
-        border-radius: 12px;
+        border: 1px solid #d7e4d2;
+        border-radius: 11px;
 
-        color: #0f5132;
-
-        background-color: #f0fff4;
+        background-color: #f3f7f1;
     }
 
 
-    .payment-security>i {
-        font-size: 1.35rem;
+    .payment-security-icon {
+        width: 36px;
+        height: 36px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        color: #567250;
+
+        background-color: #e2eee0;
+
+        font-size: 0.76rem;
+    }
+
+
+    .payment-security strong {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #516b4b;
+
+        font-size: 0.72rem;
+    }
+
+
+    .payment-security p {
+        margin: 0;
+
+        color: #7c9177;
+
+        font-size: 0.63rem;
     }
 
 
@@ -665,42 +1533,134 @@
     .checkout-summary {
         position: sticky;
 
-        top: 25px;
+        top: 95px;
 
-        padding: 28px;
+        overflow: hidden;
 
-        border: 1px solid #e9ecef;
+        border: 1px solid #e6d9cc;
         border-radius: 18px;
 
         background-color: #ffffff;
 
         box-shadow:
-            0 8px 25px rgba(0, 0, 0, 0.05);
+            0 12px 30px rgba(70, 47, 30, 0.08);
     }
 
 
-    .checkout-product {
+    .checkout-summary-header {
         display: flex;
         align-items: center;
 
-        gap: 12px;
+        gap: 11px;
 
-        padding: 12px 0;
+        padding: 18px 20px;
 
-        border-bottom: 1px solid #eeeeee;
+        border-bottom: 1px solid #eee4d9;
+
+        background:
+            linear-gradient(
+                90deg,
+                #fcf8f3,
+                #ffffff
+            );
     }
 
 
-    .checkout-product:last-of-type {
+    .summary-header-icon {
+        width: 39px;
+        height: 39px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #573a28,
+                #986538
+            );
+
+        font-size: 0.78rem;
+    }
+
+
+    .checkout-summary-header span {
+        display: block;
+
+        margin-bottom: 1px;
+
+        color: #9b7146;
+
+        font-size: 0.57rem;
+        font-weight: 800;
+
+        letter-spacing: 0.11em;
+    }
+
+
+    .checkout-summary-header h2 {
+        margin: 0;
+
+        color: #3b2d24;
+
+        font-size: 0.95rem;
+        font-weight: 800;
+    }
+
+
+    .checkout-summary-body {
+        padding: 19px;
+    }
+
+
+    /* =========================================================
+       ÜRÜNLER
+       ========================================================= */
+
+    .checkout-product {
+        display: grid;
+
+        grid-template-columns:
+            58px minmax(0, 1fr) auto;
+
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 11px 0;
+
+        border-bottom: 1px solid #eee6de;
+    }
+
+
+    .checkout-product:last-child {
         border-bottom: 0;
     }
 
 
     .checkout-product-image {
-        width: 55px;
-        height: 55px;
+        width: 58px;
+        height: 58px;
 
-        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 4px;
+
+        overflow: hidden;
+
+        border: 1px solid #eee3d7;
+        border-radius: 9px;
+
+        background-color: #faf6f1;
     }
 
 
@@ -709,35 +1669,262 @@
         height: 100%;
 
         object-fit: contain;
+        object-position: center;
+    }
 
-        border-radius: 8px;
+
+    .checkout-product-info {
+        min-width: 0;
+    }
+
+
+    .checkout-product-name {
+        display: -webkit-box;
+
+        overflow: hidden;
+
+        color: #49392e;
+
+        font-size: 0.68rem;
+        font-weight: 700;
+        line-height: 1.4;
+
+        text-decoration: none;
+
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+
+    .checkout-product-name:hover {
+        color: #96653a;
+    }
+
+
+    .checkout-product-quantity {
+        display: flex;
+        align-items: center;
+
+        gap: 3px;
+
+        margin-top: 4px;
+
+        color: #9c9085;
+
+        font-size: 0.59rem;
+    }
+
+
+    .checkout-product-quantity i {
+        font-size: 0.48rem;
+    }
+
+
+    .checkout-product-price {
+        color: #76502f;
+
+        font-size: 0.67rem;
+        font-weight: 800;
+
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       ÖZET
+       ========================================================= */
+
+    .summary-divider {
+        height: 1px;
+
+        margin: 17px 0;
+
+        background-color: #eee4d9;
     }
 
 
     .summary-row {
         display: flex;
+        align-items: center;
         justify-content: space-between;
 
-        margin-bottom: 15px;
+        gap: 15px;
 
-        color: #495057;
+        margin-bottom: 13px;
+
+        color: #74675c;
+
+        font-size: 0.74rem;
+    }
+
+
+    .summary-row strong {
+        color: #4b392c;
+
+        font-size: 0.76rem;
+        font-weight: 750;
+    }
+
+
+    .free-shipping {
+        display: flex;
+        align-items: center;
+
+        gap: 4px;
+
+        color: #56754e !important;
+    }
+
+
+    .free-shipping i {
+        font-size: 0.55rem;
     }
 
 
     .summary-total {
         display: flex;
+        align-items: center;
         justify-content: space-between;
 
-        font-size: 1.15rem;
+        gap: 15px;
+    }
+
+
+    .summary-total span {
+        color: #3f3127;
+
+        font-size: 0.9rem;
         font-weight: 800;
     }
 
 
+    .summary-total strong {
+        color: #80542d;
+
+        font-size: 1.2rem;
+        font-weight: 850;
+    }
+
+
     /* =========================================================
-       RESPONSIVE
+       SİPARİŞİ TAMAMLA
+       ========================================================= */
+
+    .complete-order-button {
+        width: 100%;
+        min-height: 47px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        margin-top: 21px;
+        padding: 10px 14px;
+
+        border: 1px solid #493225;
+        border-radius: 10px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #493225,
+                #8b5e34
+            );
+
+        font-size: 0.75rem;
+        font-weight: 750;
+
+        box-shadow:
+            0 6px 16px rgba(73, 50, 37, 0.17);
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+
+    .complete-order-button:hover:not(:disabled) {
+        background:
+            linear-gradient(
+                135deg,
+                #5b3e2b,
+                #9b6a3a
+            );
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 8px 20px rgba(73, 50, 37, 0.22);
+    }
+
+
+    .complete-order-button:disabled {
+        border-color: #bcb0a4;
+
+        background: #bcb0a4;
+
+        box-shadow: none;
+
+        cursor: not-allowed;
+
+        opacity: 0.65;
+    }
+
+
+    .complete-order-arrow {
+        margin-left: auto;
+
+        font-size: 0.57rem;
+
+        transition:
+            transform 0.2s ease;
+    }
+
+
+    .complete-order-button:hover:not(:disabled)
+    .complete-order-arrow {
+        transform: translateX(2px);
+    }
+
+
+    .summary-security {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 5px;
+
+        margin-top: 12px;
+
+        color: #9b8e82;
+
+        font-size: 0.6rem;
+    }
+
+
+    .summary-security i {
+        color: #84694e;
+    }
+
+
+    /* =========================================================
+       TABLET
        ========================================================= */
 
     @@media (max-width: 991.98px) {
+
+        .checkout-page {
+            padding: 40px 0 55px;
+        }
+
 
         .checkout-summary {
             position: static;
@@ -746,24 +1933,79 @@
     }
 
 
-    @@media (max-width: 575.98px) {
+    /* =========================================================
+       MOBİL
+       ========================================================= */
+
+    @@media (max-width: 767.98px) {
+
+        .checkout-page {
+            padding: 30px 0 45px;
+        }
+
+
+        .checkout-page-header h1 {
+            font-size: 1.65rem;
+        }
+
 
         .checkout-card {
-            padding: 20px;
+            padding: 21px;
         }
 
 
         .checkout-card-header {
             align-items: flex-start;
+        }
+
+    }
+
+
+    /* =========================================================
+       KÜÇÜK TELEFON
+       ========================================================= */
+
+    @@media (max-width: 575.98px) {
+
+        .checkout-card {
+            padding: 18px;
+        }
+
+
+        .checkout-card-header {
             flex-wrap: wrap;
         }
 
 
-        .checkout-card-header .btn {
+        .new-address-button {
             width: 100%;
+
+            margin-top: 4px;
+        }
+
+
+        .checkout-product {
+            grid-template-columns:
+                52px minmax(0, 1fr);
+        }
+
+
+        .checkout-product-image {
+            width: 52px;
+            height: 52px;
+        }
+
+
+        .checkout-product-price {
+            grid-column: 2;
+
+            margin-top: -4px;
+
+            text-align: left;
         }
 
     }
+
 </style>
 
 
@@ -771,6 +2013,7 @@
 {
     @{
         await Html.RenderPartialAsync(
-            "_ValidationScriptsPartial");
+            "_ValidationScriptsPartial"
+        );
     }
 }

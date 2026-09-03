@@ -9,31 +9,48 @@
 
     <div class="auth-container signup-container">
 
-        <div class="text-center mb-4">
+        <!-- =====================================================
+             LOGO / MARKA
+             ===================================================== -->
+        <div class="auth-brand-area">
 
-            <a asp-controller="Home" asp-action="Index" class="auth-logo text-decoration-none">
+            <a asp-controller="Home" asp-action="Index" class="auth-logo">
 
-                <span class="logo-main">Tekno</span><span class="logo-sub">Grit</span>
+                <span class="auth-logo-icon">
+                    <i class="fa-solid fa-gem"></i>
+                </span>
+
+                <span class="auth-logo-text">
+                    Kehr-i Bar
+                </span>
 
             </a>
 
-            <p class="text-muted mt-2 mb-0">
-                Yeni hesabınızı oluşturun
+            <p>
+                Yeni hesabınızı oluşturun ve alışverişe başlayın.
             </p>
 
         </div>
 
 
+        <!-- =====================================================
+             KAYIT KARTI
+             ===================================================== -->
         <div class="auth-card">
 
-            <div class="mb-4">
+            <div class="auth-card-header">
+
+                <span class="auth-card-label">
+                    ARAMIZA KATILIN
+                </span>
 
                 <h1 class="auth-title">
                     Kayıt Ol
                 </h1>
 
                 <p class="auth-description">
-                    TeknoGrit'e üye olmak için bilgilerinizi doldurun.
+                    Kehr-i Bar hesabınızı oluşturmak için
+                    aşağıdaki bilgileri doldurun.
                 </p>
 
             </div>
@@ -43,128 +60,171 @@
 
                 @Html.AntiForgeryToken()
 
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
+
+                <!-- =================================================
+                     GENEL VALIDATION
+                     ================================================= -->
+                <div asp-validation-summary="ModelOnly" class="auth-validation-summary">
                 </div>
 
 
                 <div class="row g-3">
 
-                    <!-- Ad -->
+                    <!-- =================================================
+                         AD
+                         ================================================= -->
                     <div class="col-md-6">
 
-                        <label asp-for="Name" class="form-label fw-semibold">
+                        <label asp-for="Name" class="auth-form-label">
                         </label>
 
                         <div class="auth-input">
 
-                            <i class="fa-regular fa-user"></i>
+                            <span class="auth-input-icon">
+                                <i class="fa-regular fa-user"></i>
+                            </span>
 
-                            <input asp-for="Name" class="form-control" placeholder="Adınızı girin" />
+                            <input asp-for="Name" class="form-control" placeholder="Adınızı girin"
+                                   autocomplete="given-name" />
 
                         </div>
 
-                        <span asp-validation-for="Name" class="text-danger small">
+                        <span asp-validation-for="Name" class="text-danger auth-validation-message">
                         </span>
 
                     </div>
 
 
-                    <!-- Soyad -->
+                    <!-- =================================================
+                         SOYAD
+                         ================================================= -->
                     <div class="col-md-6">
 
-                        <label asp-for="Surname" class="form-label fw-semibold">
+                        <label asp-for="Surname" class="auth-form-label">
                         </label>
 
                         <div class="auth-input">
 
-                            <i class="fa-regular fa-user"></i>
+                            <span class="auth-input-icon">
+                                <i class="fa-regular fa-user"></i>
+                            </span>
 
-                            <input asp-for="Surname" class="form-control" placeholder="Soyadınızı girin" />
+                            <input asp-for="Surname" class="form-control" placeholder="Soyadınızı girin"
+                                   autocomplete="family-name" />
 
                         </div>
 
-                        <span asp-validation-for="Surname" class="text-danger small">
+                        <span asp-validation-for="Surname" class="text-danger auth-validation-message">
                         </span>
 
                     </div>
 
 
-                    <!-- Email -->
+                    <!-- =================================================
+                         E-POSTA
+                         ================================================= -->
                     <div class="col-12">
 
-                        <label asp-for="Email" class="form-label fw-semibold">
+                        <label asp-for="Email" class="auth-form-label">
                         </label>
 
                         <div class="auth-input">
 
-                            <i class="fa-regular fa-envelope"></i>
+                            <span class="auth-input-icon">
+                                <i class="fa-regular fa-envelope"></i>
+                            </span>
 
-                            <input asp-for="Email" type="email" class="form-control" placeholder="ornek@email.com" />
+                            <input asp-for="Email" type="email" class="form-control" placeholder="ornek@email.com"
+                                   autocomplete="email" />
 
                         </div>
 
-                        <span asp-validation-for="Email" class="text-danger small">
+                        <span asp-validation-for="Email" class="text-danger auth-validation-message">
                         </span>
 
                     </div>
 
 
-                    <!-- Telefon -->
+                    <!-- =================================================
+                         TELEFON
+                         ================================================= -->
                     <div class="col-12">
 
-                        <label asp-for="Phone" class="form-label fw-semibold">
+                        <label asp-for="Phone" class="auth-form-label">
                         </label>
 
                         <div class="auth-input">
 
-                            <i class="fa-solid fa-phone"></i>
+                            <span class="auth-input-icon">
+                                <i class="fa-solid fa-phone"></i>
+                            </span>
 
-                            <input asp-for="Phone" type="tel" class="form-control" placeholder="05xx xxx xx xx" />
+                            <input asp-for="Phone" type="tel" class="form-control" placeholder="05xx xxx xx xx"
+                                   autocomplete="tel" />
 
                         </div>
 
-                        <span asp-validation-for="Phone" class="text-danger small">
+                        <span asp-validation-for="Phone" class="text-danger auth-validation-message">
                         </span>
 
                     </div>
 
 
-                    <!-- Kullanıcı Adı -->
+                    <!-- =================================================
+                         KULLANICI ADI
+                         ================================================= -->
                     <div class="col-12">
 
-                        <label asp-for="UserName" class="form-label fw-semibold">
+                        <label asp-for="UserName" class="auth-form-label">
                         </label>
 
                         <div class="auth-input">
 
-                            <i class="fa-solid fa-at"></i>
+                            <span class="auth-input-icon">
+                                <i class="fa-solid fa-at"></i>
+                            </span>
 
-                            <input asp-for="UserName" class="form-control" placeholder="Kullanıcı adınızı girin" />
+                            <input asp-for="UserName" class="form-control" placeholder="Kullanıcı adınızı girin"
+                                   autocomplete="username" />
 
                         </div>
 
-                        <span asp-validation-for="UserName" class="text-danger small">
+                        <span asp-validation-for="UserName" class="text-danger auth-validation-message">
                         </span>
 
                     </div>
 
 
-                    <!-- Şifre -->
+                    <!-- =================================================
+                         ŞİFRE
+                         ================================================= -->
                     <div class="col-12">
 
-                        <label asp-for="Password" class="form-label fw-semibold">
+                        <label asp-for="Password" class="auth-form-label">
                         </label>
 
-                        <div class="auth-input">
+                        <div class="auth-input auth-password-input">
 
-                            <i class="fa-solid fa-lock"></i>
+                            <span class="auth-input-icon">
+                                <i class="fa-solid fa-lock"></i>
+                            </span>
 
-                            <input asp-for="Password" type="password" class="form-control"
-                                   placeholder="Şifrenizi oluşturun" />
+                            <input asp-for="Password" id="passwordInput" type="password" class="form-control"
+                                   placeholder="Şifrenizi oluşturun" autocomplete="new-password" />
+
+
+                            <!-- ŞİFRE GÖSTER / GİZLE -->
+                            <button type="button" id="togglePassword" class="password-toggle"
+                                    aria-label="Şifreyi göster">
+
+                                <i id="passwordIcon" class="fa-regular fa-eye">
+                                </i>
+
+                            </button>
 
                         </div>
 
-                        <span asp-validation-for="Password" class="text-danger small">
+                        <span asp-validation-for="Password" class="text-danger auth-validation-message">
                         </span>
 
                     </div>
@@ -172,25 +232,35 @@
                 </div>
 
 
-                <button type="submit" class="btn auth-button w-100 mt-4">
+                <!-- =================================================
+                     KAYIT BUTONU
+                     ================================================= -->
+                <button type="submit" class="auth-button">
 
-                    Kayıt Ol
+                    <span>
+                        Kayıt Ol
+                    </span>
 
-                    <i class="fa-solid fa-user-plus ms-2"></i>
+                    <i class="fa-solid fa-user-plus"></i>
 
                 </button>
 
             </form>
 
 
+            <!-- =================================================
+                 GİRİŞ YAP
+                 ================================================= -->
             <div class="auth-register">
 
-                <span class="text-muted">
+                <span>
                     Zaten hesabınız var mı?
                 </span>
 
                 <a asp-controller="Account" asp-action="SignIn">
+
                     Giriş Yap
+
                 </a>
 
             </div>
@@ -198,12 +268,18 @@
         </div>
 
 
-        <div class="text-center mt-4">
+        <!-- =====================================================
+             ANA SAYFAYA DÖN
+             ===================================================== -->
+        <div class="auth-back-area">
 
             <a asp-controller="Home" asp-action="Index" class="back-home">
 
-                <i class="fa-solid fa-arrow-left me-2"></i>
-                Ana Sayfaya Dön
+                <i class="fa-solid fa-arrow-left"></i>
+
+                <span>
+                    Ana Sayfaya Dön
+                </span>
 
             </a>
 
@@ -215,9 +291,26 @@
 
 
 <style>
+    /* =========================================================
+       BODY
+       ========================================================= */
+
     body {
-        background-color: #f5f7fa;
+        margin: 0;
+
+        background:
+            radial-gradient(circle at top left,
+                rgba(190, 145, 91, 0.10),
+                transparent 34%),
+            linear-gradient(180deg,
+                #fbf8f4 0%,
+                #f4eee7 100%);
     }
+
+
+    /* =========================================================
+       SAYFA
+       ========================================================= */
 
     .auth-page {
         min-height: 100vh;
@@ -226,191 +319,586 @@
         align-items: center;
         justify-content: center;
 
-        padding: 40px 16px;
+        padding: 42px 16px;
     }
+
 
     .auth-container {
         width: 100%;
-        max-width: 460px;
+        max-width: 470px;
     }
+
 
     .signup-container {
-        max-width: 560px;
+        max-width: 580px;
     }
+
+
+    /* =========================================================
+       MARKA
+       ========================================================= */
+
+    .auth-brand-area {
+        margin-bottom: 25px;
+
+        text-align: center;
+    }
+
 
     .auth-logo {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
-        font-size: 2rem;
-        font-weight: 800;
+        gap: 10px;
 
-        letter-spacing: -1px;
+        color: #34271e;
+
+        text-decoration: none;
     }
 
-    .logo-main {
-        color: #212529;
+
+    .auth-logo:hover {
+        color: #34271e;
     }
 
-    .logo-sub {
-        color: #0d6efd;
-    }
 
-    .auth-card {
-        padding: 36px;
+    .auth-logo-icon {
+        width: 43px;
+        height: 43px;
 
-        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        border: 1px solid #e9ecef;
-        border-radius: 20px;
+        border-radius: 12px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #946638);
 
         box-shadow:
-            0 12px 40px rgba(0, 0, 0, 0.07);
+            0 6px 17px rgba(73, 50, 37, 0.18);
     }
 
-    .auth-title {
-        margin-bottom: 8px;
 
+    .auth-logo-text {
         font-size: 1.7rem;
         font-weight: 800;
 
-        color: #212529;
+        letter-spacing: -0.035em;
     }
+
+
+    .auth-brand-area p {
+        margin: 10px 0 0;
+
+        color: #8b7d71;
+
+        font-size: 0.82rem;
+    }
+
+
+    /* =========================================================
+       KART
+       ========================================================= */
+
+    .auth-card {
+        padding: 34px;
+
+        border: 1px solid #e7ddd2;
+        border-radius: 20px;
+
+        background-color: rgba(255, 255, 255, 0.96);
+
+        box-shadow:
+            0 15px 40px rgba(72, 49, 32, 0.09);
+    }
+
+
+    .auth-card-header {
+        margin-bottom: 27px;
+    }
+
+
+    .auth-card-label {
+        display: inline-block;
+
+        margin-bottom: 7px;
+
+        color: #9a7042;
+
+        font-size: 0.68rem;
+        font-weight: 800;
+
+        letter-spacing: 0.14em;
+    }
+
+
+    .auth-title {
+        margin: 0 0 8px;
+
+        color: #2e241c;
+
+        font-size: 1.75rem;
+        font-weight: 800;
+
+        letter-spacing: -0.02em;
+    }
+
 
     .auth-description {
         margin: 0;
 
-        color: #6c757d;
+        color: #81756a;
 
-        font-size: 0.92rem;
-        line-height: 1.6;
+        font-size: 0.85rem;
+        line-height: 1.65;
     }
 
+
+    /* =========================================================
+       FORM
+       ========================================================= */
+
+    .auth-form-label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #49392e;
+
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       INPUT
+       ========================================================= */
+
     .auth-input {
-        height: 52px;
+        height: 51px;
 
         display: flex;
         align-items: center;
 
-        padding: 0 16px;
+        overflow: hidden;
 
-        border: 1px solid #dee2e6;
-        border-radius: 12px;
+        border: 1px solid #e0d6cb;
+        border-radius: 11px;
+
+        background-color: #fbf9f6;
+
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .auth-input:focus-within {
+        border-color: #b7895a;
 
         background-color: #ffffff;
 
-        transition: 0.2s ease;
-    }
-
-    .auth-input:focus-within {
-        border-color: #0d6efd;
-
         box-shadow:
-            0 0 0 0.2rem rgba(13, 110, 253, 0.10);
+            0 0 0 0.15rem rgba(183, 137, 90, 0.10);
     }
 
-    .auth-input i {
-        width: 22px;
 
-        color: #adb5bd;
+    .auth-input-icon {
+        width: 44px;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        color: #a58c73;
+
+        font-size: 0.84rem;
     }
+
 
     .auth-input .form-control {
         height: 100%;
 
+        padding: 0 12px 0 0;
+
         border: 0;
 
-        box-shadow: none;
+        color: #3d3128;
 
         background-color: transparent;
+
+        font-size: 0.86rem;
+
+        box-shadow: none !important;
     }
 
-    .auth-button {
-        padding: 13px;
+
+    .auth-input .form-control::placeholder {
+        color: #b5aaa0;
+    }
+
+
+    /* =========================================================
+       ŞİFRE GÖSTER / GİZLE
+       ========================================================= */
+
+    .auth-password-input .form-control {
+        padding-right: 4px;
+    }
+
+
+    .password-toggle {
+        width: 44px;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
 
         border: 0;
-        border-radius: 12px;
+
+        color: #9d8b7b;
+
+        background-color: transparent;
+
+        font-size: 0.9rem;
+
+        cursor: pointer;
+
+        transition:
+            color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+
+    .password-toggle:hover {
+        color: #704b2c;
+
+        background-color: #f5eee6;
+    }
+
+
+    .password-toggle:focus {
+        outline: none;
+    }
+
+
+    /* =========================================================
+       VALIDATION
+       ========================================================= */
+
+    .auth-validation-summary {
+        margin-bottom: 18px;
+
+        color: #b54e4e;
+
+        font-size: 0.8rem;
+    }
+
+
+    .auth-validation-message {
+        display: block;
+
+        margin-top: 5px;
+
+        font-size: 0.72rem;
+    }
+
+
+    /* =========================================================
+       KAYIT BUTONU
+       ========================================================= */
+
+    .auth-button {
+        width: 100%;
+        min-height: 49px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 9px;
+
+        margin-top: 25px;
+        padding: 11px 18px;
+
+        border: 1px solid #493225;
+        border-radius: 11px;
 
         color: #ffffff;
 
-        background-color: #212529;
+        background:
+            linear-gradient(135deg,
+                #493225,
+                #8b5e34);
 
-        font-weight: 600;
+        font-size: 0.84rem;
+        font-weight: 700;
 
-        transition: 0.2s ease;
+        box-shadow:
+            0 6px 17px rgba(73, 50, 37, 0.18);
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
     }
+
+
+    .auth-button i {
+        font-size: 0.76rem;
+    }
+
 
     .auth-button:hover {
         color: #ffffff;
 
-        background-color: #000000;
+        background:
+            linear-gradient(135deg,
+                #5b3e2b,
+                #9b6a3a);
 
-        transform: translateY(-1px);
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 9px 22px rgba(73, 50, 37, 0.23);
     }
 
-    .auth-register {
-        margin-top: 26px;
-        padding-top: 22px;
 
-        border-top: 1px solid #eeeeee;
+    /* =========================================================
+       GİRİŞ YAP
+       ========================================================= */
+
+    .auth-register {
+        margin-top: 25px;
+        padding-top: 21px;
+
+        border-top: 1px solid #eee6dd;
+
+        color: #8b8076;
 
         text-align: center;
 
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
+
 
     .auth-register a {
         margin-left: 4px;
 
-        color: #0d6efd;
+        color: #865a31;
 
-        font-weight: 600;
+        font-weight: 700;
 
         text-decoration: none;
     }
 
+
     .auth-register a:hover {
+        color: #64401f;
+
         text-decoration: underline;
     }
 
-    .back-home {
-        color: #6c757d;
 
-        font-size: 0.9rem;
+    /* =========================================================
+       ANA SAYFAYA DÖN
+       ========================================================= */
+
+    .auth-back-area {
+        margin-top: 22px;
+
+        text-align: center;
+    }
+
+
+    .back-home {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        color: #8c7e72;
+
+        font-size: 0.78rem;
+        font-weight: 600;
 
         text-decoration: none;
 
-        transition: 0.2s ease;
+        transition:
+            color 0.2s ease,
+            transform 0.2s ease;
     }
 
+
     .back-home:hover {
-        color: #212529;
+        color: #5b4030;
+
+        transform: translateX(-2px);
     }
+
+
+    /* =========================================================
+       MOBİL
+       ========================================================= */
 
     @@media (max-width: 575.98px) {
 
         .auth-page {
             align-items: flex-start;
 
-            padding-top: 30px;
+            padding: 27px 14px;
         }
 
+
+        .signup-container {
+            max-width: 100%;
+        }
+
+
         .auth-card {
-            padding: 26px 20px;
+            padding: 25px 20px;
 
             border-radius: 16px;
         }
 
-        .auth-logo {
-            font-size: 1.7rem;
+
+        .auth-logo-icon {
+            width: 39px;
+            height: 39px;
         }
+
+
+        .auth-logo-text {
+            font-size: 1.5rem;
+        }
+
 
         .auth-title {
             font-size: 1.5rem;
         }
 
+
+        .auth-description {
+            font-size: 0.8rem;
+        }
+
+
+        .auth-input {
+            height: 49px;
+        }
+
     }
 </style>
 
-@section Scripts {
+
+@section Scripts
+{
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const passwordInput =
+                    document.getElementById(
+                        "passwordInput"
+                    );
+
+                const togglePassword =
+                    document.getElementById(
+                        "togglePassword"
+                    );
+
+                const passwordIcon =
+                    document.getElementById(
+                        "passwordIcon"
+                    );
+
+
+                if (!passwordInput ||
+                    !togglePassword ||
+                    !passwordIcon) {
+
+                    return;
+                }
+
+
+                togglePassword.addEventListener(
+                    "click",
+                    function () {
+
+                        const isPassword =
+                            passwordInput.type ===
+                            "password";
+
+
+                        /*
+                         * Şifre gizliyse göster.
+                         * Görünüyorsa tekrar gizle.
+                         */
+                        passwordInput.type =
+                            isPassword
+                                ? "text"
+                                : "password";
+
+
+                        /*
+                         * Göz ikonunu değiştir.
+                         */
+                        if (isPassword) {
+
+                            passwordIcon.classList.remove(
+                                "fa-eye"
+                            );
+
+                            passwordIcon.classList.add(
+                                "fa-eye-slash"
+                            );
+
+                            togglePassword.setAttribute(
+                                "aria-label",
+                                "Şifreyi gizle"
+                            );
+
+                        }
+                        else {
+
+                            passwordIcon.classList.remove(
+                                "fa-eye-slash"
+                            );
+
+                            passwordIcon.classList.add(
+                                "fa-eye"
+                            );
+
+                            togglePassword.setAttribute(
+                                "aria-label",
+                                "Şifreyi göster"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
 }
