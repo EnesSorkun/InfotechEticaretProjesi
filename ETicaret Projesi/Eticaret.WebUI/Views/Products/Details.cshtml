@@ -3,6 +3,12 @@
 @{
     ViewData["Title"] = Model.Product.Name;
 
+    ViewData["MetaDescription"] =
+            $"{Model.Product.Name} tesbih modelini Kehr-i Bar'da inceleyin. Ürün özellikleri, fiyat ve stok bilgilerini keşfedin.";
+
+    ViewData["MetaKeywords"] =
+        $"{Model.Product.Name}, kehribar tesbih, tesbih, tesbih modelleri, Kehr-i Bar";
+
     // ProductImage tablosundaki ek resimler
     var productImages = Model.Product.Images?
         .OrderBy(x => x.OrderNo)

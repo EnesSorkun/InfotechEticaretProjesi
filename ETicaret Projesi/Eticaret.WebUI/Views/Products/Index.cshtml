@@ -1,14 +1,180 @@
 @model IEnumerable<Product>
+
 @{
-    ViewData["Title"] = "Ürünlerimiz";
+    ViewData["Title"] = "Kehribar Tesbihler";
+
+    ViewData["MetaDescription"] =
+        "Ateş Kehribar, Sıkma Kehribar ve Damla Kehribar tesbih modellerini inceleyin. Kehr-i Bar koleksiyonundan size uygun tesbihi keşfedin.";
+
+    ViewData["MetaKeywords"] =
+        "kehribar tesbih, tesbih modelleri, ateş kehribar tesbih, sıkma kehribar tesbih, damla kehribar tesbih, kehribar";
 }
 
-<div class="my-5">
-    <h1 class="text-center">Sana Özel Ürünlerimiz</h1>
-    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        @foreach (var item in Model)
-        {
-            <partial name="_ProductView" model="item" />
+<style>
+    .products-page {
+        padding: 64px 0 80px;
+    }
+
+    .products-heading {
+        max-width: 760px;
+        margin: 0 auto 44px;
+        text-align: center;
+    }
+
+    .products-eyebrow {
+        display: inline-block;
+        margin-bottom: 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #9a7042;
+    }
+
+    .products-title {
+        margin: 0;
+        color: #30251d;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        line-height: 1.15;
+    }
+
+    .products-title::after {
+        content: "";
+        display: block;
+        width: 72px;
+        height: 3px;
+        margin: 18px auto 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg,
+                #8b5e34,
+                #d0a16a);
+    }
+
+    .products-description {
+        max-width: 620px;
+        margin: 20px auto 0;
+        color: #76675b;
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+    .products-grid {
+        row-gap: 34px;
+    }
+
+    .empty-products {
+        max-width: 620px;
+        margin: 30px auto 0;
+        padding: 34px 28px;
+        text-align: center;
+        border: 1px solid #e7ddd2;
+        border-radius: 20px;
+        background: #fbf9f6;
+        box-shadow: 0 12px 35px rgba(67, 47, 32, 0.06);
+    }
+
+    .empty-products-icon {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f3eadf;
+        color: #8b5e34;
+        font-size: 1.4rem;
+    }
+
+    .empty-products h3 {
+        margin-bottom: 8px;
+        color: #35251b;
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .empty-products p {
+        margin: 0;
+        color: #7c6d62;
+    }
+
+    @@media (max-width: 768px) {
+        .products-page {
+            padding: 42px 0 60px;
         }
+
+        .products-heading {
+            margin-bottom: 34px;
+        }
+
+        .products-description {
+            font-size: 0.95rem;
+            padding: 0 12px;
+        }
+
+        .products-grid {
+            row-gap: 24px;
+        }
+    }
+</style>
+
+
+<section class="products-page">
+
+    <div class="products-heading">
+
+        <span class="products-eyebrow">
+            KEHR-İ BAR KOLEKSİYONU
+        </span>
+
+        <h1 class="products-title">
+            Sana Özel Seçkin Tesbihler
+        </h1>
+
+        <p class="products-description">
+            Ateş Kehribar, Sıkma Kehribar ve Damla Kehribar
+            koleksiyonlarımız arasından özenle seçilmiş modelleri keşfedin.
+        </p>
+
     </div>
-</div>
+
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row
+            gx-3
+            gx-lg-4
+            row-cols-2
+            row-cols-md-3
+            row-cols-xl-4
+            justify-content-center
+            products-grid">
+
+            @foreach (var item in Model)
+            {
+                <partial name="_ProductView" model="item" />
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="empty-products">
+
+            <div class="empty-products-icon">
+                <i class="fa-solid fa-gem"></i>
+            </div>
+
+            <h3>
+                Henüz ürün bulunamadı
+            </h3>
+
+            <p>
+                Bu kategori veya arama kriterlerine uygun ürün bulunamadı.
+            </p>
+
+        </div>
+    }
+
+</section>
