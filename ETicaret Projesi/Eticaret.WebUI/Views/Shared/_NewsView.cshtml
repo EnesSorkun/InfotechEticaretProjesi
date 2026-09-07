@@ -1,79 +1,32 @@
 @model News
 
-<div class="col mb-3">
+<div class="col-12 col-md-6 col-xl-4 campaign-column">
 
-    <a asp-area="" asp-controller="News" asp-action="Details" asp-route-id="@Model.Id" class="campaign-card">
+    <a asp-area="" asp-controller="News" asp-action="Details" asp-route-id="@Model.Id" class="campaign-image-card"
+       aria-label="@Model.Name kampanyasını incele">
 
-        <!-- =====================================================
-             KAMPANYA GÖRSELİ
-             ===================================================== -->
-        <div class="campaign-image-wrapper">
+        @if (!string.IsNullOrWhiteSpace(Model.Image))
+        {
+            <div class="campaign-image-area">
 
-            <img src="@Model.Image" alt="@Model.Name" class="campaign-image" />
+                <img src="@Model.Image" alt="@Model.Name" class="campaign-image" loading="lazy" />
 
+            </div>
+        }
+        else
+        {
+            <div class="campaign-no-image">
 
-            <!-- Hafif görsel overlay -->
-            <div class="campaign-image-overlay"></div>
+                <div class="campaign-no-image-icon">
+                    <i class="fa-regular fa-image"></i>
+                </div>
 
-
-            <!-- Kampanya Etiketi -->
-            <span class="campaign-badge">
-
-                <span class="campaign-badge-icon">
-                    <i class="fa-solid fa-bolt"></i>
-                </span>
-
-                Kampanya
-
-            </span>
-
-        </div>
-
-
-        <!-- =====================================================
-             KAMPANYA İÇERİĞİ
-             ===================================================== -->
-        <div class="campaign-body">
-
-            <span class="campaign-category">
-                KEHR-İ BAR
-            </span>
-
-
-            <h2 class="campaign-title">
-                @Model.Name
-            </h2>
-
-
-            @if (!string.IsNullOrWhiteSpace(Model.Description))
-            {
-                <p class="campaign-description">
-                    @Model.Description
-                </p>
-            }
-
-
-            <!-- =================================================
-                 ALT ALAN
-                 ================================================= -->
-            <div class="campaign-footer">
-
-                <span class="campaign-link">
-
-                    Kampanyayı İncele
-
-                </span>
-
-
-                <span class="campaign-arrow">
-
-                    <i class="fa-solid fa-arrow-right"></i>
-
+                <span>
+                    Kampanya görseli bulunamadı.
                 </span>
 
             </div>
-
-        </div>
+        }
 
     </a>
 
@@ -82,30 +35,38 @@
 
 <style>
     /* =========================================================
+       KAMPANYA KOLONU
+       ========================================================= */
+
+    .campaign-column {
+        display: flex;
+        margin-bottom: 28px;
+    }
+
+
+    /* =========================================================
        KAMPANYA KARTI
        ========================================================= */
 
-    .campaign-card {
+    .campaign-image-card {
         position: relative;
 
-        display: flex;
-        flex-direction: column;
+        display: block;
 
+        width: 100%;
         height: 100%;
 
         overflow: hidden;
 
         border: 1px solid #e7ddd2;
-        border-radius: 19px;
+        border-radius: 22px;
 
-        color: inherit;
-
-        background-color: #ffffff;
+        background-color: #fbf8f4;
 
         text-decoration: none;
 
         box-shadow:
-            0 8px 24px rgba(70, 47, 30, 0.06);
+            0 12px 32px rgba(70, 47, 30, 0.08);
 
         transition:
             transform 0.3s ease,
@@ -115,255 +76,47 @@
 
 
     /* =========================================================
-       GÖRSEL
+       GÖRSEL ALANI
        ========================================================= */
 
-    .campaign-image-wrapper {
+    .campaign-image-area {
         position: relative;
 
+        display: flex;
+
         width: 100%;
-        height: 255px;
+
+        align-items: center;
+        justify-content: center;
 
         overflow: hidden;
 
         background:
             linear-gradient(145deg,
-                #faf6f1,
-                #f2e9df);
+                #fbf8f4,
+                #f5eee6);
     }
 
 
-    .campaign-image {
-        width: 100%;
-        height: 100%;
+    /* =========================================================
+       KAMPANYA GÖRSELİ
 
+       ÖNEMLİ:
+       width: 100% ve height: auto sayesinde görselin
+       orijinal oranı korunur ve hiçbir bölümü kesilmez.
+       ========================================================= */
+
+    .campaign-image {
         display: block;
 
-        object-fit: cover;
+        width: 100%;
+        height: auto;
+
+        object-fit: contain;
         object-position: center;
 
         transition:
-            transform 0.55s ease;
-    }
-
-
-    /* Görselin alt tarafına hafif geçiş */
-
-    .campaign-image-overlay {
-        position: absolute;
-
-        inset: 0;
-
-        pointer-events: none;
-
-        background:
-            linear-gradient(180deg,
-                transparent 55%,
-                rgba(48, 37, 29, 0.13) 100%);
-    }
-
-
-    /* =========================================================
-       KAMPANYA ETİKETİ
-       ========================================================= */
-
-    .campaign-badge {
-        position: absolute;
-
-        top: 14px;
-        left: 14px;
-
-        display: inline-flex;
-        align-items: center;
-
-        gap: 6px;
-
-        padding: 6px 10px;
-
-        border: 1px solid rgba(255, 255, 255, 0.65);
-        border-radius: 30px;
-
-        color: #5c412d;
-
-        background-color: rgba(255, 250, 244, 0.93);
-
-        font-size: 0.62rem;
-        font-weight: 800;
-
-        letter-spacing: 0.03em;
-
-        box-shadow:
-            0 4px 14px rgba(56, 38, 25, 0.10);
-
-        backdrop-filter: blur(8px);
-    }
-
-
-    .campaign-badge-icon {
-        width: 20px;
-        height: 20px;
-
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 50%;
-
-        color: #ffffff;
-
-        background:
-            linear-gradient(135deg,
-                #8b5e34,
-                #c28a51);
-
-        font-size: 0.5rem;
-    }
-
-
-    /* =========================================================
-       İÇERİK
-       ========================================================= */
-
-    .campaign-body {
-        display: flex;
-        flex-direction: column;
-
-        flex: 1;
-
-        padding: 19px;
-    }
-
-
-    /* =========================================================
-       KÜÇÜK ÜST BAŞLIK
-       ========================================================= */
-
-    .campaign-category {
-        display: block;
-
-        margin-bottom: 6px;
-
-        color: #a0764c;
-
-        font-size: 0.57rem;
-        font-weight: 800;
-
-        letter-spacing: 0.13em;
-    }
-
-
-    /* =========================================================
-       BAŞLIK
-       ========================================================= */
-
-    .campaign-title {
-        display: -webkit-box;
-
-        min-height: 44px;
-
-        margin: 0 0 8px;
-
-        overflow: hidden;
-
-        color: #382b22;
-
-        font-size: 1rem;
-        font-weight: 800;
-        line-height: 1.4;
-
-        letter-spacing: -0.01em;
-
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-
-        transition:
-            color 0.2s ease;
-    }
-
-
-    /* =========================================================
-       AÇIKLAMA
-       ========================================================= */
-
-    .campaign-description {
-        display: -webkit-box;
-
-        min-height: 41px;
-
-        margin: 0 0 17px;
-
-        overflow: hidden;
-
-        color: #897d72;
-
-        font-size: 0.72rem;
-        line-height: 1.65;
-
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-    }
-
-
-    /* =========================================================
-       ALT ALAN
-       ========================================================= */
-
-    .campaign-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        gap: 12px;
-
-        margin-top: auto;
-        padding-top: 13px;
-
-        border-top: 1px solid #eee5dc;
-    }
-
-
-    .campaign-link {
-        color: #604630;
-
-        font-size: 0.68rem;
-        font-weight: 750;
-
-        transition:
-            color 0.2s ease;
-    }
-
-
-    /* =========================================================
-       OK
-       ========================================================= */
-
-    .campaign-arrow {
-        width: 34px;
-        height: 34px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        flex-shrink: 0;
-
-        border: 1px solid #dfcdb9;
-        border-radius: 50%;
-
-        color: #75502f;
-
-        background:
-            linear-gradient(145deg,
-                #fffdf9,
-                #f5e9dc);
-
-        font-size: 0.62rem;
-
-        transition:
-            color 0.25s ease,
-            border-color 0.25s ease,
-            background 0.25s ease,
-            transform 0.25s ease;
+            transform 0.45s ease;
     }
 
 
@@ -371,42 +124,109 @@
        HOVER
        ========================================================= */
 
-    .campaign-card:hover {
-        border-color: #d5b99b;
+    .campaign-image-card:hover {
+        border-color: #d3b493;
 
-        transform: translateY(-5px);
+        transform: translateY(-6px);
 
         box-shadow:
-            0 15px 32px rgba(70, 47, 30, 0.11);
+            0 20px 45px rgba(70, 47, 30, 0.14);
     }
 
 
-    .campaign-card:hover .campaign-image {
-        transform: scale(1.045);
+    .campaign-image-card:hover .campaign-image {
+        transform: scale(1.015);
     }
 
 
-    .campaign-card:hover .campaign-title {
-        color: #8b5e34;
-    }
+    /* =========================================================
+       HAFİF PARLAMA EFEKTİ
+       ========================================================= */
 
+    .campaign-image-card::after {
+        content: "";
 
-    .campaign-card:hover .campaign-link {
-        color: #8b5e34;
-    }
+        position: absolute;
 
+        top: 0;
+        left: -120%;
 
-    .campaign-card:hover .campaign-arrow {
-        color: #ffffff;
+        width: 55%;
+        height: 100%;
 
-        border-color: #80562f;
+        pointer-events: none;
 
         background:
-            linear-gradient(135deg,
-                #493225,
-                #8b5e34);
+            linear-gradient(110deg,
+                transparent,
+                rgba(255, 255, 255, 0.10),
+                transparent);
 
-        transform: translateX(3px);
+        transform: skewX(-18deg);
+
+        transition:
+            left 0.65s ease;
+    }
+
+
+    .campaign-image-card:hover::after {
+        left: 140%;
+    }
+
+
+    /* =========================================================
+       GÖRSEL YOK
+       ========================================================= */
+
+    .campaign-no-image {
+        width: 100%;
+        min-height: 430px;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 14px;
+
+        padding: 35px;
+
+        color: #89796c;
+
+        text-align: center;
+
+        background:
+            linear-gradient(145deg,
+                #faf6f1,
+                #f1e7dc);
+    }
+
+
+    .campaign-no-image-icon {
+        width: 68px;
+        height: 68px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        color: #8b5e34;
+
+        background-color: #eee0d0;
+
+        font-size: 1.55rem;
+    }
+
+
+    .campaign-no-image span {
+        color: #75675c;
+
+        font-size: 0.9rem;
+        font-weight: 600;
     }
 
 
@@ -414,15 +234,14 @@
        TABLET
        ========================================================= */
 
-    @@media (max-width: 991.98px) {
+    @@media (max-width: 1199.98px) {
 
-        .campaign-image-wrapper {
-            height: 230px;
+        .campaign-image-card {
+            border-radius: 19px;
         }
 
-
-        .campaign-body {
-            padding: 17px;
+        .campaign-column {
+            margin-bottom: 24px;
         }
 
     }
@@ -434,59 +253,20 @@
 
     @@media (max-width: 767.98px) {
 
-        .campaign-card {
-            border-radius: 16px;
+        .campaign-column {
+            margin-bottom: 20px;
         }
 
-
-        .campaign-image-wrapper {
-            height: 205px;
+        .campaign-image-card {
+            border-radius: 17px;
         }
 
-
-        .campaign-badge {
-            top: 11px;
-            left: 11px;
-
-            padding: 5px 8px;
-
-            font-size: 0.58rem;
+        .campaign-image-card:hover {
+            transform: translateY(-3px);
         }
 
-
-        .campaign-badge-icon {
-            width: 18px;
-            height: 18px;
-        }
-
-
-        .campaign-body {
-            padding: 15px;
-        }
-
-
-        .campaign-title {
-            min-height: 40px;
-
-            font-size: 0.9rem;
-        }
-
-
-        .campaign-description {
-            min-height: 38px;
-
-            font-size: 0.68rem;
-        }
-
-
-        .campaign-footer {
-            padding-top: 11px;
-        }
-
-
-        .campaign-arrow {
-            width: 31px;
-            height: 31px;
+        .campaign-no-image {
+            min-height: 300px;
         }
 
     }
@@ -498,18 +278,12 @@
 
     @@media (max-width: 480px) {
 
-        .campaign-image-wrapper {
-            height: 180px;
+        .campaign-image-card {
+            border-radius: 15px;
         }
 
-
-        .campaign-title {
-            font-size: 0.85rem;
-        }
-
-
-        .campaign-description {
-            -webkit-line-clamp: 2;
+        .campaign-no-image {
+            min-height: 250px;
         }
 
     }

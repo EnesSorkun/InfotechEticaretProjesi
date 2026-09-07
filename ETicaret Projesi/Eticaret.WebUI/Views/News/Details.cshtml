@@ -2,6 +2,26 @@
 
 @{
     ViewData["Title"] = Model.Name;
+
+    int? campaignCategoryId = null;
+
+    if (!string.IsNullOrWhiteSpace(Model.Name))
+    {
+        var campaignName = Model.Name.ToLowerInvariant();
+
+        if (campaignName.Contains("ateş"))
+        {
+            campaignCategoryId = 11;
+        }
+        else if (campaignName.Contains("sıkma"))
+        {
+            campaignCategoryId = 12;
+        }
+        else if (campaignName.Contains("damla"))
+        {
+            campaignCategoryId = 13;
+        }
+    }
 }
 
 <section class="campaign-detail-section">
@@ -16,7 +36,7 @@
             <div>
 
                 <span class="campaign-page-label">
-                    KAMPANYALAR
+                    KEHR-İ BAR
                 </span>
 
                 <h1>
@@ -24,7 +44,7 @@
                 </h1>
 
                 <p>
-                    Kehr-i Bar'a özel kampanya ve fırsatların detaylarını inceleyin.
+                    Kehr-i Bar'a özel kampanya ve koleksiyon fırsatlarını keşfedin.
                 </p>
 
             </div>
@@ -48,170 +68,149 @@
              ===================================================== -->
         <div class="campaign-detail-card">
 
-            <div class="row g-0 align-items-stretch">
+            <!-- =================================================
+                 KAMPANYA GÖRSELİ
+                 ================================================= -->
+            <div class="campaign-detail-image-area">
+
+                @if (!string.IsNullOrWhiteSpace(Model.Image))
+                {
+                    <img src="@Model.Image" alt="@Model.Name" class="campaign-detail-image" />
+                }
+                else
+                {
+                    <div class="campaign-no-image">
+
+                        <div class="campaign-no-image-icon">
+                            <i class="fa-regular fa-image"></i>
+                        </div>
+
+                        <span>
+                            Kampanya görseli bulunamadı.
+                        </span>
+
+                    </div>
+                }
+
+            </div>
+
+
+            <!-- =================================================
+                 İÇERİK
+                 ================================================= -->
+            <div class="campaign-detail-content">
+
+                <div class="campaign-detail-eyebrow">
+
+                    <span class="eyebrow-line"></span>
+
+                    <span>
+                        ÖZEL KAMPANYA
+                    </span>
+
+                </div>
+
+
+                <h2 class="campaign-detail-title">
+                    @Model.Name
+                </h2>
+
+
+                <div class="campaign-title-line"></div>
+
+
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p class="campaign-detail-description">
+                        @Model.Description
+                    </p>
+                }
+                else
+                {
+                    <p class="campaign-detail-description">
+                        Kehr-i Bar'a özel hazırlanan bu kampanya kapsamındaki
+                        ürünleri ve koleksiyonları inceleyebilirsiniz.
+                    </p>
+                }
+
 
                 <!-- =================================================
-                     SOL TARAF - GÖRSEL
+                     BİLGİ ALANI
                      ================================================= -->
-                <div class="col-lg-7">
+                <div class="campaign-info">
 
-                    <div class="campaign-detail-image-wrapper">
+                    <div class="campaign-info-icon">
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
 
-                        <img src="@Model.Image" alt="@Model.Name" class="campaign-detail-image" />
+                    <div>
 
+                        <strong>
+                            Kehr-i Bar'a Özel
+                        </strong>
 
-                        <!-- Görsel Overlay -->
-                        <div class="campaign-detail-overlay"></div>
-
-
-                        <!-- Kampanya Badge -->
-                        <div class="campaign-detail-badge">
-
-                            <span class="campaign-badge-icon">
-                                <i class="fa-solid fa-bolt"></i>
-                            </span>
-
-                            <span>
-                                Kampanya
-                            </span>
-
-                        </div>
-
-
-                        <!-- Alt Marka Alanı -->
-                        <div class="campaign-image-brand">
-
-                            <span>
-                                KEHR-İ BAR
-                            </span>
-
-                            <strong>
-                                Özel Koleksiyonlar
-                            </strong>
-
-                        </div>
+                        <p>
+                            Kampanya kapsamındaki tesbih modellerini keşfedin.
+                        </p>
 
                     </div>
 
                 </div>
 
 
+                @if (campaignCategoryId.HasValue)
+                {
+                    <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@campaignCategoryId.Value"
+                       class="campaign-products-button">
+
+                        <div class="campaign-products-button-content">
+
+                            <i class="fa-solid fa-bag-shopping"></i>
+
+                            <span>
+                                Kampanya Ürünlerini İncele
+                            </span>
+
+                        </div>
+
+                        <span class="campaign-products-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Products" asp-action="Index" class="campaign-products-button">
+
+                        <div class="campaign-products-button-content">
+
+                            <i class="fa-solid fa-bag-shopping"></i>
+
+                            <span>
+                                Ürünleri İncele
+                            </span>
+
+                        </div>
+
+                        <span class="campaign-products-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+
+                    </a>
+                }
+
+
                 <!-- =================================================
-                     SAĞ TARAF - İÇERİK
+                     ALT NOT
                      ================================================= -->
-                <div class="col-lg-5">
+                <div class="campaign-bottom-note">
 
-                    <div class="campaign-detail-content">
+                    <i class="fa-solid fa-gem"></i>
 
-                        <!-- =========================================
-                             ÜST İÇERİK
-                             ========================================= -->
-                        <div>
-
-                            <div class="campaign-detail-eyebrow">
-
-                                <span class="eyebrow-line"></span>
-
-                                <span>
-                                    ÖZEL FIRSAT
-                                </span>
-
-                            </div>
-
-
-                            <h2 class="campaign-detail-title">
-                                @Model.Name
-                            </h2>
-
-
-                            <div class="campaign-title-line"></div>
-
-
-                            @if (!string.IsNullOrWhiteSpace(Model.Description))
-                            {
-                                <p class="campaign-detail-description">
-                                    @Model.Description
-                                </p>
-                            }
-                            else
-                            {
-                                <p class="campaign-detail-description">
-                                    Bu kampanyaya özel ürünleri ve fırsatları
-                                    inceleyebilirsiniz.
-                                </p>
-                            }
-
-                        </div>
-
-
-                        <!-- =========================================
-                             ALT ALAN
-                             ========================================= -->
-                        <div class="campaign-detail-bottom">
-
-                            <!-- Bilgilendirme -->
-                            <div class="campaign-info">
-
-                                <div class="campaign-info-icon">
-
-                                    <i class="fa-solid fa-gem"></i>
-
-                                </div>
-
-
-                                <div>
-
-                                    <strong>
-                                        Kehr-i Bar'a Özel
-                                    </strong>
-
-                                    <p>
-                                        Kampanya kapsamındaki ürünleri inceleyerek
-                                        size uygun tesbih modellerini keşfedebilirsiniz.
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- Ürünleri İncele -->
-                            <a asp-controller="Products" asp-action="Index" class="campaign-products-button">
-
-                                <div class="campaign-products-button-content">
-
-                                    <i class="fa-solid fa-bag-shopping"></i>
-
-                                    <span>
-                                        Ürünleri İncele
-                                    </span>
-
-                                </div>
-
-
-                                <span class="campaign-products-arrow">
-
-                                    <i class="fa-solid fa-arrow-right"></i>
-
-                                </span>
-
-                            </a>
-
-
-                            <!-- Alt Güven / Marka Bilgisi -->
-                            <div class="campaign-bottom-note">
-
-                                <i class="fa-solid fa-gem"></i>
-
-                                <span>
-                                    Kehr-i Bar Kehribar Tesbih Koleksiyonları
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    <span>
+                        Kehr-i Bar Kehribar Tesbih Koleksiyonları
+                    </span>
 
                 </div>
 
@@ -250,6 +249,7 @@
 
     .campaign-detail-top {
         display: flex;
+
         align-items: flex-end;
         justify-content: space-between;
 
@@ -277,6 +277,7 @@
         position: relative;
 
         margin: 0 0 9px;
+
         padding-bottom: 12px;
 
         color: #30251d;
@@ -296,7 +297,7 @@
         left: 0;
         bottom: 0;
 
-        width: 42px;
+        width: 44px;
         height: 3px;
 
         border-radius: 20px;
@@ -309,14 +310,14 @@
 
 
     .campaign-detail-top p {
-        max-width: 600px;
+        max-width: 620px;
 
         margin: 0;
 
         color: #887b70;
 
-        font-size: 0.8rem;
-        line-height: 1.6;
+        font-size: 0.82rem;
+        line-height: 1.65;
     }
 
 
@@ -325,26 +326,27 @@
        ========================================================= */
 
     .campaign-back {
-        min-height: 40px;
+        min-height: 42px;
 
         display: inline-flex;
+
         align-items: center;
         justify-content: center;
 
-        gap: 7px;
+        gap: 8px;
 
         flex-shrink: 0;
 
-        padding: 8px 13px;
+        padding: 9px 14px;
 
         border: 1px solid #d8c9ba;
-        border-radius: 9px;
+        border-radius: 10px;
 
         color: #66503f;
 
         background-color: #ffffff;
 
-        font-size: 0.69rem;
+        font-size: 0.72rem;
         font-weight: 700;
 
         text-decoration: none;
@@ -379,190 +381,125 @@
         overflow: hidden;
 
         border: 1px solid #e5d9cd;
-        border-radius: 23px;
+        border-radius: 24px;
 
         background-color: #ffffff;
 
         box-shadow:
-            0 16px 42px rgba(70, 47, 30, 0.09);
+            0 18px 45px rgba(70, 47, 30, 0.09);
+    }
+
+
+    /* =========================================================
+       GÖRSEL ALANI
+       ========================================================= */
+
+    .campaign-detail-image-area {
+        width: 100%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 24px;
+
+        border-bottom: 1px solid #eee5dc;
+
+        background:
+            linear-gradient(145deg,
+                #fbf8f4,
+                #f5eee6);
     }
 
 
     /* =========================================================
        GÖRSEL
+
+       GÖRSEL KESİLMEZ.
+       ORİJİNAL ORANINI KORUR.
        ========================================================= */
 
-    .campaign-detail-image-wrapper {
-        position: relative;
-
-        width: 100%;
-        height: 100%;
-        min-height: 555px;
-
-        overflow: hidden;
-
-        background:
-            linear-gradient(145deg,
-                #f7f1ea,
-                #eee2d5);
-    }
-
-
     .campaign-detail-image {
-        position: absolute;
-
-        inset: 0;
+        display: block;
 
         width: 100%;
-        height: 100%;
+        height: auto;
 
-        object-fit: cover;
+        max-height: 720px;
+
+        object-fit: contain;
         object-position: center;
 
+        border-radius: 17px;
+
+        box-shadow:
+            0 10px 28px rgba(61, 40, 26, 0.08);
+
         transition:
-            transform 0.7s ease;
+            transform 0.45s ease;
     }
 
 
     .campaign-detail-card:hover .campaign-detail-image {
-        transform: scale(1.025);
+        transform: scale(1.008);
     }
 
 
     /* =========================================================
-       GÖRSEL OVERLAY
+       GÖRSEL YOK
        ========================================================= */
 
-    .campaign-detail-overlay {
-        position: absolute;
+    .campaign-no-image {
+        width: 100%;
 
-        inset: 0;
-
-        pointer-events: none;
-
-        background:
-            linear-gradient(180deg,
-                rgba(38, 27, 19, 0.03) 35%,
-                rgba(38, 27, 19, 0.52) 100%);
-    }
-
-
-    /* =========================================================
-       KAMPANYA BADGE
-       ========================================================= */
-
-    .campaign-detail-badge {
-        position: absolute;
-
-        z-index: 2;
-
-        top: 20px;
-        left: 20px;
-
-        display: inline-flex;
-        align-items: center;
-
-        gap: 7px;
-
-        padding: 6px 11px 6px 7px;
-
-        border: 1px solid rgba(255, 255, 255, 0.55);
-        border-radius: 30px;
-
-        color: #583e2a;
-
-        background-color: rgba(255, 250, 244, 0.94);
-
-        font-size: 0.64rem;
-        font-weight: 800;
-
-        box-shadow:
-            0 5px 15px rgba(43, 29, 19, 0.13);
-
-        backdrop-filter: blur(9px);
-    }
-
-
-    .campaign-badge-icon {
-        width: 22px;
-        height: 22px;
+        min-height: 420px;
 
         display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 14px;
+
+        color: #89796c;
+
+        text-align: center;
+    }
+
+
+    .campaign-no-image-icon {
+        width: 70px;
+        height: 70px;
+
+        display: flex;
+
         align-items: center;
         justify-content: center;
 
         border-radius: 50%;
 
-        color: #ffffff;
+        color: #8b5e34;
 
-        background:
-            linear-gradient(135deg,
-                #80542d,
-                #bd8248);
+        background-color: #eee0d0;
 
-        font-size: 0.52rem;
+        font-size: 1.6rem;
     }
 
 
     /* =========================================================
-       GÖRSEL ALT MARKA
-       ========================================================= */
-
-    .campaign-image-brand {
-        position: absolute;
-
-        z-index: 2;
-
-        left: 25px;
-        bottom: 24px;
-
-        display: flex;
-        flex-direction: column;
-    }
-
-
-    .campaign-image-brand span {
-        margin-bottom: 2px;
-
-        color: rgba(255, 255, 255, 0.76);
-
-        font-size: 0.54rem;
-        font-weight: 800;
-
-        letter-spacing: 0.16em;
-    }
-
-
-    .campaign-image-brand strong {
-        color: #ffffff;
-
-        font-size: 0.88rem;
-        font-weight: 700;
-
-        text-shadow:
-            0 2px 10px rgba(0, 0, 0, 0.18);
-    }
-
-
-    /* =========================================================
-       SAĞ İÇERİK
+       İÇERİK
        ========================================================= */
 
     .campaign-detail-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        max-width: 860px;
 
-        height: 100%;
-        min-height: 555px;
+        margin: 0 auto;
 
-        padding: 45px 38px;
+        padding: 46px 42px 42px;
 
-        background:
-            radial-gradient(circle at top right,
-                rgba(194, 143, 87, 0.06),
-                transparent 35%),
-            #ffffff;
+        text-align: center;
     }
 
 
@@ -572,23 +509,25 @@
 
     .campaign-detail-eyebrow {
         display: flex;
+
         align-items: center;
+        justify-content: center;
 
-        gap: 8px;
+        gap: 9px;
 
-        margin-bottom: 11px;
+        margin-bottom: 12px;
 
         color: #9a7042;
 
-        font-size: 0.59rem;
+        font-size: 0.61rem;
         font-weight: 800;
 
-        letter-spacing: 0.14em;
+        letter-spacing: 0.15em;
     }
 
 
     .eyebrow-line {
-        width: 21px;
+        width: 24px;
         height: 2px;
 
         display: block;
@@ -608,19 +547,23 @@
 
         color: #30251d;
 
-        font-size: clamp(1.8rem, 2.7vw, 2.65rem);
+        font-size: clamp(1.8rem,
+                3vw,
+                2.75rem);
+
         font-weight: 800;
-        line-height: 1.17;
+
+        line-height: 1.18;
 
         letter-spacing: -0.025em;
     }
 
 
     .campaign-title-line {
-        width: 48px;
+        width: 55px;
         height: 3px;
 
-        margin: 19px 0;
+        margin: 20px auto;
 
         border-radius: 20px;
 
@@ -636,23 +579,17 @@
        ========================================================= */
 
     .campaign-detail-description {
-        margin: 0;
+        max-width: 680px;
+
+        margin: 0 auto;
 
         color: #817469;
 
-        font-size: 0.84rem;
-        line-height: 1.85;
+        font-size: 0.9rem;
+
+        line-height: 1.9;
 
         white-space: pre-line;
-    }
-
-
-    /* =========================================================
-       ALT ALAN
-       ========================================================= */
-
-    .campaign-detail-bottom {
-        margin-top: 38px;
     }
 
 
@@ -661,52 +598,60 @@
        ========================================================= */
 
     .campaign-info {
+        max-width: 570px;
+
         display: flex;
+
         align-items: center;
 
-        gap: 11px;
+        gap: 13px;
 
-        margin-bottom: 16px;
-        padding: 13px;
+        margin:
+            32px auto 18px;
+
+        padding: 15px 17px;
 
         border: 1px solid #e5dacf;
-        border-radius: 11px;
+        border-radius: 13px;
 
         background:
             linear-gradient(145deg,
                 #fcf9f5,
                 #f8f2eb);
+
+        text-align: left;
     }
 
 
     .campaign-info-icon {
-        width: 37px;
-        height: 37px;
+        width: 42px;
+        height: 42px;
 
         display: flex;
+
         align-items: center;
         justify-content: center;
 
         flex-shrink: 0;
 
-        border-radius: 9px;
+        border-radius: 10px;
 
         color: #835a35;
 
         background-color: #eee0d1;
 
-        font-size: 0.72rem;
+        font-size: 0.78rem;
     }
 
 
     .campaign-info strong {
         display: block;
 
-        margin-bottom: 2px;
+        margin-bottom: 3px;
 
         color: #584333;
 
-        font-size: 0.7rem;
+        font-size: 0.74rem;
         font-weight: 800;
     }
 
@@ -716,29 +661,34 @@
 
         color: #938579;
 
-        font-size: 0.62rem;
-        line-height: 1.5;
+        font-size: 0.66rem;
+
+        line-height: 1.55;
     }
 
 
     /* =========================================================
-       ÜRÜNLERİ İNCELE BUTONU
+       ÜRÜNLERİ İNCELE
        ========================================================= */
 
     .campaign-products-button {
-        width: 100%;
-        min-height: 47px;
+        max-width: 570px;
+
+        min-height: 50px;
 
         display: flex;
+
         align-items: center;
         justify-content: space-between;
 
         gap: 10px;
 
-        padding: 9px 10px 9px 15px;
+        margin: 0 auto;
+
+        padding: 10px 11px 10px 17px;
 
         border: 1px solid #493225;
-        border-radius: 10px;
+        border-radius: 11px;
 
         color: #ffffff;
 
@@ -747,16 +697,15 @@
                 #493225,
                 #8b5e34);
 
-        font-size: 0.73rem;
+        font-size: 0.76rem;
         font-weight: 750;
 
         text-decoration: none;
 
         box-shadow:
-            0 6px 16px rgba(73, 50, 37, 0.16);
+            0 7px 18px rgba(73, 50, 37, 0.17);
 
         transition:
-            background 0.2s ease,
             transform 0.2s ease,
             box-shadow 0.2s ease;
     }
@@ -764,30 +713,28 @@
 
     .campaign-products-button-content {
         display: flex;
+
         align-items: center;
 
-        gap: 8px;
-    }
-
-
-    .campaign-products-button-content>i {
-        font-size: 0.68rem;
+        gap: 9px;
     }
 
 
     .campaign-products-arrow {
-        width: 29px;
-        height: 29px;
+        width: 31px;
+        height: 31px;
 
         display: flex;
+
         align-items: center;
         justify-content: center;
 
         border-radius: 8px;
 
-        background-color: rgba(255, 255, 255, 0.11);
+        background-color:
+            rgba(255, 255, 255, 0.12);
 
-        font-size: 0.57rem;
+        font-size: 0.6rem;
 
         transition:
             transform 0.2s ease,
@@ -798,22 +745,18 @@
     .campaign-products-button:hover {
         color: #ffffff;
 
-        background:
-            linear-gradient(135deg,
-                #5b3e2b,
-                #9b6a3a);
-
         transform: translateY(-2px);
 
         box-shadow:
-            0 8px 20px rgba(73, 50, 37, 0.22);
+            0 10px 22px rgba(73, 50, 37, 0.22);
     }
 
 
     .campaign-products-button:hover .campaign-products-arrow {
-        background-color: rgba(255, 255, 255, 0.17);
+        transform: translateX(3px);
 
-        transform: translateX(2px);
+        background-color:
+            rgba(255, 255, 255, 0.18);
     }
 
 
@@ -823,23 +766,22 @@
 
     .campaign-bottom-note {
         display: flex;
+
         align-items: center;
         justify-content: center;
 
-        gap: 6px;
+        gap: 7px;
 
-        margin-top: 12px;
+        margin-top: 14px;
 
         color: #a09387;
 
-        font-size: 0.57rem;
+        font-size: 0.59rem;
     }
 
 
     .campaign-bottom-note i {
         color: #9b7959;
-
-        font-size: 0.56rem;
     }
 
 
@@ -854,31 +796,13 @@
         }
 
 
-        .campaign-detail-card {
-            border-radius: 20px;
-        }
-
-
-        .campaign-detail-image-wrapper {
-            height: 430px;
-            min-height: 0;
-        }
-
-
-        .campaign-detail-image {
-            position: relative;
+        .campaign-detail-image-area {
+            padding: 19px;
         }
 
 
         .campaign-detail-content {
-            min-height: auto;
-
-            padding: 35px;
-        }
-
-
-        .campaign-detail-bottom {
-            margin-top: 30px;
+            padding: 38px 30px;
         }
 
     }
@@ -897,6 +821,7 @@
 
         .campaign-detail-top {
             flex-direction: column;
+
             align-items: flex-start;
 
             gap: 17px;
@@ -914,29 +839,22 @@
 
 
         .campaign-detail-card {
-            border-radius: 17px;
+            border-radius: 18px;
         }
 
 
-        .campaign-detail-image-wrapper {
-            height: 310px;
+        .campaign-detail-image-area {
+            padding: 12px;
         }
 
 
-        .campaign-detail-badge {
-            top: 13px;
-            left: 13px;
-        }
-
-
-        .campaign-image-brand {
-            left: 17px;
-            bottom: 17px;
+        .campaign-detail-image {
+            border-radius: 13px;
         }
 
 
         .campaign-detail-content {
-            padding: 27px 22px;
+            padding: 31px 21px;
         }
 
 
@@ -946,12 +864,13 @@
 
 
         .campaign-detail-description {
-            font-size: 0.79rem;
-            line-height: 1.75;
+            font-size: 0.81rem;
+
+            line-height: 1.8;
         }
 
 
-        .campaign-detail-bottom {
+        .campaign-info {
             margin-top: 27px;
         }
 
@@ -964,13 +883,18 @@
 
     @@media (max-width: 480px) {
 
-        .campaign-detail-image-wrapper {
-            height: 250px;
+        .campaign-detail-image-area {
+            padding: 8px;
+        }
+
+
+        .campaign-detail-image {
+            border-radius: 11px;
         }
 
 
         .campaign-detail-content {
-            padding: 23px 18px;
+            padding: 27px 17px;
         }
 
 
@@ -985,7 +909,7 @@
 
 
         .campaign-products-button {
-            min-height: 45px;
+            min-height: 47px;
         }
 
     }
