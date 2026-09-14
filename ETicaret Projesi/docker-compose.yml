@@ -1,15 +1,44 @@
 services:
+
   postgres:
     image: postgres:16-alpine
     container_name: eticaret_db_container
+
     environment:
       POSTGRES_DB: Eticaret_db
       POSTGRES_USER: Eticaret
       POSTGRES_PASSWORD: 243796yunsor
+
     ports:
       - "1453:5432"
+
     volumes:
       - eticaret_postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: eticaret_web_container
+
+    ports:
+      - "10000:10000"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://0.0.0.0:10000
+
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=Eticaret_db;Username=Eticaret;Password=243796yunsor"
+
+    depends_on:
+      - postgres
+
+    restart: unless-stopped
+
 
 volumes:
   eticaret_postgres_data:
