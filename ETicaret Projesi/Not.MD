@@ -1,7 +1,11 @@
 <!--************************************************************************************-->
 
-03.08.2026
+FİNAL KISMI
 
-1. Frontend Tasarım ile bütün sayfalar düzenlendi ve bitirildi.
+1. Proje yayınlandı ve Proje Kayıt İşlemi gerçekleştirildi.
 
-2. Her şey bitti. Artık sıra yayınlanma sürecinde...
+2. WEB API kısmı için eğer WEB API kısmına bakılmak istenirse aşağıya link vericem.
+
+https://kehribar-tesbih.onrender.com/swagger yazarak WEB API kısmının yapıldığını görebilirsiniz.
+
+GET, PUT vs. işlemlerini sayfa üzerine gerçekleştirilebiliyor.
