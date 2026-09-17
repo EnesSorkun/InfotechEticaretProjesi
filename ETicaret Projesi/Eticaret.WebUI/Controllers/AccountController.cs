@@ -180,6 +180,8 @@ namespace Eticaret.WebUI.Controllers
                 principal,
                 authProperties);
 
+            HttpContext.Session.Remove("Cart");
+
 
             // ReturnUrl varsa kullanıcıyı geldiği sayfaya döndür.
             if (!string.IsNullOrWhiteSpace(
