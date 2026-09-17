@@ -1,2 +1,2 @@
 WETRANSFER PROJE KAYIT LİNK;
-https://we.tl/t-CoZVOsxcbagkZ6nh
+https://we.tl/t-fxUPLaZ1QPhxsOhg
